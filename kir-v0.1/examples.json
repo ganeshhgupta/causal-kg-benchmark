@@ -1,0 +1,424 @@
+{
+  "_comment": "14 hand-compiled K-IR v0.1 atoms covering every 'nastiest case' named: Copper/Metal/Material specialization chain (+ the 2 ontology facts needed to make it actually derivable, not just asserted), Metal/Semiconductor apparent contradiction, water 0-4C apparent contradiction, Dropout train/inference apparent contradiction, DropConnect/Dropout generalization, and the BatchNorm genuine contradiction. See STRESS_TEST.md for what broke while compiling these.",
+  "atoms": [
+    {
+      "id": "KIR-001",
+      "predicate": "MONOTONIC",
+      "arguments": [
+        {"role": "input", "term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}},
+        {"role": "output", "term": {"kind": "function", "name": "LinearExtent", "args": [{"kind": "variable", "name": "x"}]}}
+      ],
+      "direction": "positive",
+      "quantification": [{"quantifier": "forall", "variable": "x", "type": "Material"}],
+      "context": {"phase": "solid", "regime": "ordinary_positive_expansion", "assumptions": ["constant_pressure"]},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "General thermal expansion", "evidence_type": "textbook_consensus", "confidence": "established"},
+      "surface_forms": ["Ordinary solids expand when heated, at constant pressure."],
+      "notes": "modality=generic because negative-thermal-expansion materials (e.g. some zirconium tungstates) are real named exceptions."
+    },
+    {
+      "id": "KIR-002",
+      "predicate": "MONOTONIC",
+      "arguments": [
+        {"role": "input", "term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}},
+        {"role": "output", "term": {"kind": "function", "name": "LinearExtent", "args": [{"kind": "variable", "name": "x"}]}}
+      ],
+      "direction": "positive",
+      "quantification": [{"quantifier": "forall", "variable": "x", "type": "Metal"}],
+      "context": {"phase": "solid", "regime": "ordinary_positive_expansion", "assumptions": ["constant_pressure"]},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "General thermal expansion", "evidence_type": "textbook_consensus", "confidence": "established"},
+      "surface_forms": ["Metals expand when heated."],
+      "notes": "modality=generic because Invar-type low-expansion alloys are a real named exception. Identical predicate/arguments/direction/context to KIR-001, differing ONLY in quantification.type -- see STRESS_TEST.md finding 1 (the positive result)."
+    },
+    {
+      "id": "KIR-003",
+      "predicate": "MONOTONIC",
+      "arguments": [
+        {"role": "input", "term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}},
+        {"role": "output", "term": {"kind": "function", "name": "LinearExtent", "args": [{"kind": "variable", "name": "x"}]}}
+      ],
+      "direction": "positive",
+      "quantification": [{"quantifier": "forall", "variable": "x", "type": "Copper"}],
+      "context": {"phase": "solid", "regime": "ordinary_positive_expansion", "assumptions": ["constant_pressure", "below_melting_point", "no_phase_transition"]},
+      "polarity": "assert",
+      "modality": "universal",
+      "provenance": {"source": "NIST thermal expansion data", "evidence_type": "empirical_experiment", "confidence": "established"},
+      "surface_forms": ["Copper expands when heated.", "A copper rod gets longer as its temperature increases."],
+      "notes": "modality=universal (no known exception for solid copper below melting). Identical predicate/arguments/direction/context to KIR-002 except quantification.type AND modality -- the modality difference is exactly why naive subtype-based entailment derivation is unsound here. See STRESS_TEST.md finding 1."
+    },
+    {
+      "id": "KIR-004",
+      "predicate": "SUBTYPE_OF",
+      "arguments": [
+        {"role": "subtype", "term": {"kind": "constant", "value": "Copper"}},
+        {"role": "supertype", "term": {"kind": "constant", "value": "Metal"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "standard materials taxonomy", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["Copper is a metal."]
+    },
+    {
+      "id": "KIR-004B",
+      "predicate": "SUBTYPE_OF",
+      "arguments": [
+        {"role": "subtype", "term": {"kind": "constant", "value": "Metal"}},
+        {"role": "supertype", "term": {"kind": "constant", "value": "Material"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "standard materials taxonomy", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["Metal is a material."]
+    },
+    {
+      "id": "KIR-005",
+      "predicate": "MONOTONIC",
+      "arguments": [
+        {"role": "input", "term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}},
+        {"role": "output", "term": {"kind": "function", "name": "ElectricalResistance", "args": [{"kind": "variable", "name": "x"}]}}
+      ],
+      "direction": "positive",
+      "quantification": [{"quantifier": "forall", "variable": "x", "type": "Metal"}],
+      "context": {"regime": "metallic_conduction", "assumptions": ["no_phase_transition", "no_superconducting_transition", "negligible_geometry_change"]},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "OpenStax University Physics", "evidence_type": "textbook_consensus", "confidence": "established"},
+      "surface_forms": ["For most ordinary metals, electrical resistance increases as temperature increases."],
+      "notes": "modality=generic: special low-TCR alloys are real named exceptions."
+    },
+    {
+      "id": "KIR-006",
+      "predicate": "MONOTONIC",
+      "arguments": [
+        {"role": "input", "term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}},
+        {"role": "output", "term": {"kind": "function", "name": "ElectricalResistance", "args": [{"kind": "variable", "name": "x"}]}}
+      ],
+      "direction": "negative",
+      "quantification": [{"quantifier": "forall", "variable": "x", "type": "Silicon"}],
+      "context": {"regime": "semiconducting_NTC", "assumptions": ["fixed_doping", "no_phase_transition"]},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "OpenStax University Physics", "evidence_type": "textbook_consensus", "confidence": "established"},
+      "surface_forms": ["For intrinsic silicon, resistance decreases as temperature increases."]
+    },
+    {
+      "id": "KIR-007",
+      "predicate": "DISJOINT",
+      "arguments": [
+        {"role": "type_a", "term": {"kind": "constant", "value": "Metal"}},
+        {"role": "type_b", "term": {"kind": "constant", "value": "Semiconductor"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "benchmark simplification", "evidence_type": "definitional", "confidence": "hypothesis"},
+      "surface_forms": ["No material is both a metal and a semiconductor."],
+      "notes": "Benchmark-level simplification, not physical truth -- real metallic/semiconducting behavior is a transport regime that can depend on doping/pressure/phase, not an eternal class property. Same caveat as the physics/ML benchmarks' scope_notes."
+    },
+    {
+      "id": "KIR-008",
+      "predicate": "MONOTONIC",
+      "arguments": [
+        {"role": "input", "term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}},
+        {"role": "output", "term": {"kind": "function", "name": "Volume", "args": [{"kind": "variable", "name": "x"}]}}
+      ],
+      "direction": "positive",
+      "quantification": [{"quantifier": "forall", "variable": "x", "type": "Water"}],
+      "context": {
+        "phase": "liquid",
+        "value_domain": [{"term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}, "min": 4, "max": "boiling_point(x)", "min_inclusive": false, "unit": "C"}],
+        "assumptions": ["fixed_mass", "constant_pressure"]
+      },
+      "polarity": "assert",
+      "modality": "universal",
+      "provenance": {"source": "USGS water density data", "evidence_type": "empirical_experiment", "confidence": "established"},
+      "surface_forms": ["For a fixed mass of liquid water, volume increases with temperature above 4C."],
+      "notes": "STRESS TEST: value_domain.max = 'boiling_point(x)' is a bare STRING, not a structured function term -- the schema's ValueDomainConstraint.max only accepts number|string|null, not a Term reference. This loses the fact that the bound is itself a function of x. See STRESS_TEST.md finding 5."
+    },
+    {
+      "id": "KIR-009",
+      "predicate": "MONOTONIC",
+      "arguments": [
+        {"role": "input", "term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}},
+        {"role": "output", "term": {"kind": "function", "name": "Volume", "args": [{"kind": "variable", "name": "x"}]}}
+      ],
+      "direction": "negative",
+      "quantification": [{"quantifier": "forall", "variable": "x", "type": "Water"}],
+      "context": {
+        "phase": "liquid",
+        "value_domain": [{"term": {"kind": "function", "name": "Temperature", "args": [{"kind": "variable", "name": "x"}]}, "min": 0, "max": 4, "unit": "C"}],
+        "assumptions": ["fixed_mass", "constant_pressure"]
+      },
+      "polarity": "assert",
+      "modality": "universal",
+      "provenance": {"source": "USGS water density data", "evidence_type": "empirical_experiment", "confidence": "established"},
+      "surface_forms": ["Between 0C and 4C, water contracts as it warms."]
+    },
+    {
+      "id": "KIR-010",
+      "predicate": "MASKS",
+      "arguments": [
+        {"role": "target", "term": {"kind": "function", "name": "Activation", "args": [{"kind": "variable", "name": "u"}]}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "u", "type": "NetworkUnit"}],
+      "context": {"phase": "training", "assumptions": ["random_selection", "rate=p"]},
+      "polarity": "assert",
+      "modality": "universal",
+      "provenance": {"source": "Srivastava et al. 2014", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["During training, dropout randomly zeroes unit activations."],
+      "notes": "STRESS TEST: M041's full claim is a conjunction (masks activations AND prevents co-adaptation AND acts as implicit ensemble). This atom captures only the mechanistic core; the two causal/effect claims have no home in a single-predicate atom. See STRESS_TEST.md finding 2."
+    },
+    {
+      "id": "KIR-011",
+      "predicate": "MASKS",
+      "arguments": [
+        {"role": "target", "term": {"kind": "function", "name": "Activation", "args": [{"kind": "variable", "name": "u"}]}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "u", "type": "NetworkUnit"}],
+      "context": {"phase": "inference"},
+      "polarity": "negate",
+      "modality": "universal",
+      "provenance": {"source": "Srivastava et al. 2014", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["At inference, dropout masking is disabled."],
+      "notes": "Corrected per review: only asserts masking is off. Inverted dropout's compensatory activation scaling happened during training (KIR-010's phase), not restated here. KIR-010 and KIR-011 are identical except phase (context) and polarity (assert vs negate) -- clean, structural, exactly what the flagship context-preservation pair should look like."
+    },
+    {
+      "id": "KIR-012",
+      "predicate": "MASKS",
+      "arguments": [
+        {"role": "target", "term": {"kind": "function", "name": "Weight", "args": [{"kind": "variable", "name": "w"}]}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "w", "type": "Connection"}],
+      "context": {"phase": "training", "assumptions": ["random_selection"]},
+      "polarity": "assert",
+      "modality": "universal",
+      "provenance": {"source": "Wan et al. 2013", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["DropConnect randomly zeroes individual connection weights during training."],
+      "notes": "STRESS TEST: DropConnect GENERALIZES Dropout (zeroing all weights out of one unit = zeroing that unit's activation) but this is a relationship between the DEFINITIONS of Weight(w)-aggregated-over-a-unit and Activation(u), which this schema has no way to state. Without a Definition/derivation construct connecting the two function symbols, the GENERALIZES relation between KIR-012 and KIR-010 is not structurally derivable -- it can only be asserted by a human/LLM as a pairwise judgment, exactly the P02 problem recurring at the representation level. See STRESS_TEST.md finding 3."
+    },
+    {
+      "id": "KIR-013",
+      "predicate": "HOLDS",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "PrimaryMechanism", "args": [{"kind": "constant", "value": "BatchNorm"}]}},
+        {"role": "value", "term": {"kind": "constant", "value": "internal_covariate_shift_reduction"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "Ioffe & Szegedy 2015", "evidence_type": "empirical_experiment", "confidence": "superseded"},
+      "surface_forms": ["Batch normalization improves training primarily by reducing internal covariate shift."],
+      "notes": "STRESS TEST: forced into HOLDS(PrimaryMechanism(BatchNorm), <bare constant string>). There is no principled predicate for 'X's primary explanatory mechanism is Y' in this vocabulary. See STRESS_TEST.md finding 4."
+    },
+    {
+      "id": "KIR-014",
+      "predicate": "HOLDS",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "PrimaryMechanism", "args": [{"kind": "constant", "value": "BatchNorm"}]}},
+        {"role": "value", "term": {"kind": "constant", "value": "landscape_smoothing"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "Santurkar et al. 2018", "evidence_type": "empirical_experiment", "confidence": "established"},
+      "surface_forms": ["Batch normalization's main benefit is smoothing the optimization landscape, not reducing internal covariate shift."],
+      "notes": "Deliberately SAME (empty) context as KIR-013 -- genuine contradiction, not an apparent one. POSITIVE FINDING: if PrimaryMechanism is declared FUNCTIONAL (single-valued) as predicate-signature metadata, CONTRADICTS between KIR-013 and KIR-014 becomes MECHANICALLY DERIVABLE (two HOLDS atoms assigning different values to the same functional role under identical context = contradiction by construction), rather than a hand-labeled pair judgment. This schema has no 'functional argument' metadata yet -- see STRESS_TEST.md finding 4."
+    },
+
+    {
+      "id": "KIR-015",
+      "predicate": "SUBTYPE_OF",
+      "arguments": [
+        {"role": "subtype", "term": {"kind": "constant", "value": "Square"}},
+        {"role": "supertype", "term": {"kind": "constant", "value": "Rectangle"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "Euclidean geometry", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["Every square is a rectangle."],
+      "notes": "CONTROL CASE: deliberately easy, same shape as KIR-004/KIR-007. Schema handles this cleanly -- included to show the breaks below are real gaps, not the schema being broken everywhere."
+    },
+    {
+      "id": "KIR-016",
+      "predicate": "IMPLIES",
+      "arguments": [
+        {"role": "antecedent", "term": {"kind": "function", "name": "Differentiable", "args": [{"kind": "variable", "name": "f"}]}},
+        {"role": "consequent", "term": {"kind": "function", "name": "Continuous", "args": [{"kind": "variable", "name": "f"}]}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "f", "type": "RealFunction"}],
+      "context": {},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "standard real analysis", "evidence_type": "theoretical_derivation", "confidence": "established"},
+      "surface_forms": ["Every differentiable function is continuous."],
+      "notes": "STRESS TEST (severe, new): predicate 'IMPLIES' does not exist in the original 6-predicate vocabulary and is needed the moment ANY general logical implication between two properties appears -- not physics-specific. Worse: Differentiable(f) and Continuous(f) are being used as Term.function values, but they are actually BOOLEAN PROPOSITIONS, not value-returning terms -- this is an abuse of the Term grammar. v0.1 has no first-class 'proposition as argument' construct. See STRESS_TEST.md finding 6. The converse (every continuous function is differentiable) is FALSE -- this pair is the cleanest possible test of whether canonicalization respects entailment direction rather than treating shared predicates as identity."
+    },
+    {
+      "id": "KIR-017",
+      "predicate": "HOLDS",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "Runtime", "args": [{"kind": "constant", "value": "HashTableLookup"}]}},
+        {"role": "value", "term": {"kind": "constant", "value": "O(1)"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {"assumptions": ["suitable_hashing_assumptions", "measure=expected"]},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "standard algorithms textbooks", "evidence_type": "theoretical_derivation", "confidence": "established"},
+      "surface_forms": ["Hash-table lookup is expected O(1) under suitable hashing assumptions."],
+      "notes": "STRESS TEST (new dimension): 'measure=expected' is smuggled into the free-text assumptions list, but this is NOT a world-condition like phase or regime -- it's which STATISTIC of a random runtime is being reported (expected vs worst-case vs amortized). Conflating 'aggregation/measure type' with 'background assumption' means nothing structurally distinguishes this from KIR-018. See STRESS_TEST.md finding 7."
+    },
+    {
+      "id": "KIR-018",
+      "predicate": "HOLDS",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "Runtime", "args": [{"kind": "constant", "value": "HashTableLookup"}]}},
+        {"role": "value", "term": {"kind": "constant", "value": "O(1)"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "informal/popular usage", "evidence_type": "textbook_consensus", "confidence": "contested"},
+      "surface_forms": ["Hash-table lookup is O(1)."],
+      "notes": "Decoy: unqualified. True if read as the same implicit expected-case claim as KIR-017; false if read as worst-case (degenerate collisions give O(n)). The English is genuinely AMBIGUOUS about which reading is meant -- compiling this at all requires the LLM frontend to guess/resolve an ambiguity the source text never resolved. K-IR can expose that ambiguity (e.g. flag measure=unspecified) but cannot fix it."
+    },
+    {
+      "id": "KIR-019",
+      "predicate": "OBSERVATIONALLY_EQUIVALENT_TO",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "variable", "name": "s"}},
+        {"role": "reference", "term": {"kind": "function", "name": "SomeSerialOrderingOf", "args": [{"kind": "variable", "name": "s"}]}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "s", "type": "SerializableSchedule"}],
+      "context": {},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "standard database theory (serializability)", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["A serializable schedule behaves as some serial execution."],
+      "notes": "STRESS TEST (new predicate, brand new category): needed a wholly new predicate, OBSERVATIONALLY_EQUIVALENT_TO -- outcome-equivalence between a concurrent execution and SOME serial ordering, which is definitionally NOT the same as literal sequential execution (KIR-020). Nothing in MONOTONIC/EQUALS/SUBTYPE_OF/etc. is remotely this shape. See STRESS_TEST.md finding 8."
+    },
+    {
+      "id": "KIR-020",
+      "predicate": "EXECUTES_SEQUENTIALLY",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "variable", "name": "s"}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "s", "type": "SerializableSchedule"}],
+      "context": {},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "common misconception", "evidence_type": "textbook_consensus", "confidence": "contested"},
+      "surface_forms": ["A serializable schedule runs transactions one at a time."],
+      "notes": "FALSE as a general property -- serializability guarantees observational equivalence (KIR-019) to SOME serial order, never that execution is literally sequential (real systems interleave for performance). Included specifically to test whether near-identical surface wording ('behaves as serial' vs 'runs serially') gets wrongly canonicalized to the SAME predicate. Correct relation to KIR-019: UNRELATED predicates (not EQUAL, not strictly CONTRADICTS either -- see STRESS_TEST.md finding 9 on why 'CONTRADICTS' is the wrong label for a true-property-vs-false-property pair)."
+    },
+    {
+      "id": "KIR-021",
+      "predicate": "IMPLIES",
+      "arguments": [
+        {"role": "antecedent", "term": {"kind": "function", "name": "Independent", "args": [{"kind": "variable", "name": "X"}, {"kind": "variable", "name": "Y"}]}},
+        {"role": "consequent", "term": {"kind": "function", "name": "CovarianceIsZero", "args": [{"kind": "variable", "name": "X"}, {"kind": "variable", "name": "Y"}]}}
+      ],
+      "direction": null,
+      "quantification": [
+        {"quantifier": "forall", "variable": "X", "type": "RandomVariable"},
+        {"quantifier": "forall", "variable": "Y", "type": "RandomVariable"}
+      ],
+      "context": {"assumptions": ["finite_second_moments"]},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "standard probability theory", "evidence_type": "theoretical_derivation", "confidence": "established"},
+      "surface_forms": ["If X and Y are independent, Cov(X,Y)=0 (given finite second moments)."],
+      "notes": "STRESS TEST (single worst break found): 'CovarianceIsZero(X,Y)' is a MADE-UP function name standing in for the full proposition 'Covariance(X,Y) = 0', because v0.1 cannot nest a real EQUALS proposition as the consequent of an IMPLIES proposition -- there is no recursive Proposition-as-Term support at all. Any real implementation needs this. The converse (Cov=0 implies independence) is FALSE in general -- another clean directional-entailment test, layered on top of the nesting problem. See STRESS_TEST.md finding 6 (same root cause as KIR-016)."
+    },
+    {
+      "id": "KIR-022",
+      "predicate": "HOLDS",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "Guarantees", "args": [{"kind": "constant", "value": "TCP"}]}},
+        {"role": "value", "term": {"kind": "constant", "value": "ordered_byte_stream"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "TCP/IP protocol specification (RFC 793 lineage)", "evidence_type": "definitional", "confidence": "established"},
+      "surface_forms": ["TCP provides an ordered byte stream."],
+      "notes": "STRESS TEST (contrast with KIR-013/014): Guarantees(TCP) looks like the same 'HOLDS(FunctionalRole(subject), value)' shape as PrimaryMechanism(BatchNorm), but it is NOT single-valued -- a protocol guarantees MANY properties simultaneously (ordering, byte-stream semantics, congestion control...). The 'declare functional -> auto-derive CONTRADICTS' trick from KIR-013/014 does NOT generalize here: two different HOLDS(Guarantees(TCP), P) atoms with different P are NOT automatically contradictory. v0.1 has no way to mark a role SET-VALUED vs FUNCTIONAL. See STRESS_TEST.md finding 10."
+    },
+    {
+      "id": "KIR-023",
+      "predicate": "HOLDS",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "Guarantees", "args": [{"kind": "constant", "value": "TCP"}]}},
+        {"role": "value", "term": {"kind": "constant", "value": "message_boundaries"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": {},
+      "polarity": "assert",
+      "modality": "generic",
+      "provenance": {"source": "common misconception", "evidence_type": "textbook_consensus", "confidence": "contested"},
+      "surface_forms": ["TCP preserves application message boundaries."],
+      "notes": "FALSE -- TCP is a byte stream; message framing is an application-layer or SCTP-layer concern. Included to test high-lexical-similarity/low-semantic-relation (shares 'Guarantees(TCP)' subject with KIR-022, near-identical topic, unrelated actual property). ALSO exposes a second gap: provenance.confidence has no value for 'flatly false / refuted common belief' -- 'contested' and 'superseded' both wrongly imply it was ever a majority accepted view. See STRESS_TEST.md finding 11."
+    },
+    {
+      "id": "KIR-024A",
+      "predicate": "BOUNDED_ABOVE_BY",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "LocalPeculiarVelocity", "args": [{"kind": "variable", "name": "o"}]}},
+        {"role": "bound", "term": {"kind": "constant", "value": "c", "unit": "speed_of_light"}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "o", "type": "MassiveObject"}],
+      "context": {"spatial_domain": "locally_inertial_frame"},
+      "polarity": "assert",
+      "modality": "necessary",
+      "provenance": {"source": "special relativity", "evidence_type": "theoretical_derivation", "confidence": "established"},
+      "surface_forms": ["No massive object locally accelerates through the speed of light."]
+    },
+    {
+      "id": "KIR-024B",
+      "predicate": "BOUNDED_ABOVE_BY",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "function", "name": "CosmologicalRecessionRate", "args": [{"kind": "variable", "name": "g"}]}},
+        {"role": "bound", "term": {"kind": "constant", "value": "c", "unit": "speed_of_light"}}
+      ],
+      "direction": null,
+      "quantification": [{"quantifier": "exists", "variable": "g", "type": "DistantGalaxy"}],
+      "context": {"spatial_domain": "cosmological_metric_expansion"},
+      "polarity": "negate",
+      "modality": "possible",
+      "provenance": {"source": "FLRW cosmology / metric expansion of space", "evidence_type": "theoretical_derivation", "confidence": "established"},
+      "surface_forms": ["Distant galaxies can recede faster than light due to cosmic expansion."],
+      "notes": "STRESS TEST (deepest finding): KIR-024A and KIR-024B use DIFFERENT function symbols (LocalPeculiarVelocity vs CosmologicalRecessionRate) for what natural language calls 'velocity' in both. This is NOT a context-disambiguation problem solvable by adding a context field to one shared Velocity(x) symbol the way water/dropout/attention were -- it requires SYMBOL RESOLUTION (picking the right formal quantity) at compile time, before context-matching is even relevant. A compiler that naively mapped both onto one shared symbol and tried to reconcile via context would either invent a fake regime split with no physical referent, or fail to unify them and miss that these are genuinely COMPATIBLE. See STRESS_TEST.md finding 12 -- arguably the single most important finding in this batch, because it shows the context-reconciliation strategy that worked for every earlier 'apparent contradiction' case has a real scope limit."
+    }
+  ]
+}

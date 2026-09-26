@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kir-v0.1",
+  "title": "K-IR v0.1 Proposition",
+  "description": "Formal schema for a single canonical K-IR proposition atom, derived directly from failure cases already found in the physics and ML/AI benchmarks (causal-kg-benchmark and ml-ai-dataset/benchmark). Deliberately does NOT include GENERALIZES_METHOD, COMPOSES_TO, causal-edge types, or an ontology beyond what a handful of examples force -- per the decision to derive the relation algebra from real failures, not design it upfront. See STRESS_TEST.md for where this schema already breaks on the 12 hand-compiled examples.",
+  "type": "object",
+  "required": ["id", "predicate", "arguments", "quantification", "context", "polarity", "modality", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string"},
+
+    "predicate": {
+      "type": "string",
+      "description": "Symbolic relation name. Deliberately a small, fixed core rather than one predicate per concept: MONOTONIC (paired with 'direction'), EQUALS (for defining/algebraic identities), SUBTYPE_OF (ontology), IMPLIES_STATE (state x -> state y, e.g. Boiling), DISJOINT (two types/regimes cannot co-occur), MASKS (for dropout/dropconnect-style zeroing mechanisms), HOLDS (generic fact holding under context, catch-all for claims that don't fit the others -- expected to be the first thing that needs splitting once more examples arrive)."
+    },
+
+    "arguments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["role", "term"],
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "e.g. 'input', 'output', 'subject', 'object', 'target'. Which argument slot of `predicate` this fills."
+          },
+          "term": {"$ref": "#/$defs/Term"}
+        }
+      }
+    },
+
+    "direction": {
+      "type": ["string", "null"],
+      "enum": ["positive", "negative", null],
+      "description": "Only meaningful when predicate=MONOTONIC. A property of the RELATION (increasing vs decreasing), not of the whole proposition's truth value -- kept separate from `polarity` for exactly that reason."
+    },
+
+    "quantification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["quantifier", "variable", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "quantifier": {"type": "string", "enum": ["forall", "exists"]},
+          "variable": {"type": "string"},
+          "type": {
+            "type": "string",
+            "description": "The type the variable ranges over, e.g. 'Copper', 'Metal', 'Water'. This is where specialization/generalization structurally lives (Copper vs Metal), NOT in context.entity_type -- see STRESS_TEST.md item 1 for why this split is already shaky."
+          }
+        }
+      }
+    },
+
+    "context": {"$ref": "#/$defs/Context"},
+
+    "polarity": {
+      "type": "string",
+      "enum": ["assert", "negate"],
+      "description": "Whether the proposition as a whole is being asserted or its negation is. Kept separate from `direction` (which is about the relation's shape, e.g. increasing vs decreasing) and from `modality` (which is about how strongly/universally it's being asserted)."
+    },
+
+    "modality": {
+      "type": "string",
+      "enum": ["universal", "generic", "possible", "typical", "necessary"],
+      "description": "universal = no exceptions permitted by construction; generic/typical = true of ordinary/unexceptional members of the quantified type, admits named exceptions (e.g. 'metals expand when heated' is generic -- Invar is a real exception); possible = can occur, not claimed to always occur; necessary = reserved for logical/mathematical necessity (definitional identities like Ohm's law within its stated regime)."
+    },
+
+    "provenance": {"$ref": "#/$defs/Provenance"},
+
+    "surface_forms": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Natural-language / equation / code paraphrases that compile to this atom. Optional but expected in practice for canonicalization testing."
+    },
+
+    "notes": {
+      "type": "string",
+      "description": "Known simplifications or caveats, same convention as the physics/ML benchmarks' scope_note/notes fields."
+    }
+  },
+
+  "$defs": {
+    "Term": {
+      "description": "A first-order term: a variable, a constant, or a function applied to terms.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "name"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {"const": "variable"},
+            "name": {"type": "string"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "value"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {"const": "constant"},
+            "value": {"type": ["string", "number"]},
+            "unit": {"type": "string"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "name", "args"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {"const": "function"},
+            "name": {"type": "string"},
+            "args": {"type": "array", "items": {"$ref": "#/$defs/Term"}}
+          }
+        }
+      ]
+    },
+
+    "ValueDomainConstraint": {
+      "type": "object",
+      "required": ["term"],
+      "additionalProperties": false,
+      "properties": {
+        "term": {"$ref": "#/$defs/Term"},
+        "min": {"type": ["number", "string", "null"]},
+        "max": {"type": ["number", "string", "null"]},
+        "min_inclusive": {"type": "boolean", "default": true},
+        "max_inclusive": {"type": "boolean", "default": false},
+        "unit": {"type": "string"}
+      }
+    },
+
+    "Context": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Structured conditions under which the proposition holds. CRITICAL RULE (derived from the BatchNorm ORIG/REVISED case): context must only encode conditions in the WORLD the proposition is about (physical regime, training/inference phase, value ranges). It must NEVER encode when a claim was published, which paper made it, or the state of scientific consensus at a point in time -- that belongs in `provenance`, not `context`. Conflating the two turns a genuine contradiction between two claimed mechanisms into a fake COMPATIBLE-via-different-era split, which is exactly the failure mode this benchmark's BN_ORIG/BN_REVISED pair exists to catch.",
+      "properties": {
+        "entity_type": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Additional type/category restrictions beyond the quantified variable's own type. Overlaps with quantification[].type in ways not yet resolved -- see STRESS_TEST.md item 1."
+        },
+        "regime": {"type": ["string", "null"], "description": "e.g. 'metallic_conduction', 'semiconducting_NTC', 'ordinary_positive_expansion'."},
+        "phase": {"type": ["string", "null"], "description": "Discrete lifecycle/state category, e.g. 'training', 'inference', 'solid', 'liquid'."},
+        "spatial_domain": {"type": ["string", "null"]},
+        "temporal_domain": {
+          "type": ["string", "null"],
+          "description": "Genuine real-world time/sequencing (e.g. 'before ignition'), NEVER publication chronology or belief-revision history. See Context-level description."
+        },
+        "value_domain": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/ValueDomainConstraint"},
+          "description": "Numeric/ordinal range constraints on a term appearing in the proposition, e.g. Temperature(x) in [4, boiling_point(x))."
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Free-text background conditions not otherwise structured, e.g. 'constant_pressure', 'no_phase_transition', 'fixed_mass'. Expected to be the pressure-release valve for everything the structured fields above don't capture -- see STRESS_TEST.md item 4."
+        }
+      }
+    },
+
+    "Provenance": {
+      "type": "object",
+      "required": ["source"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {"type": "string", "description": "Citation, e.g. 'Ioffe & Szegedy 2015'."},
+        "year": {"type": ["integer", "null"]},
+        "evidence_type": {
+          "type": "string",
+          "enum": ["theoretical_derivation", "empirical_experiment", "textbook_consensus", "definitional", "superseded_hypothesis"]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["established", "contested", "superseded", "hypothesis"]
+        }
+      }
+    }
+  }
+}
