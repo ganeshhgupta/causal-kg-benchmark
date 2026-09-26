@@ -1,0 +1,18 @@
+SOURCE DOCUMENTS (abstracts retrieved verbatim from Europe PMC, tags stripped).
+A behavioural-science retraction chain.
+
+=== PMID 22927408 | 2012 | doi:10.1073/pnas.1209746109
+Shu LL, Mazar N, Gino F, Ariely D, Bazerman MH.
+Signing at the beginning makes ethics salient and decreases dishonest self-reports in comparison to signing at the end.
+Many written forms required by businesses and governments rely on honest reporting. Proof of honest intent is typically provided through signature at the end of, e.g., tax returns or insurance policy forms. Still, people sometimes cheat to advance their financial self-interests-at great costs to society. We test an easy-to-implement method to discourage dishonesty: signing at the beginning rather than at the end of a self-report, thereby reversing the order of the current practice. Using laboratory and field experiments, we find that signing before-rather than after-the opportunity to cheat makes ethics salient when they are needed most and significantly reduces dishonesty.
+
+=== PMID 32179683 | 2020 | doi:10.1073/pnas.1911695117
+Kristal AS, Whillans AV, Bazerman MH, Gino F, Shu LL, Mazar N, Ariely D.
+Signing at the beginning versus at the end does not decrease dishonesty.
+Honest reporting is essential for society to function well. However, people frequently lie when asked to provide information, such as misrepresenting their income to save money on taxes. A landmark finding published in PNAS [L. L. Shu, N. Mazar, F. Gino, D. Ariely, M. H. Bazerman, Proc. Natl. Acad. Sci. U.S.A. 109, 15197-15200 (2012)] provided evidence for a simple way of encouraging honest reporting: asking people to sign a veracity statement at the beginning instead of at the end of a self-report form. Since this finding was published, various government agencies have adopted this practice. However, in this project, we failed to replicate this result. Across five conceptual replications (n = 4,559) and one highly powered, preregistered, direct replication (n = 1,235) conducted with the authors of the original paper, we observed no effect of signing first on honest reporting. Given the policy applications of this result, it is important to update the scientific record regarding the veracity of these results.
+
+=== PMID 34518237 | 2021 | doi:10.1073/pnas.2115397118
+(no author string)
+Retraction for Shu et al., Signing at the beginning makes ethics salient and decreases dishonest self-reports in comparison to signing at the end.
+(no abstract text; this is a retraction notice)
+

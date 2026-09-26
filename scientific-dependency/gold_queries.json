@@ -110,6 +110,37 @@
       },
       "notes": "The magnitude gap appears here INDEPENDENTLY of the PONV chain: Bolland's finding is about effect size ('greatly exceed'), which K-IR v0.3 cannot represent. Two unrelated domains hitting the same gap is evidence it is systemic rather than incidental.",
       "inference_caveat": "THE PER-DRUG LABELS REST ON AN INFERENCE, not an enumerated trial list. These labels were previously WITHHELD because it was unverified which of Iwamoto's 7 pooled RCTs were Sato's, and that specific fact is STILL unverified: Grey et al. 2018 (PMID 30133693) addresses it but is not open access. They are labelled now on two grounds that do not require the enumeration: (a) the meta-analysis was retracted in full via PMID 28376663, so none of its pooled claims stand as published findings; and (b) Bolland 2016's 'regardless of intervention' shows the implausibility is drug-independent, so it cannot be that one drug's evidence is sound while the others' is not. If a future reader obtains the trial-by-trial attribution and finds that some pooled trials were by other authors, the three LOST_SUPPORT labels are what should be rechecked first."
+    },
+    {
+      "id": "Q-HONESTY-PLEDGE",
+      "graph": "corpus/honesty-pledge.json",
+      "question": "The Shu et al. 2012 signing-first experiments were retracted. Which claims lose support, which are refuted, and which survive?",
+      "retract_independence_group": "SHU-2012",
+      "depth": 2,
+      "preregistered": "THESE LABELS ARE COMMITTED BEFORE ANY LLM BASELINE IS RUN ON THIS CHAIN. The cycle 6-8 margins were invalidated because gold was corrected after seeing baseline answers, three times. Here the git history fixes the labels first, so the subsequent measurement is a single shot: whatever it returns is the result, and any later disagreement is adjudicated as a finding rather than folded into the number.",
+      "gold_label_source": "Kristal AS et al., 'Signing at the beginning versus at the end does not decrease dishonesty', PNAS 2020, doi:10.1073/pnas.1911695117, PMID 32179683, verbatim: 'Across five conceptual replications (n = 4,559) and one highly powered, preregistered, direct replication (n = 1,235) conducted with the authors of the original paper, we observed no effect of signing first on honest reporting.' Retraction of the original: PMID 34518237.",
+      "expected": {
+        "P-SIGN-FIRST-REDUCES": {
+          "class": "RESOLVED_INCONSISTENCY",
+          "after": "REFUTED",
+          "justification": "REFUTED, not merely unsupported. Kristal 2020 is an independent, highly powered, preregistered replication programme that ran the experiment and found no effect. That is empirical evidence about the world, unlike the Sato chain where only a statistical integrity analysis existed and UNRESOLVED was correct. This chain exists precisely to test that distinction in the positive direction."
+        },
+        "P-ETHICS-SALIENCE": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "THE TRAP. Kristal measured honest reporting, not ethical salience, so no independent evidence bears on the MECHANISM claim. A system that collapses mechanism into outcome will wrongly answer REFUTED here."
+        },
+        "P-POLICY-WARRANTED": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "Depth 2, no evidence of its own. Its support was inherited through D-POLICY from a premise that no longer holds, so the derivation stops carrying warrant. UNRESOLVED rather than REFUTED because nothing argues the adoption is harmful, only that its basis is gone."
+        },
+        "P-NO-EFFECT": {
+          "class": "STILL_SUPPORTED",
+          "after": "SUPPORTED",
+          "justification": "The survivor. Kristal's own null finding rests on non-retracted evidence, so retracting Shu must leave it untouched. Present so the chain can catch a false collapse as well as a false survival."
+        }
+      }
     }
   ],
   "pending": [],

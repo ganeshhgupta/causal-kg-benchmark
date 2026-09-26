@@ -1,0 +1,84 @@
+{
+  "_comment": "REAL DATA, depth 2, THIRD DOMAIN (behavioural science / experimental economics). Built as a PRE-REGISTERED test: this corpus and its gold labels are committed BEFORE any LLM baseline is run on them, so the resulting margin cannot be the product of iterating until the number is favourable, which is what invalidated the cycle 6-8 measurements. Sources, all verified via Europe PMC. (1) Shu LL, Mazar N, Gino F, Ariely D, Bazerman MH, 'Signing at the beginning makes ethics salient and decreases dishonest self-reports in comparison to signing at the end', PNAS 2012;109:15197-15200, doi:10.1073/pnas.1209746109, PMID 22927408. RETRACTED 2021: notice PMID 34518237, doi:10.1073/pnas.2115397118. (2) Kristal AS, Whillans AV, Bazerman MH, Gino F, Shu LL, Mazar N, Ariely D, 'Signing at the beginning versus at the end does not decrease dishonesty', PNAS 2020, doi:10.1073/pnas.1911695117, PMID 32179683, verbatim: 'Across five conceptual replications (n = 4,559) and one highly powered, preregistered, direct replication (n = 1,235) conducted with the authors of the original paper, we observed no effect of signing first on honest reporting.' WHY THIS CHAIN: it is the first corpus that can distinguish the cycle-8 principle in the POSITIVE direction. Sato had only an integrity analysis, so its claims collapse to UNRESOLVED. Here there is an independent, preregistered, highly powered replication failure, which is genuine empirical evidence about the world and therefore REFUTES rather than merely unsupports. Prediction recorded before encoding: zero new schema fields needed.",
+  "graph_version": "honesty-pledge-1",
+
+  "symbols": [
+    {"id": "R-REDUCES", "label": "REDUCES", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-MAKES-SALIENT", "label": "MAKES_SALIENT", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-WARRANTS", "label": "WARRANTS", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-HAS-NO-EFFECT-ON", "label": "HAS_NO_EFFECT_ON", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+
+    {"id": "C-SIGN-FIRST", "label": "signing a veracity statement at the beginning of a form", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-SIGN-LAST", "label": "signing a veracity statement at the end of a form", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-DISHONESTY", "label": "dishonest self-reporting", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-ETHICS-SALIENCE", "label": "salience of ethical standards at the moment of reporting", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-SIGNING-ORDER", "label": "position of the signature relative to the opportunity to cheat", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-HONEST-REPORTING", "label": "honest reporting", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-AGENCY-ADOPTION", "label": "adoption of signing-first by government agencies", "kind": "CONCEPT", "resolution_status": "RESOLVED"}
+  ],
+
+  "contexts": [],
+
+  "propositions": [
+    {
+      "id": "P-SIGN-FIRST-REDUCES",
+      "predicate": "R-REDUCES",
+      "arguments": [{"role": "intervention", "term": {"kind": "symbol_ref", "symbol_ref": "C-SIGN-FIRST"}}, {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-DISHONESTY"}}],
+      "polarity": "assert", "modality": "generic",
+      "surface_forms": ["Signing a veracity statement at the beginning rather than the end of a self-report form significantly reduces dishonesty."],
+      "notes": "The headline claim. Supported only by the retracted Shu 2012 experiments, and independently REFUTED by Kristal 2020's preregistered replication failure. This is the discriminating case for the cycle-8 principle: unlike the Sato claims, where only an integrity analysis existed and the right answer was UNRESOLVED, here a different research effort actually ran the experiment and found nothing, which is evidence about the world."
+    },
+    {
+      "id": "P-ETHICS-SALIENCE",
+      "predicate": "R-MAKES-SALIENT",
+      "arguments": [{"role": "intervention", "term": {"kind": "symbol_ref", "symbol_ref": "C-SIGN-FIRST"}}, {"role": "target", "term": {"kind": "symbol_ref", "symbol_ref": "C-ETHICS-SALIENCE"}}],
+      "polarity": "assert", "modality": "generic",
+      "surface_forms": ["Signing before rather than after the opportunity to cheat makes ethics salient when they are needed most."],
+      "notes": "The MECHANISM claim, deliberately separated from the outcome claim. Kristal measured honest reporting, not ethical salience, so nothing independent bears on this. Predicted UNRESOLVED, and it is the trap in this corpus: a system that collapses mechanism into outcome will wrongly mark it REFUTED."
+    },
+    {
+      "id": "P-POLICY-WARRANTED",
+      "predicate": "R-WARRANTS",
+      "arguments": [{"role": "basis", "term": {"kind": "symbol_ref", "symbol_ref": "C-SIGN-FIRST"}}, {"role": "practice", "term": {"kind": "symbol_ref", "symbol_ref": "C-AGENCY-ADOPTION"}}],
+      "polarity": "assert", "modality": "generic",
+      "surface_forms": ["The adoption of signing-first by government agencies is warranted by the evidence."],
+      "notes": "DEPTH 2, derived from P-SIGN-FIRST-REDUCES via D-POLICY. Kristal notes agencies adopted the practice and that updating the record matters 'given the policy applications'. Has no evidence of its own, so its status is entirely inherited through the derivation."
+    },
+    {
+      "id": "P-NO-EFFECT",
+      "predicate": "R-HAS-NO-EFFECT-ON",
+      "arguments": [{"role": "factor", "term": {"kind": "symbol_ref", "symbol_ref": "C-SIGNING-ORDER"}}, {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-HONEST-REPORTING"}}],
+      "polarity": "assert", "modality": "generic",
+      "surface_forms": ["Signing order has no effect on honest reporting."],
+      "notes": "THE SURVIVOR. Kristal's own finding, resting on non-retracted evidence, so retracting Shu must leave it untouched. Included so the corpus can catch a false collapse, not only a false survival."
+    }
+  ],
+
+  "rules": [],
+
+  "derivations": [
+    {
+      "id": "D-POLICY",
+      "rule_id": null,
+      "premises": ["P-SIGN-FIRST-REDUCES"],
+      "conclusion": "P-POLICY-WARRANTED",
+      "relation": "DEFEASIBLY_SUPPORTS",
+      "validity": "UNVERIFIED",
+      "notes": "Policy recommendation from an empirical effect. validity concerns only the step; whether it carries warrant is computed from whether its premise is supported."
+    }
+  ],
+
+  "assertions": [
+    {"id": "A-SHU", "proposition_id": "P-SIGN-FIRST-REDUCES", "source": "Shu et al. 2012, PNAS (PMID 22927408), retracted 2021 (PMID 34518237)", "year": 2012, "stance": "supports", "status": "retracted"},
+    {"id": "A-SHU-MECH", "proposition_id": "P-ETHICS-SALIENCE", "source": "Shu et al. 2012, PNAS (PMID 22927408), retracted 2021", "year": 2012, "stance": "supports", "status": "retracted"},
+    {"id": "A-KRISTAL", "proposition_id": "P-SIGN-FIRST-REDUCES", "source": "Kristal et al. 2020, PNAS (PMID 32179683)", "year": 2020, "stance": "refutes", "status": "active"},
+    {"id": "A-KRISTAL-OWN", "proposition_id": "P-NO-EFFECT", "source": "Kristal et al. 2020, PNAS (PMID 32179683)", "year": 2020, "stance": "supports", "status": "active"}
+  ],
+
+  "evidence": [
+    {"id": "EV-SHU-EXPERIMENTS", "proposition_id": "P-SIGN-FIRST-REDUCES", "kind": "experiment", "stance": "supports", "status": "active", "source": "laboratory and field experiments reported by Shu et al. 2012, subsequently retracted", "independence_group": "SHU-2012"},
+    {"id": "EV-SHU-MECHANISM", "proposition_id": "P-ETHICS-SALIENCE", "kind": "experiment", "stance": "supports", "status": "active", "source": "laboratory experiments reported by Shu et al. 2012, subsequently retracted", "independence_group": "SHU-2012"},
+    {"id": "EV-KRISTAL-REPLICATION", "proposition_id": "P-SIGN-FIRST-REDUCES", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Kristal et al. 2020: five conceptual replications (n=4,559) and one highly powered preregistered direct replication (n=1,235) observed no effect of signing first", "independence_group": "KRISTAL-2020", "notes": "Genuine independent empirical evidence about the world, not an integrity analysis. This is what licenses REFUTED here where the Sato chain only licensed UNRESOLVED."},
+    {"id": "EV-KRISTAL-NULL", "proposition_id": "P-NO-EFFECT", "kind": "experiment", "stance": "supports", "status": "active", "source": "Kristal et al. 2020 replication programme", "independence_group": "KRISTAL-2020"}
+  ]
+}
