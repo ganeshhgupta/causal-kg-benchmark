@@ -1,0 +1,72 @@
+{
+  "_comment": "STRUCTURAL FIXTURE, NOT A REAL CORPUS. Hand-built K-IR v0.3 graph whose only job is to exercise every outcome class the retraction reasoner must distinguish, including a depth-3 chain, redundant support, and a derivation cycle. Real papers live in ../corpus/ once the corpus scout lands. Claim text here is deliberately generic so nobody mistakes it for extracted data.",
+  "graph_version": "fixture-1",
+
+  "symbols": [
+    {"id": "R-CAUSES", "label": "CAUSES", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-HOLDS", "label": "HOLDS", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": null},
+    {"id": "C-A", "label": "mechanism A", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-B", "label": "outcome B", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-C", "label": "downstream effect C", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-D", "label": "clinical implication D", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-E", "label": "unrelated finding E", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-F", "label": "disputed finding F", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-G", "label": "never-tested conjecture G", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-H", "label": "circular claim H", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-I", "label": "circular claim I", "kind": "CONCEPT", "resolution_status": "RESOLVED"}
+  ],
+
+  "contexts": [],
+
+  "propositions": [
+    {"id": "P-ROOT", "predicate": "R-CAUSES", "arguments": [{"role": "cause", "term": {"kind": "symbol_ref", "symbol_ref": "C-A"}}, {"role": "effect", "term": {"kind": "symbol_ref", "symbol_ref": "C-B"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Mechanism A causes outcome B."], "notes": "The retracted paper's headline claim. Sole ground support is EV-ROOT."},
+    {"id": "P-MID", "predicate": "R-CAUSES", "arguments": [{"role": "cause", "term": {"kind": "symbol_ref", "symbol_ref": "C-B"}}, {"role": "effect", "term": {"kind": "symbol_ref", "symbol_ref": "C-C"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Outcome B produces downstream effect C."], "notes": "Depth 2. Derived from P-ROOT only."},
+    {"id": "P-LEAF", "predicate": "R-HOLDS", "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-D"}}, {"role": "value", "term": {"kind": "literal", "value": "warranted"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Clinical implication D is warranted."], "notes": "Depth 3. This is the case v0.2 could not handle: its collapse requires two hops of propagation."},
+    {"id": "P-REDUNDANT", "predicate": "R-HOLDS", "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-C"}}, {"role": "value", "term": {"kind": "literal", "value": "observed"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Downstream effect C is observed."], "notes": "Depends on P-ROOT via D-REDUNDANT, but ALSO has its own independent replication evidence. Must survive the retraction while still reporting that it lost one supporting path."},
+    {"id": "P-UNRELATED", "predicate": "R-HOLDS", "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-E"}}, {"role": "value", "term": {"kind": "literal", "value": "observed"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Unrelated finding E is observed."]},
+    {"id": "P-REFUTED", "predicate": "R-HOLDS", "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-F"}}, {"role": "value", "term": {"kind": "literal", "value": "observed"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Disputed finding F is observed."]},
+    {"id": "P-UNTESTED", "predicate": "R-HOLDS", "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-G"}}, {"role": "value", "term": {"kind": "literal", "value": "true"}}], "polarity": "assert", "modality": "possible", "surface_forms": ["Conjecture G holds."], "notes": "No evidence either way. Must be UNRESOLVED both before and after, and must never be read as false."},
+    {"id": "P-CYCLE-1", "predicate": "R-HOLDS", "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-H"}}, {"role": "value", "term": {"kind": "literal", "value": "true"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Circular claim H holds."]},
+    {"id": "P-CYCLE-2", "predicate": "R-HOLDS", "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-I"}}, {"role": "value", "term": {"kind": "literal", "value": "true"}}], "polarity": "assert", "modality": "generic", "surface_forms": ["Circular claim I holds."], "notes": "P-CYCLE-1 and P-CYCLE-2 derive from each other with no ground evidence anywhere. A least fixpoint gives UNRESOLVED for both, which is correct. A naive graph walk would either loop forever or mutually justify them."}
+  ],
+
+  "rules": [
+    {
+      "id": "RULE-TRANSITIVE-CAUSE",
+      "name": "causal chaining",
+      "variables": [{"name": "x", "type": "C-A"}, {"name": "y", "type": "C-B"}, {"name": "z", "type": "C-C"}],
+      "premise_patterns": [
+        {"predicate": "R-CAUSES", "arguments": [{"role": "cause", "term": {"kind": "variable", "name": "x"}}, {"role": "effect", "term": {"kind": "variable", "name": "y"}}]},
+        {"predicate": "R-CAUSES", "arguments": [{"role": "cause", "term": {"kind": "variable", "name": "y"}}, {"role": "effect", "term": {"kind": "variable", "name": "z"}}]}
+      ],
+      "conclusion_pattern": {"predicate": "R-CAUSES", "arguments": [{"role": "cause", "term": {"kind": "variable", "name": "x"}}, {"role": "effect", "term": {"kind": "variable", "name": "z"}}]},
+      "relation": "DEFEASIBLY_SUPPORTS",
+      "rule_name": "CausalChaining",
+      "theory": null,
+      "context": null,
+      "validity": "UNVERIFIED",
+      "notes": "Included as a genuine Rule (quantified, over patterns) rather than a Derivation between quantified propositions, which is the v0.2 bug this version exists to fix. validity=UNVERIFIED is honest: causal transitivity is not generally valid, it is defeasible."
+    }
+  ],
+
+  "derivations": [
+    {"id": "D-MID", "rule_id": null, "premises": ["P-ROOT"], "conclusion": "P-MID", "relation": "DEFEASIBLY_SUPPORTS", "validity": "UNVERIFIED", "notes": "validity is about this step being a reasonable instance. It stays UNVERIFIED regardless of whether P-ROOT currently has warrant -- that separation is v0.3 change (2)."},
+    {"id": "D-LEAF", "rule_id": null, "premises": ["P-MID"], "conclusion": "P-LEAF", "relation": "DEFEASIBLY_SUPPORTS", "validity": "UNVERIFIED"},
+    {"id": "D-REDUNDANT", "rule_id": null, "premises": ["P-ROOT"], "conclusion": "P-REDUNDANT", "relation": "DEFEASIBLY_SUPPORTS", "validity": "UNVERIFIED"},
+    {"id": "D-CYCLE-1", "rule_id": null, "premises": ["P-CYCLE-2"], "conclusion": "P-CYCLE-1", "relation": "ENTAILS", "validity": "UNVERIFIED"},
+    {"id": "D-CYCLE-2", "rule_id": null, "premises": ["P-CYCLE-1"], "conclusion": "P-CYCLE-2", "relation": "ENTAILS", "validity": "UNVERIFIED"}
+  ],
+
+  "assertions": [
+    {"id": "A-ROOT", "proposition_id": "P-ROOT", "source": "Paper X (later retracted)", "year": 2015, "stance": "supports", "status": "active"},
+    {"id": "A-MID", "proposition_id": "P-MID", "source": "Paper Y", "year": 2018, "stance": "supports", "status": "active"},
+    {"id": "A-LEAF", "proposition_id": "P-LEAF", "source": "Review Z", "year": 2021, "stance": "supports", "status": "active"}
+  ],
+
+  "evidence": [
+    {"id": "EV-ROOT", "proposition_id": "P-ROOT", "kind": "experiment", "stance": "supports", "status": "active", "source": "Paper X primary experiment"},
+    {"id": "EV-REDUNDANT", "proposition_id": "P-REDUNDANT", "kind": "experiment", "stance": "supports", "status": "active", "source": "independent replication by another group", "independence_group": "REPLICATION-1"},
+    {"id": "EV-UNRELATED", "proposition_id": "P-UNRELATED", "kind": "observation", "stance": "supports", "status": "active", "source": "unrelated cohort study"},
+    {"id": "EV-REFUTED", "proposition_id": "P-REFUTED", "kind": "experiment", "stance": "refutes", "status": "active", "source": "failed replication"}
+  ]
+}

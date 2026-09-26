@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kir-v0.3",
+  "title": "K-IR v0.3",
+  "description": "MINIMAL diff from v0.2. Only changes forced by a confirmed bug in the live v0.2 examples, or required by the retraction-dependency vertical. Everything else in v0.2 is frozen. FOUR CHANGES. (1) RULE vs DERIVATION: v0.2 encoded 'differentiable implies continuous' as a Derivation between two universally quantified propositions, which literally asserted 'every real function is differentiable, therefore every real function is continuous', and then recorded the false universal as SUPPORTED with a proof attached. A Rule is a reusable quantified schema over Patterns; a Derivation is one instantiation. (2) VALIDITY vs WARRANT: v0.2 set Derivation.status=invalid when a premise lost evidence, conflating 'this inference step is unsound' with 'the premises are not currently supported'. validity now covers only the step. (3) NO DERIVED EVIDENCE: v0.2 copied derived conclusions into Evidence objects with kind=derivation_result, needing a special admissibility rule that still only handled one hop. Evidence is ground-only; support is a least fixpoint over Derivations, which handles chains of any depth and IS the retraction-propagation reasoner. (4) EpistemicStatus is a materialized view with a computed_from marker, so staleness is detectable instead of invisible. Also a REMOVAL: Symbol.parent is gone (it forced the ontology into a tree, a regression from v0.1's SUBTYPE_OF atoms); taxonomy is ordinary propositions, hence a DAG. DELIBERATELY NOT DONE, though reviewed as correct: relation signatures with functional dependencies between roles, registration of argument roles / context keys / function names, revision target paths, and content-addressed semantic identity alongside record identity. Each is right but prophylactic, and nothing in a real task has failed on them yet. See CHANGELOG.md.",
+
+  "$defs": {
+
+    "Symbol": {
+      "type": "object",
+      "description": "A concept or a relation. v0.2's `parent` field is REMOVED: taxonomy is expressed as ordinary SUBTYPE_OF propositions, so a symbol can have several supertypes and ontology becomes revisable knowledge rather than privileged structure. v0.2's UNRESOLVED_PARENT status is gone with it: 'no supertype known yet' is now the absence of a SUBTYPE_OF proposition, which cannot go stale the way a cached flag can.",
+      "required": ["id", "label", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "label": {"type": "string"},
+        "kind": {"type": "string", "enum": ["CONCEPT", "RELATION"]},
+        "resolution_status": {
+          "type": "string",
+          "enum": ["RESOLVED", "PROVISIONAL", "AMBIGUOUS"],
+          "description": "IDENTITY resolution, which is a separate question from taxonomic placement. PROVISIONAL: created on ingestion, not yet reconciled against existing symbols. AMBIGUOUS: several candidate referents."
+        },
+        "aliases": {"type": "array", "items": {"type": "string"}},
+        "ambiguous_candidates": {"type": "array", "items": {"type": "string"}},
+        "functional": {
+          "type": ["boolean", "null"],
+          "description": "kind=RELATION only. Unchanged from v0.2 and known to be too coarse: it attaches one boolean to a whole relation, so it cannot express that LOCATED_AT(person,place,time) is functional on (person,time) but not on person alone. Generalizing this to functional dependencies between roles is a reviewed, accepted, DEFERRED change, because no real task has failed on it yet. A further soundness caveat also stands unaddressed: differing filler symbols are not distinct referents until identity resolution says so, so a derived contradiction between two PROVISIONAL or aliased symbols would be unsound."
+        },
+        "provenance": {"$ref": "#/$defs/Provenance"},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "ContextConstraint": {
+      "type": "object",
+      "required": ["key", "op", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "key": {"type": "string", "description": "Still a free string, unregistered. Known gap: two compilers can emit temperature_range / temp_range / valid_temperature and all validate. Deferred until federation or a real task breaks on it."},
+        "op": {"type": "string", "enum": ["=", "!=", "in", "not_in", "<", "<=", ">", ">="]},
+        "value": {}
+      }
+    },
+    "Context": {
+      "type": "object",
+      "required": ["id", "constraints"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "constraints": {"type": "array", "items": {"$ref": "#/$defs/ContextConstraint"}, "description": "Empty array = unconditional. Unchanged from v0.2: composition semantics across context values (what may be inferred across world=fiction vs world=actual) is still undefined. A context algebra is the next thing to lift out of the benchmark layer, where pairs.json already has SAME / SUBSUMES / SUBSUMED_BY / OVERLAPS / DISJOINT determination rules."}
+      }
+    },
+
+    "Term": {
+      "oneOf": [
+        {"type": "object", "required": ["kind", "name"], "additionalProperties": false, "properties": {"kind": {"const": "variable"}, "name": {"type": "string"}}},
+        {"type": "object", "required": ["kind", "symbol_ref"], "additionalProperties": false, "properties": {"kind": {"const": "symbol_ref"}, "symbol_ref": {"type": "string"}}},
+        {"type": "object", "required": ["kind", "value"], "additionalProperties": false, "properties": {"kind": {"const": "literal"}, "value": {}}},
+        {"type": "object", "required": ["kind", "name", "args"], "additionalProperties": false, "properties": {"kind": {"const": "function"}, "name": {"type": "string"}, "args": {"type": "array", "items": {"$ref": "#/$defs/Term"}}}}
+      ]
+    },
+
+    "Pattern": {
+      "type": "object",
+      "description": "A proposition SHAPE with free variables, usable only inside a Rule. Patterns are never assertions and never carry epistemic status. Collapsing this distinction is what produced v0.2's false-universal bug.",
+      "required": ["predicate", "arguments"],
+      "additionalProperties": false,
+      "properties": {
+        "predicate": {"type": "string"},
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "term"],
+            "additionalProperties": false,
+            "properties": {"role": {"type": "string"}, "term": {"$ref": "#/$defs/Term"}}
+          }
+        },
+        "polarity": {"type": "string", "enum": ["assert", "negate"], "default": "assert"}
+      }
+    },
+
+    "Rule": {
+      "type": "object",
+      "description": "A reusable quantified inference schema: for all bindings of `variables`, if every premise_pattern holds then conclusion_pattern holds. This is forall f. (Diff(f) -> Cont(f)), which is NOT the same logical object as (forall f. Diff(f)) -> (forall f. Cont(f)).",
+      "required": ["id", "variables", "premise_patterns", "conclusion_pattern", "relation", "validity"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "name": {"type": "string"},
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type"],
+            "additionalProperties": false,
+            "properties": {"name": {"type": "string"}, "type": {"type": "string", "description": "Symbol.id of a CONCEPT."}}
+          }
+        },
+        "premise_patterns": {"type": "array", "items": {"$ref": "#/$defs/Pattern"}, "minItems": 1},
+        "conclusion_pattern": {"$ref": "#/$defs/Pattern"},
+        "relation": {"type": "string", "description": "Open vocabulary: ENTAILS, COMPOSES_TO, GENERALIZES, DEFEASIBLY_SUPPORTS. Keeps a proven theorem and an informal composition from impersonating each other."},
+        "rule_name": {"type": ["string", "null"], "description": "Justification, e.g. MaterialImplication, EmpiricalComposition."},
+        "theory": {"type": ["string", "null"], "description": "Axiom system the rule is valid under. Records the dependency; does not check proofs against it."},
+        "context": {"type": ["string", "null"]},
+        "validity": {"type": "string", "enum": ["VERIFIED", "UNVERIFIED", "INVALID"], "description": "About the SCHEMA only, never about whether some premise is currently supported."},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Derivation": {
+      "type": "object",
+      "description": "ONE INSTANTIATION of a Rule: concrete premises, concrete conclusion, and the bindings that produced them. There is deliberately NO status field meaning 'premise collapsed'. Whether this step currently carries warrant is computed from whether its premises are supported, which is the whole retraction-propagation mechanism.",
+      "required": ["id", "premises", "conclusion", "validity"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "rule_id": {"type": ["string", "null"], "description": "The Rule instantiated, or null for a one-off step with no reusable schema."},
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["variable", "term"],
+            "additionalProperties": false,
+            "properties": {"variable": {"type": "string"}, "term": {"$ref": "#/$defs/Term"}}
+          },
+          "description": "Must bind every variable its Rule declares."
+        },
+        "premises": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "conclusion": {"type": "string"},
+        "relation": {"type": ["string", "null"], "description": "Inherited from the Rule when rule_id is set; stated here for rule-less steps."},
+        "validity": {"type": "string", "enum": ["VERIFIED", "UNVERIFIED", "INVALID"]},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Proposition": {
+      "type": "object",
+      "description": "Semantic content only. Must be CLOSED: every variable bound by its own quantification. Open shapes belong in a Rule's Pattern.",
+      "required": ["id", "predicate", "arguments", "polarity"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "description": "RECORD identity, stable across revisions. A separate content-addressed semantic id is reviewed as correct but DEFERRED: it becomes forced when graphs from several authors must be merged, and nothing requires that yet."},
+        "predicate": {"type": "string", "description": "Symbol.id of kind=RELATION."},
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "term"],
+            "additionalProperties": false,
+            "properties": {"role": {"type": "string", "description": "Free string, unregistered. Known gap, deferred: nothing stops two compilers emitting requirement / required_input / input / dependency for the same role."}, "term": {"$ref": "#/$defs/Term"}}
+          }
+        },
+        "quantification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["quantifier", "variable", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "quantifier": {"type": "string", "enum": ["forall", "exists"]},
+              "variable": {"type": "string"},
+              "type": {"type": "string"}
+            }
+          }
+        },
+        "context": {"type": ["string", "null"]},
+        "polarity": {"type": "string", "enum": ["assert", "negate"]},
+        "modality": {"type": "string", "enum": ["universal", "generic", "possible", "typical", "necessary"]},
+        "surface_forms": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Provenance": {
+      "type": "object",
+      "required": ["source"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {"type": "string"},
+        "year": {"type": ["integer", "null"]},
+        "evidence_type": {"type": "string", "enum": ["theoretical_derivation", "empirical_experiment", "textbook_consensus", "definitional", "superseded_hypothesis", "ingested_unverified"]},
+        "confidence": {"type": "string", "enum": ["established", "contested", "superseded", "hypothesis", "refuted"]}
+      }
+    },
+
+    "Assertion": {
+      "type": "object",
+      "description": "'Source S claims P.' Separate from Evidence so a paper's stated conclusion and a raw experimental result never impersonate each other.",
+      "required": ["id", "proposition_id", "source", "stance", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "proposition_id": {"type": "string"},
+        "source": {"type": "string"},
+        "year": {"type": ["integer", "null"]},
+        "stance": {"type": "string", "enum": ["supports", "refutes", "neutral_report"]},
+        "status": {"type": "string", "enum": ["active", "retracted", "corrected"]},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Evidence": {
+      "type": "object",
+      "description": "GROUND evidence only. v0.2's kind=derivation_result is GONE: derived conclusions are no longer copied into Evidence objects that then sit at status=active while their basis collapses. Derived support is computed by walking Derivations.",
+      "required": ["id", "proposition_id", "kind", "stance", "status", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "proposition_id": {"type": "string"},
+        "kind": {"type": "string", "enum": ["experiment", "observation", "citation", "definitional"]},
+        "stance": {"type": "string", "enum": ["supports", "refutes"]},
+        "status": {"type": "string", "enum": ["active", "retracted", "corrected"]},
+        "source": {"type": "string"},
+        "independence_group": {"type": ["string", "null"]},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "EpistemicStatus": {
+      "type": "object",
+      "description": "A MATERIALIZED VIEW, never source of truth. Least fixpoint: P is supported if it has active ground supporting evidence, OR some non-INVALID Derivation concludes P and every premise of that Derivation is supported; dually for refuted. Being a least fixpoint over a positive definition, a cycle of derivations supports nothing, which is the correct answer. The four states are RETAINED: v0.2's dark matter case looked like the state set was too coarse, but the real defect was an imprecise proposition.",
+      "required": ["proposition_id", "status", "computed_from"],
+      "additionalProperties": false,
+      "properties": {
+        "proposition_id": {"type": "string"},
+        "status": {"type": "string", "enum": ["SUPPORTED", "REFUTED", "UNRESOLVED", "INCONSISTENT"]},
+        "computed_from": {
+          "type": "object",
+          "required": ["policy"],
+          "additionalProperties": false,
+          "properties": {
+            "policy": {"type": "string"},
+            "graph_version": {"type": ["string", "null"], "description": "A view whose graph_version trails the graph's is stale by construction."}
+          }
+        },
+        "evidence_for": {"type": "array", "items": {"type": "string"}},
+        "evidence_against": {"type": "array", "items": {"type": "string"}},
+        "derivations_supporting": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "RevisionEvent": {
+      "type": "object",
+      "description": "Append-only operation log. reassignments is unchanged from v0.2 and still cannot be deterministically replayed when a symbol occurs twice in one proposition or nested inside a function term; adding an explicit occurrence path is reviewed, accepted and deferred.",
+      "required": ["id", "operation", "target_kind", "old_ids", "new_ids", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "operation": {"type": "string", "enum": ["CREATE", "MERGE", "SPLIT", "SUPERSEDE", "RETRACT", "CORRECT", "REFINE_CONTEXT", "RETYPE_RELATION", "INVALIDATE_RULE", "RESTORE"]},
+        "target_kind": {"type": "string", "enum": ["symbol", "proposition", "assertion", "evidence", "rule", "derivation"]},
+        "old_ids": {"type": "array", "items": {"type": "string"}},
+        "new_ids": {"type": "array", "items": {"type": "string"}},
+        "reason": {"type": "string"},
+        "reassignments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["proposition_id", "reassigned_to"],
+            "additionalProperties": false,
+            "properties": {"proposition_id": {"type": "string"}, "reassigned_to": {"type": "string"}}
+          }
+        },
+        "provenance": {"$ref": "#/$defs/Provenance"},
+        "notes": {"type": "string"}
+      }
+    }
+  },
+
+  "type": "object",
+  "required": ["symbols", "contexts", "propositions", "assertions", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "_comment": {"type": "string"},
+    "graph_version": {"type": "string"},
+    "symbols": {"type": "array", "items": {"$ref": "#/$defs/Symbol"}},
+    "contexts": {"type": "array", "items": {"$ref": "#/$defs/Context"}},
+    "propositions": {"type": "array", "items": {"$ref": "#/$defs/Proposition"}},
+    "rules": {"type": "array", "items": {"$ref": "#/$defs/Rule"}},
+    "derivations": {"type": "array", "items": {"$ref": "#/$defs/Derivation"}},
+    "assertions": {"type": "array", "items": {"$ref": "#/$defs/Assertion"}},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/Evidence"}},
+    "epistemic_status": {"type": "array", "items": {"$ref": "#/$defs/EpistemicStatus"}},
+    "revisions": {"type": "array", "items": {"$ref": "#/$defs/RevisionEvent"}}
+  }
+}

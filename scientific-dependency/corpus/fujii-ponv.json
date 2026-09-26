@@ -1,0 +1,103 @@
+{
+  "_comment": "REAL DATA. Claims from the Fujii et al. postoperative-nausea-and-vomiting (PONV) literature, the largest retraction case on record (Yoshitaka Fujii, ~183 retractions). Every claim and effect size below is taken from Carlisle JB, 'A meta-analysis of prevention of postoperative nausea and vomiting: randomised controlled trials by Fujii et al. compared with other authors', Anaesthesia 2012;67:1076-1090, doi:10.1111/j.1365-2044.2012.07232.x, PMID 22734848, verified via Europe PMC. That paper is the gold-label source BECAUSE it separates Fujii trials from other authors' trials and states what survives exclusion, which is a published before/after at claim level. Follow-up: Kranke et al., 'Putting the record straight: granisetron's efficacy as an antiemetic post-Fujii', Anaesthesia 2012, PMID 22897144. NOTE: this chain is depth 1 (ground evidence to claim). Real multi-hop ground truth, where a retraction propagates through a meta-analysis into a clinical guideline, is the next verification target and is NOT yet encoded.",
+  "graph_version": "fujii-ponv-1",
+
+  "symbols": [
+    {"id": "R-REDUCES", "label": "REDUCES_RISK_OF", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-MORE-EFFECTIVE-THAN", "label": "MORE_EFFECTIVE_THAN", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-SYNERGISTIC", "label": "ACTS_SYNERGISTICALLY_WITH", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-INCREASES", "label": "INCREASES_RISK_OF", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+
+    {"id": "C-GRANISETRON", "label": "granisetron", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-RAMOSETRON", "label": "ramosetron", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-DROPERIDOL", "label": "droperidol", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-METOCLOPRAMIDE", "label": "metoclopramide", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-PONV", "label": "postoperative nausea and vomiting", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-RESCUE", "label": "need for rescue antiemesis", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-GRANI-MONOTHERAPY", "label": "granisetron given as sole antiemetic", "kind": "CONCEPT", "resolution_status": "RESOLVED"}
+  ],
+
+  "contexts": [
+    {"id": "CTX-VS-PLACEBO", "constraints": [{"key": "comparator", "op": "=", "value": "placebo"}]},
+    {"id": "CTX-MONOTHERAPY", "constraints": [{"key": "regimen", "op": "=", "value": "single_agent"}]}
+  ],
+
+  "propositions": [
+    {
+      "id": "P-GRANI-EFFECTIVE",
+      "predicate": "R-REDUCES",
+      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-GRANISETRON"}}, {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-PONV"}}],
+      "polarity": "assert", "modality": "generic", "context": "CTX-VS-PLACEBO",
+      "surface_forms": ["Granisetron is an effective prophylactic antiemetic for postoperative nausea and vomiting."],
+      "notes": "Carlisle found granisetron more effective in Fujii trials than others (nausea RRR 0.53, 95% CI 0.42-0.67, p=0.00021; vomiting 0.60, 0.50-0.73, p=0.00094) but the claim SURVIVES exclusion with a smaller effect. Kranke 2012 exists specifically to put this on the record post-Fujii. KNOWN REPRESENTATION GAP, flagged not patched: 'still true but the effect is much smaller' is not expressible here. The benchmark labels this STILL_SUPPORTED, which is right about the epistemic state and silent about magnitude. This is the first real task failure that earns quantity semantics."
+    },
+    {
+      "id": "P-RAMO-EFFECTIVE",
+      "predicate": "R-REDUCES",
+      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-RAMOSETRON"}}, {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-PONV"}}],
+      "polarity": "assert", "modality": "generic", "context": "CTX-VS-PLACEBO",
+      "surface_forms": ["Ramosetron is an effective prophylactic antiemetic for postoperative nausea and vomiting."],
+      "notes": "Fujii trials showed ramosetron more effective (vomiting 0.60, 0.39-0.91, p=0.02; nausea or vomiting 0.71, 0.56-0.91, p=0.006). Carlisle's conclusion is that excluding Fujii leaves the effects of granisetron AND ramosetron 'greatly reduced', not abolished. Same magnitude gap as P-GRANI-EFFECTIVE."
+    },
+    {
+      "id": "P-SYNERGISM",
+      "predicate": "R-SYNERGISTIC",
+      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-GRANISETRON"}}, {"role": "co_agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-DROPERIDOL"}}],
+      "polarity": "assert", "modality": "generic",
+      "surface_forms": ["Combining antiemetic agents produces synergistic prevention of postoperative nausea and vomiting."],
+      "notes": "THE MOST INTERESTING CASE IN THIS CORPUS. Carlisle states flatly: 'There was no synergism between antiemetics in trials by other authors.' Fujii trials implied synergism; other authors' trials show 'some evidence of antagonism'. So this proposition is INCONSISTENT before the retraction and REFUTED after it. The retraction RESOLVES a conflict instead of destroying support, which is an outcome class the original task spec did not anticipate."
+    },
+    {
+      "id": "P-DROPERIDOL-INFERIOR",
+      "predicate": "R-MORE-EFFECTIVE-THAN",
+      "arguments": [{"role": "better", "term": {"kind": "symbol_ref", "symbol_ref": "C-GRANISETRON"}}, {"role": "worse", "term": {"kind": "symbol_ref", "symbol_ref": "C-DROPERIDOL"}}],
+      "polarity": "assert", "modality": "generic",
+      "surface_forms": ["Granisetron is more effective than droperidol for preventing postoperative nausea and vomiting."],
+      "notes": "Fujii trials made droperidol look markedly worse than granisetron (nausea 2.41, 1.72-3.36, p=2.5e-7; vomiting 1.73, 1.26-2.38, p=6.4e-4). In other authors' trials, triggered rescue rates were 'not different' between droperidol, granisetron and metoclopramide. A specific null result against a claimed difference is refuting evidence for that difference, so this is also INCONSISTENT before and REFUTED after."
+    },
+    {
+      "id": "P-GRANI-ALONE-WORSE",
+      "predicate": "R-INCREASES",
+      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-GRANI-MONOTHERAPY"}}, {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-PONV"}}],
+      "polarity": "assert", "modality": "generic", "context": "CTX-MONOTHERAPY",
+      "surface_forms": ["Postoperative nausea and vomiting is more likely when granisetron is given as the sole antiemetic."],
+      "notes": "A Fujii-only artefact, and a striking one: nausea 4.20 (1.94-9.08), p=2.6e-4; vomiting 4.50 (2.55-7.97), p=2.3e-7; nausea or vomiting 5.00 (2.84-8.81), p=2.5e-8. No non-Fujii evidence bears on it either way, so it collapses to UNRESOLVED rather than REFUTED. This is the clean test that absence of support is not refutation."
+    },
+    {
+      "id": "P-GRANI-METOCLOP-RESCUE",
+      "predicate": "R-REDUCES",
+      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-METOCLOPRAMIDE"}}, {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-RESCUE"}}],
+      "polarity": "assert", "modality": "generic",
+      "surface_forms": ["Granisetron with metoclopramide reduces the need for rescue antiemesis."],
+      "notes": "Fujii-only: 0.40 (0.27-0.60), p=9.7e-6. Carlisle reports rescue rates were NOT different between agents in other authors' trials, but that null is about between-agent comparison rather than about this combination versus none, so it is not encoded as refuting this proposition. Collapses to UNRESOLVED."
+    }
+  ],
+
+  "assertions": [
+    {"id": "A-FUJII-GRANI", "proposition_id": "P-GRANI-EFFECTIVE", "source": "Fujii et al. trial series", "stance": "supports", "status": "retracted"},
+    {"id": "A-KRANKE-GRANI", "proposition_id": "P-GRANI-EFFECTIVE", "source": "Kranke et al. 2012, Anaesthesia (PMID 22897144)", "year": 2012, "stance": "supports", "status": "active"},
+    {"id": "A-FUJII-RAMO", "proposition_id": "P-RAMO-EFFECTIVE", "source": "Fujii et al. trial series", "stance": "supports", "status": "retracted"},
+    {"id": "A-FUJII-SYNERGY", "proposition_id": "P-SYNERGISM", "source": "Fujii et al. trial series", "stance": "supports", "status": "retracted"},
+    {"id": "A-CARLISLE-SYNERGY", "proposition_id": "P-SYNERGISM", "source": "Carlisle 2012, Anaesthesia (PMID 22734848)", "year": 2012, "stance": "refutes", "status": "active"},
+    {"id": "A-FUJII-DROP", "proposition_id": "P-DROPERIDOL-INFERIOR", "source": "Fujii et al. trial series", "stance": "supports", "status": "retracted"},
+    {"id": "A-CARLISLE-DROP", "proposition_id": "P-DROPERIDOL-INFERIOR", "source": "Carlisle 2012, Anaesthesia (PMID 22734848)", "year": 2012, "stance": "refutes", "status": "active"}
+  ],
+
+  "evidence": [
+    {"id": "EV-FUJII-GRANI", "proposition_id": "P-GRANI-EFFECTIVE", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials (PONV series)", "independence_group": "FUJII-SERIES", "notes": "One independence_group across the whole Fujii series: these are not independent evidence, they share an author and a data-integrity failure. The retraction query retracts the group."},
+    {"id": "EV-OTHER-GRANI", "proposition_id": "P-GRANI-EFFECTIVE", "kind": "experiment", "stance": "supports", "status": "active", "source": "trials by other authors, pooled by Carlisle 2012 and Kranke 2012", "independence_group": "NON-FUJII"},
+
+    {"id": "EV-FUJII-RAMO", "proposition_id": "P-RAMO-EFFECTIVE", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials (PONV series)", "independence_group": "FUJII-SERIES"},
+    {"id": "EV-OTHER-RAMO", "proposition_id": "P-RAMO-EFFECTIVE", "kind": "experiment", "stance": "supports", "status": "active", "source": "trials by other authors, pooled by Carlisle 2012", "independence_group": "NON-FUJII"},
+
+    {"id": "EV-FUJII-SYNERGY", "proposition_id": "P-SYNERGISM", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials (PONV series)", "independence_group": "FUJII-SERIES"},
+    {"id": "EV-OTHER-ANTAGONISM", "proposition_id": "P-SYNERGISM", "kind": "experiment", "stance": "refutes", "status": "active", "source": "trials by other authors: no synergism, some evidence of antagonism (Carlisle 2012)", "independence_group": "NON-FUJII"},
+
+    {"id": "EV-FUJII-DROP", "proposition_id": "P-DROPERIDOL-INFERIOR", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials (PONV series)", "independence_group": "FUJII-SERIES"},
+    {"id": "EV-OTHER-NODIFF", "proposition_id": "P-DROPERIDOL-INFERIOR", "kind": "experiment", "stance": "refutes", "status": "active", "source": "trials by other authors: triggered rescue rates not different between droperidol, granisetron and metoclopramide (Carlisle 2012)", "independence_group": "NON-FUJII"},
+
+    {"id": "EV-FUJII-ALONE", "proposition_id": "P-GRANI-ALONE-WORSE", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials (PONV series)", "independence_group": "FUJII-SERIES"},
+
+    {"id": "EV-FUJII-RESCUE", "proposition_id": "P-GRANI-METOCLOP-RESCUE", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials (PONV series)", "independence_group": "FUJII-SERIES"}
+  ]
+}

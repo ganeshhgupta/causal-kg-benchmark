@@ -1,0 +1,39 @@
+Carlisle JB. A meta-analysis of prevention of postoperative nausea and vomiting:
+randomised controlled trials by Fujii et al. compared with other authors.
+Anaesthesia. 2012;67:1076-1090. doi:10.1111/j.1365-2044.2012.07232.x. PMID 22734848.
+
+ABSTRACT (verbatim, retrieved from Europe PMC):
+
+The population sampling in randomised controlled trials by Fujii et al. have been
+shown to exhibit unusual distributions. This systematic review analysed the
+effectiveness of prophylactic antiemetics in trials by Fujii et al. compared with
+other authors. Granisetron was more effective in trials by Fujii et al., relative
+risk ratios (RRR (95% CI)): nausea 0.53 (0.42-0.67), p=0.00021; vomiting 0.60
+(0.50-0.73), p=0.00094. Ramosetron was also more effective in studies by Fujii et
+al.: vomiting 0.60 (0.39-0.91), p=0.02; nausea or vomiting 0.71 (0.56-0.91);
+p=0.006. In comparison with granisetron, droperidol was less effective in trials by
+Fujii et al. than others: nausea 2.41 (1.72-3.36), p=2.5x10(-7); vomiting 1.73
+(1.26-2.38), p=6.4x10(-4). Postoperative nausea and vomiting was less likely to
+trigger rescue antiemesis after granisetron and metoclopramide in studies by Fujii
+et al., 0.40 (0.27-0.60), p=9.7x10(-6). Triggered rates of rescue were not
+different in studies by others for droperidol, granisetron and metoclopramide, but
+were less common after granisetron than droperidol and metoclopramide in studies by
+Fujii et al., 0.50 (0.38-0.66), p=1.7x10(-6) and 0.47 (0.34-0.64), p=2.6x10(-6),
+respectively. There was no synergism between antiemetics in trials by other
+authors. In contrast, in studies by Fujii et al., postoperative nausea and vomiting
+was more likely if granisetron was administered alone: nausea 4.20 (1.94-9.08),
+p=2.6x10(-4); vomiting 4.50 (2.55-7.97), p=2.3x10(-7); nausea or vomiting 5.00
+(2.84-8.81), p=2.5x10(-8). Similarly, droperidol was less effective in studies by
+Fujii et al. if administered alone: vomiting 2.76 (1.25-6.11), p=0.01; nausea or
+vomiting 2.96 (1.46-6.00), p=2.7x10(-3). The conclusion is that if, as recommended,
+data with unusual distributions are removed from meta-analysis and articles by
+Fujii et al. excluded, then the antiemetic effects of granisetron and ramosetron
+are greatly reduced; further, there is no evidence of synergism between antiemetics
+and indeed, some evidence of antagonism between antiemetic agents.
+
+SUPPLEMENTARY CONTEXT (also verbatim from the follow-up paper's title/abstract):
+
+Kranke P, et al. Putting the record straight: granisetron's efficacy as an
+antiemetic 'post-Fujii'. Anaesthesia. 2012. PMID 22897144. This paper re-states
+granisetron's efficacy as a prophylactic antiemetic using only trials not authored
+by Fujii et al.

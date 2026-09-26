@@ -1,0 +1,96 @@
+{
+  "_comment": "Gold labels for retraction-propagation queries. Every label cites the published document that establishes it, because the whole reason this task is tractable is that re-analyses excluding retracted trials have already been published. A label with no such citation is not gold and must be marked pending.",
+
+  "queries": [
+    {
+      "id": "Q-FUJII-PONV",
+      "graph": "corpus/fujii-ponv.json",
+      "question": "The Fujii et al. randomised controlled trial series was retracted. Which PONV claims lose support, which survive, and which change status?",
+      "retract_independence_group": "FUJII-SERIES",
+      "gold_label_source": "Carlisle JB, Anaesthesia 2012;67:1076-1090, doi:10.1111/j.1365-2044.2012.07232.x (PMID 22734848), which pools Fujii trials separately from other authors' trials and states what survives exclusion; plus Kranke et al., Anaesthesia 2012 (PMID 22897144).",
+      "expected": {
+        "P-GRANI-EFFECTIVE": {
+          "class": "STILL_SUPPORTED",
+          "after": "SUPPORTED",
+          "justification": "Carlisle: excluding Fujii leaves the antiemetic effect 'greatly reduced' but present; Kranke 2012 exists to restate granisetron's efficacy post-Fujii.",
+          "known_gap": "Magnitude reduction is not representable in K-IR v0.3, so the label is correct about the epistemic state and silent about effect size."
+        },
+        "P-RAMO-EFFECTIVE": {
+          "class": "STILL_SUPPORTED",
+          "after": "SUPPORTED",
+          "justification": "Same Carlisle conclusion, which covers granisetron and ramosetron together.",
+          "known_gap": "Same magnitude gap."
+        },
+        "P-SYNERGISM": {
+          "class": "RESOLVED_INCONSISTENCY",
+          "after": "REFUTED",
+          "justification": "Carlisle: 'There was no synergism between antiemetics in trials by other authors', and excluding Fujii leaves 'no evidence of synergism and indeed, some evidence of antagonism'. Supported only by the retracted series while non-Fujii evidence refutes it, so retraction resolves the conflict rather than destroying support."
+        },
+        "P-DROPERIDOL-INFERIOR": {
+          "class": "RESOLVED_INCONSISTENCY",
+          "after": "REFUTED",
+          "justification": "Fujii trials made droperidol look much worse than granisetron (nausea RR 2.41); other authors found triggered rescue rates not different between agents. The null against the claimed difference survives, the positive claim does not."
+        },
+        "P-GRANI-ALONE-WORSE": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "A Fujii-only finding (nausea RR 4.20, vomiting 4.50, nausea-or-vomiting 5.00) with no non-Fujii evidence either way. Must become UNRESOLVED, not REFUTED: absence of support is not refutation."
+        },
+        "P-GRANI-METOCLOP-RESCUE": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "Fujii-only (0.40, 0.27-0.60). Carlisle's null about between-agent rescue rates does not bear on this combination-versus-none claim, so nothing refutes it."
+        }
+      }
+    },
+    {
+      "id": "Q-FUJII-COMBO-REVIEW",
+      "graph": "corpus/fujii-combination-review.json",
+      "question": "Fujii's primary trials were retracted, and his 2002 combination-antiemetic review was retracted because of them. Which of the review's claims lose support, and which are actually refuted?",
+      "retract_independence_group": "FUJII-SERIES",
+      "gold_label_source": "Retraction notice doi:10.1007/s40261-018-0634-4 (PMID 29705919): 'The Editor-in-Chief has retracted the original article because a number of studies [2-15] included in this review (cited as references 25-29, 31, 32, 47, 48, 50-54) have been retracted, specifically those included in table III, table IV, section 3 and section 4.2. This has rendered the content of the review scientifically unreliable.' The original review is PMID 29492850, doi:10.2165/00044011-200222090-00001. Refutation of the general combination principle comes from Carlisle 2012 (PMID 22734848).",
+      "depth": 2,
+      "expected": {
+        "P-DEX-ENHANCES": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "A level-1 efficacy claim resting on the retracted trials named by the notice. Nothing independent bears on it, so UNRESOLVED rather than REFUTED."
+        },
+        "P-TRAD-ADJUNCT-SUPERIOR": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "Same, and explicitly within the notice's named tables III and IV."
+        },
+        "P-MULTI-RECEPTOR-PRINCIPLE": {
+          "class": "RESOLVED_INCONSISTENCY",
+          "after": "REFUTED",
+          "justification": "The review's synthesised general principle. Its only support was the retracted trials, while Carlisle 2012 found no synergism and some antagonism in other authors' trials. So it does not merely lose support, it is refuted. DEPTH 2: reached only by walking the review's own derivation step from its constituent trial claims."
+        },
+        "P-COMBO-NOT-MORE-TOXIC": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "A SAFETY claim derived from the same retracted trials. Depth 2, via D-SAFETY-SYNTHESIS. Safety claims resting on fabricated data are the most consequential collapse class."
+        }
+      },
+      "excluded_from_gold": {
+        "P-TRAD-COMBO-LIMITED": "The retraction notice scopes the damage to table III, table IV, section 3 and section 4.2. Confirming this general class-pharmacology claim sits outside those sections requires the paywalled full text. It is encoded with independent evidence so the reasoner treats it as surviving, but that placement is an assumption and is therefore not scored."
+      }
+    }
+  ],
+
+  "pending": [
+    {
+      "id": "Q-SATO-BISPHOSPHONATE",
+      "status": "LABELS PENDING VERIFICATION",
+      "question": "The Yoshihiro Sato trials were retracted. Which claims in meta-analyses that included them lose support?",
+      "what_is_verified": "Iwamoto J, Takeda T, Matsumoto H, 'Efficacy of oral bisphosphonates for preventing hip fracture in disabled patients with neurological diseases: a meta-analysis of randomized controlled trials among the Japanese population', Curr Med Res Opin 2011;27:1141-1148, doi:10.1185/03007995.2011.570747 (PMID 21456887). Confirmed via Europe PMC to carry a 'Retraction in' link to PMID 28376663 (Statement of Retraction, 2017). It pooled 7 RCTs, all in Japanese patients: two etidronate, two alendronate, three risedronate, reporting hip-fracture relative risks of 0.16 (0.03-0.87), 0.29 (0.10-0.80) and 0.24 (0.10-0.58) respectively. A meta-analysis being retracted BECAUSE its constituent trials were retracted is the cleanest possible total-collapse case.",
+      "what_is_not_verified": "Which of the 7 pooled RCTs were Sato's, and therefore whether all three drug claims collapse or only some. Grey A, Avenell A, Gamble G, Bolland M, 'Inaccurate retraction notice for meta-analysis by Iwamoto et al.', Acta Neurol Scand 2018 (PMID 30133693, doi:10.1111/ane.12962) addresses exactly this but is not open access; Wiley returned 403 and PubMed CAPTCHA-blocked. Not guessing.",
+      "next_step": "Obtain the Grey 2018 letter or the full Statement of Retraction text, then label per drug claim."
+    }
+  ],
+
+  "notes": {
+    "depth": "Q-FUJII-PONV is depth 1: ground evidence to claim, no derivation hops. The reasoner's unbounded-depth propagation is exercised by fixtures/chain-fixture.json, not yet by real data. Real multi-hop ground truth (retraction to meta-analysis to clinical guideline) is the next acquisition target; the VITALITY study reports 1,330 retracted trials feeding 847 systematic reviews and 157 guidelines, with named chains.",
+    "calibration": "Published work on easier claim-relation labeling reports around 0.81 macro-F1. Absolute 95% targets across canonicalization, propagation and contradiction are above the state of the art. The defensible headline is a margin over LLM-only and LLM+RAG baselines, with false-merge and false-contradiction rates as hard safety gates."
+  }
+}
