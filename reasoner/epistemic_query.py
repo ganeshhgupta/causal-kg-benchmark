@@ -192,8 +192,17 @@ class Graph:
 
         Every returned step is one that actually carries warrant, which is what
         makes proof-step validity measurable rather than asserted.
+
+        Every node carries the proposition's epistemic status and, when it is
+        contested, the counter-evidence. Found by eval/proof_validity.py: the
+        engine previously returned a clean, entirely valid support-proof for a
+        claim whose status was INCONSISTENT, with nothing in the output saying
+        so. Asking "why is this true" and getting an unqualified proof of a
+        contested claim is misleading even when every step checks out, and a
+        contested PREMISE deep in a chain is worse, because the weakness is
+        invisible at the top.
         """
-        supported, _, warranted = self.solve(retracted)
+        supported, refuted, warranted = self.solve(retracted)
         if pid not in supported:
             return None
         _seen = _seen or set()
@@ -202,26 +211,43 @@ class Graph:
         _seen = _seen | {pid}
 
         retracted = retracted or set()
+        contested = pid in refuted
+        node = {
+            "proposition": pid,
+            "status": "INCONSISTENT" if contested else "SUPPORTED",
+            "contested": contested,
+        }
+        if contested:
+            node["counter_evidence"] = sorted(
+                e["id"] for e in self.evidence.values()
+                if e["proposition_id"] == pid and e["status"] == "active"
+                and e["id"] not in retracted and e["stance"] == "refutes")
+
         ground = [
             e["id"] for e in self.evidence.values()
             if e["proposition_id"] == pid and e["status"] == "active"
             and e["id"] not in retracted and e["stance"] == "supports"
         ]
         if ground:
-            return {"proposition": pid, "via": "ground_evidence", "evidence": ground}
+            return {**node, "via": "ground_evidence", "evidence": ground}
 
         for d in self.derivations.values():
             if d["conclusion"] != pid or d["id"] not in warranted:
                 continue
+            premises = [self.proof_trace(p, retracted, _seen) for p in d["premises"]]
             return {
-                "proposition": pid,
+                **node,
                 "via": "derivation",
                 "derivation": d["id"],
                 "rule": d.get("rule_id"),
                 "relation": d.get("relation"),
-                "premises": [self.proof_trace(p, retracted, _seen) for p in d["premises"]],
+                # True if this proof rests on a contested claim at any depth.
+                "rests_on_contested": any(
+                    p and (p.get("contested") or p.get("rests_on_contested"))
+                    for p in premises),
+                "premises": premises,
             }
-        return {"proposition": pid, "via": "UNKNOWN"}
+        return {**node, "via": "UNKNOWN"}
 
 
 def materialize(graph: Graph) -> list[dict]:

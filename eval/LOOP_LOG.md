@@ -145,18 +145,86 @@ strongest argument for the canonicalization stage that does not yet exist.
 
 ---
 
-## What cycle 4 needs
+## Cycle 4 (2026-09-26): measuring the targets that need no LLM
 
-Two of these need authorization and cannot be self-satisfied:
+Four stated targets were measurable without a compiler or a baseline, so they
+were measured rather than left as prose.
 
-- **Blind extraction (BLOCKED, needs a decision).** Spawning a fresh no-context
-  subagent requires tmux/WSL, not installed. A fork inherits this session's
-  context including the gold labels, so its "blind" result would be worthless.
-  The alternative is a nested `claude -p` call, which is a real billed API call.
-  Until one of those is available the compiler stage is simulated and every score
-  in this log is about the reasoner, not the pipeline.
+### Proof-chain validity and hallucinated steps
+
+`eval/proof_validity.py` walks every proof the engine returns, before and after
+retraction, over both real corpora and the fixture, and checks each step against
+the graph: does the named derivation exist, does it conclude what the step
+claims, are the trace's premises exactly the derivation's premises, does every
+cited evidence item exist and actually attach to that proposition with
+stance=supports.
+
+**First run failed at 0.857 validity.** The engine returned a completely
+well-formed support-proof for `P-SYNERGISM` while that claim's status was
+INCONSISTENT, with nothing in the output disclosing the conflict.
+
+Two things were wrong, one in the auditor and one in the engine.
+
+- *Auditor:* its rule was "only SUPPORTED claims may have proofs". Wrong.
+  INCONSISTENT means supported AND refuted, so the support side has a real proof.
+  The requirement is that the proof **disclose** the conflict, not be withheld.
+- *Engine:* a support-proof for a contested claim was indistinguishable from a
+  proof that the matter is settled. Fixed by putting `status`, `contested` and
+  `counter_evidence` on every trace node, plus `rests_on_contested`, which
+  propagates upward so a chain resting on a contested premise cannot look clean
+  at the top. Asking "why is this true" and getting an unqualified proof of a
+  disputed claim is misleading even when every step checks out.
+
+| target | measured | verdict |
+|---|---|---|
+| proof-chain validity >= 0.99 | **1.0000** (26 steps) | PASS |
+| hallucinated steps < 0.005 | **0.0000** | PASS |
+
+### Canonical claim matching and false merges
+
+`eval/canonicalization_eval.py`, on 7 real claim pairs across the two corpora:
+the genuine cross-document duplicate cycle 3 found, plus six deliberately
+tempting decoys (one drug swapped, a specific instance against the general
+principle it instantiates, the same drug in opposite directions).
+
+| matcher | F1 | false_merge_rate | gate |
+|---|---|---|---|
+| never_merge (what the pipeline does today) | 0.000 | 0.000 | PASS |
+| exact_structural | 0.000 | 0.000 | PASS |
+| lexical_overlap@0.5 | 0.000 | 0.167 | FAIL |
+| same_predicate | 0.000 | 0.500 | FAIL |
+| lexical_overlap@0.3 | 0.000 | 0.500 | FAIL |
+
+**No matcher found the real duplicate.** Every TP is zero. The genuine pair
+differs in predicate *and* in argument symbols, because it is a cross-document
+paraphrase, so structural matching cannot see it and lexical matching only
+finds decoys. `lexical_overlap@0.3` merged "PONV is more likely when granisetron
+is given alone" with "granisetron is effective" -- opposite directions, the worst
+merge available.
+
+Measured position against the targets: canonical matching F1 **0.000** against a
+required 0.95, and the only configurations passing the false-merge gate are the
+ones that never merge anything. This is the quantified case for a canonicalization
+stage, and n=7 makes it a floor to beat, not a result.
+
+---
+
+## What cycle 5 needs
+
+Two of these still need a capability this session does not have:
+
+- **Blind extraction (BLOCKED).** Spawning a fresh no-context subagent requires
+  tmux. Diagnosed on 2026-09-26: this `claude` process runs under Windows
+  MINGW64/Msys, with `TMUX` unset, tmux absent from PATH and `WSL_DISTRO_NAME`
+  unset. A WSL Ubuntu instance is running on the machine and a tmux session
+  exists inside it, but this process is not in it, so it cannot reach it. The fix
+  is to run `claude` from inside the WSL tmux session (with the repo reached via
+  `/mnt/c/...`), not from the Windows terminal. A fork is not a substitute: it
+  inherits this session's context including the gold labels, so its result would
+  not be blind. Until then the compiler stage is unmeasured and every score in
+  this log is about the reasoner, not the pipeline.
 - **LLM-only and LLM+RAG baselines (BLOCKED, same reason).** The measured margin
-  is over non-LLM methods. No claim about beating an LLM is supported yet.
+  is over non-LLM methods. No claim about beating an LLM is supported.
 
 Not blocked, just not done:
 
