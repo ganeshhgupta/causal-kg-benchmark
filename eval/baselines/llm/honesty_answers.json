@@ -1,0 +1,24 @@
+{
+  "answers": [
+    {
+      "claim_id": "P-SIGN-FIRST-REDUCES",
+      "status": "REFUTED",
+      "reasoning": "Kristal et al. 2020 ran five conceptual replications (n=4,559) plus one highly powered preregistered direct replication (n=1,235) and 'observed no effect of signing first on honest reporting', so independent data actively argue against the reduction, not merely leave it unsupported."
+    },
+    {
+      "claim_id": "P-ETHICS-SALIENCE",
+      "status": "UNRESOLVED",
+      "reasoning": "The only surviving study measured honest reporting behaviour (dishonesty rates), never ethical salience itself; with the retracted paper discarded, no source measured whether signature placement changes the accessibility of ethical standards, so the mechanism claim is untested either way."
+    },
+    {
+      "claim_id": "P-POLICY-WARRANTED",
+      "status": "REFUTED",
+      "reasoning": "Kristal et al. 2020 note that 'various government agencies have adopted this practice' and then report failure to replicate, urging that 'it is important to update the scientific record regarding the veracity of these results'; the evidentiary basis for the policy is not just gone but contradicted."
+    },
+    {
+      "claim_id": "P-NO-EFFECT",
+      "status": "SUPPORTED",
+      "reasoning": "This is precisely the Kristal et al. 2020 finding, a non-retracted paper: 'we observed no effect of signing first on honest reporting', across six studies including an adequately powered preregistered direct replication."
+    }
+  ]
+}

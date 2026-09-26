@@ -1,0 +1,26 @@
+{
+  "_comment": "PRE-REGISTERED single-shot baseline input. Gold for these claims was committed to git before this file was handed to any model. Claim statements only.",
+  "question": "For each claim, give its epistemic status AFTER discarding all experiments by the retracted author group (Shu et al. 2012). SUPPORTED, REFUTED, or UNRESOLVED.",
+  "claims": [
+    {
+      "claim_id": "P-SIGN-FIRST-REDUCES",
+      "claim": "Signing a veracity statement at the beginning rather than the end of a self-report form significantly reduces dishonesty.",
+      "retracted_author": "Shu et al. 2012"
+    },
+    {
+      "claim_id": "P-ETHICS-SALIENCE",
+      "claim": "Signing before rather than after the opportunity to cheat makes ethics salient when they are needed most.",
+      "retracted_author": "Shu et al. 2012"
+    },
+    {
+      "claim_id": "P-POLICY-WARRANTED",
+      "claim": "The adoption of signing-first by government agencies is warranted by the evidence.",
+      "retracted_author": "Shu et al. 2012"
+    },
+    {
+      "claim_id": "P-NO-EFFECT",
+      "claim": "Signing order has no effect on honest reporting.",
+      "retracted_author": "Shu et al. 2012"
+    }
+  ]
+}

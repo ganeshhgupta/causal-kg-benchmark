@@ -820,3 +820,61 @@ So the honest ledger is: every gating metric passes, and the headline margin has
 no valid measurement left, because every chain it could be measured on has now
 been iterated against. That is the correct state to be in, and the only way out
 is claims nobody has touched.
+
+---
+
+## Cycle 11 (2026-09-26): a pre-registered margin, and the reason not to trust it
+
+**The procedural fix.** Every earlier margin died of the same disease: gold was
+corrected after seeing baseline answers, three times. So this chain was
+pre-registered. Gold was committed at `01a47a0` before the baseline was given
+the claims, and `eval/baselines/prereg_eval.py` verifies that ordering against
+git rather than taking anyone's word for it, refusing to report a margin if it
+cannot confirm the answers file was absent from the gold commit's tree.
+
+**New chain, third domain.** Shu et al. 2012 PNAS (PMID 22927408, retracted
+2021) versus Kristal et al. 2020 (PMID 32179683): five conceptual replications
+(n=4,559) plus one highly powered preregistered direct replication (n=1,235),
+"we observed no effect of signing first on honest reporting". Chosen to test the
+cycle-8 principle in the POSITIVE direction: Sato had only an integrity
+analysis so UNRESOLVED was right, whereas here an independent group ran the
+experiment and found nothing, which refutes.
+
+**Result: K-IR 4/4, LLM 3/4, margin +25.0, PASS.**
+
+**Why that number should not be banked.** The single disagreement is
+`P-POLICY-WARRANTED`, and K-IR's "correct" answer is an artefact:
+
+```
+DIAGNOSTIC -- answers constrained by a known engine limitation:
+  P-POLICY-WARRANTED: derived via D-POLICY from ['P-SIGN-FIRST-REDUCES'],
+  whose premise is REFUTED. The engine cannot derive REFUTED for a conclusion,
+  so UNRESOLVED is the only answer available to it. It matches gold, but not
+  by reasoning.
+  If gold is really REFUTED: llm=1.000 kir=0.750 margin=-25.0 pts
+```
+
+The engine models support propagation and not refutation propagation, a
+limitation documented at `epistemic_query.py:30`. For a derived claim with no
+ground evidence, UNRESOLVED is the ONLY answer it can give. Gold happened to
+agree, so it scored a point without reasoning.
+
+**And the baseline is probably right again.** Its argument: the claim is
+"adoption is warranted BY THE EVIDENCE", and the surviving evidence now shows no
+effect, so the claim is false rather than merely unsupported. Kristal says so
+almost explicitly: "it is important to update the scientific record regarding
+the veracity of these results." If that reading holds, the margin is -25.0 and
+this is the fourth consecutive disagreement resolved against the hand-built
+gold.
+
+**The label is NOT being changed.** Pre-registration means the committed number
+stands; the analysis goes beside it, not into it. Changing gold now would
+destroy exactly the property this cycle was built to create.
+
+**The real finding is architectural, not numerical.** Refutation does not
+propagate through derivations, while support does. That asymmetry is wrong for
+any claim whose content is "X is warranted by Y": when Y is refuted, such a
+claim is false, not open. The engine cannot currently express that, and the
+pre-registered PASS partly rests on the gap. This is the first cycle where a
+measured win pointed at a capability gap rather than at a curation error, which
+makes it more useful than the number.
