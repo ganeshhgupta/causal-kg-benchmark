@@ -37,7 +37,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "reasoner"))
-from epistemic_query import Graph  # noqa: E402
+from epistemic_query import Graph, author_groups  # noqa: E402
 
 STOP = set("""a an the of for in on with and or to is are was were be been being
 that this these those it its as at by from not no than then so such can could
@@ -123,7 +123,7 @@ def main():
     # Retract the extracted graph's OWN Fujii group. If the compiler grouped
     # nothing, fall back to source-substring, and record that it did so.
     groups = {e.get("independence_group") for e in ex.evidence.values()} - {None}
-    fujii_groups = [g for g in groups if "fujii" in str(g).lower()]
+    fujii_groups = sorted(author_groups(groups, "fujii"))
     how = None
     if fujii_groups:
         targets = {e["id"] for e in ex.evidence.values()

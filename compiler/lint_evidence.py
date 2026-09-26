@@ -47,6 +47,27 @@ NULL_MARKERS = [
 NULL_RE = re.compile("|".join(NULL_MARKERS), re.IGNORECASE)
 
 
+def _claim_text(data: dict, prop_id: str) -> str:
+    """The claim's own wording, plus its predicate label.
+
+    Needed because the null-marker rule is otherwise proposition-blind: a graph
+    may legitimately contain a proposition that ASSERTS a negative finding
+    (\"antiemetics are antagonistic\"), and evidence supporting that claim will
+    naturally describe antagonism. Found by linting a blind LLM extraction,
+    which modelled antagonism as its own claim and tripped a false positive.
+    """
+    prop = next((p for p in data.get("propositions", []) if p["id"] == prop_id), None)
+    if not prop:
+        return ""
+    parts = list(prop.get("surface_forms") or [])
+    pred = prop.get("predicate", "")
+    parts.append(pred)
+    for s in data.get("symbols", []):
+        if s["id"] == pred:
+            parts.append(s.get("label", ""))
+    return " ".join(parts)
+
+
 def lint(data: dict) -> list[dict]:
     findings = []
     evidence = data.get("evidence", [])
@@ -57,6 +78,11 @@ def lint(data: dict) -> list[dict]:
 
     for ev in evidence:
         hit = NULL_RE.search(ev.get("source", "") + " " + (ev.get("notes") or ""))
+        # Only a mis-encoding if the negative word is NOT part of the claim
+        # itself. Evidence describing antagonism legitimately supports a claim
+        # that antagonism occurs.
+        if hit and re.search(re.escape(hit.group(0)), _claim_text(data, ev["proposition_id"]), re.I):
+            hit = None
         if hit and ev["stance"] == "supports":
             findings.append({
                 "rule": "NULL_RESULT_AS_SUPPORT",

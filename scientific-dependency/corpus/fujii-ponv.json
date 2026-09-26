@@ -14,7 +14,9 @@
     {"id": "C-METOCLOPRAMIDE", "label": "metoclopramide", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
     {"id": "C-PONV", "label": "postoperative nausea and vomiting", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
     {"id": "C-RESCUE", "label": "need for rescue antiemesis", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-GRANI-MONOTHERAPY", "label": "granisetron given as sole antiemetic", "kind": "CONCEPT", "resolution_status": "RESOLVED"}
+    {"id": "C-GRANI-MONOTHERAPY", "label": "granisetron given as sole antiemetic", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-MULTI-RECEPTOR-COMBO", "label": "antiemetic combination acting at different emetogenic receptors", "kind": "CONCEPT", "resolution_status": "RESOLVED", "notes": "Same label and referent as the symbol of the same id in corpus/fujii-combination-review.json. Shared vocabulary across corpora is deliberate: cross-corpus symbol identity is a separate problem from cross-corpus CLAIM identity, and only the latter is what canonicalization is being measured on."},
+    {"id": "C-MONOTHERAPY", "label": "single-agent antiemetic prophylaxis", "kind": "CONCEPT", "resolution_status": "RESOLVED"}
   ],
 
   "contexts": [
@@ -42,10 +44,10 @@
     {
       "id": "P-SYNERGISM",
       "predicate": "R-SYNERGISTIC",
-      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-GRANISETRON"}}, {"role": "co_agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-DROPERIDOL"}}],
+      "arguments": [{"role": "combination", "term": {"kind": "symbol_ref", "symbol_ref": "C-MULTI-RECEPTOR-COMBO"}}, {"role": "baseline", "term": {"kind": "symbol_ref", "symbol_ref": "C-MONOTHERAPY"}}],
       "polarity": "assert", "modality": "generic",
       "surface_forms": ["Combining antiemetic agents produces synergistic prevention of postoperative nausea and vomiting."],
-      "notes": "THE MOST INTERESTING CASE IN THIS CORPUS. Carlisle states flatly: 'There was no synergism between antiemetics in trials by other authors.' Fujii trials implied synergism; other authors' trials show 'some evidence of antagonism'. So this proposition is INCONSISTENT before the retraction and REFUTED after it. The retraction RESOLVES a conflict instead of destroying support, which is an outcome class the original task spec did not anticipate."
+      "notes": "THE MOST INTERESTING CASE IN THIS CORPUS. Carlisle states flatly: 'There was no synergism between antiemetics in trials by other authors.' Fujii trials implied synergism; other authors' trials show 'some evidence of antagonism'. So this proposition is INCONSISTENT before the retraction and REFUTED after it. The retraction RESOLVES a conflict instead of destroying support, which is an outcome class the original task spec did not anticipate. ENCODING BUG FIXED (found by eval/canonicalization_eval.py, cycle 5): the arguments were originally the specific pair (granisetron, droperidol) while the surface form and Carlisle's actual finding are both GENERAL ('no synergism between antiemetics'). That mismatch is why no matcher could see this is the same claim as P-MULTI-RECEPTOR-PRINCIPLE in the combination-review corpus: the surface forms agreed and the encodings did not. The arguments are now general, matching the claim. The predicate is deliberately left as R-SYNERGISTIC rather than harmonised, because two papers genuinely used different relations for this one claim and resolving that is canonicalization's job, not something to paper over by editing the corpus until matching is trivial."
     },
     {
       "id": "P-DROPERIDOL-INFERIOR",

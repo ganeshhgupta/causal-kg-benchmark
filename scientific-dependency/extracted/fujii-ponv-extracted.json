@@ -1,0 +1,381 @@
+{
+  "_comment": "Compiled from Carlisle JB 2012 (Anaesthesia 67:1076-1090) abstract plus the Kranke 2012 'post-Fujii' supplementary note, per compiler/EXTRACTION_SPEC.md. Object-level antiemetic claims only; the Fujii-vs-others contrast is carried by evidence stance + independence_group, not by separate propositions, so 'retract everything in ig_fujii_et_al' is a query over this graph rather than something baked into it.",
+  "graph_version": "fujii-ponv-2012-01",
+
+  "symbols": [
+    {"id": "sym_granisetron", "label": "granisetron", "kind": "CONCEPT", "resolution_status": "PROVISIONAL", "aliases": ["Kytril"], "notes": "5-HT3 receptor antagonist antiemetic."},
+    {"id": "sym_ramosetron", "label": "ramosetron", "kind": "CONCEPT", "resolution_status": "PROVISIONAL", "notes": "5-HT3 receptor antagonist antiemetic."},
+    {"id": "sym_droperidol", "label": "droperidol", "kind": "CONCEPT", "resolution_status": "PROVISIONAL", "notes": "Butyrophenone / dopamine antagonist antiemetic."},
+    {"id": "sym_metoclopramide", "label": "metoclopramide", "kind": "CONCEPT", "resolution_status": "PROVISIONAL", "notes": "Dopamine antagonist antiemetic / prokinetic."},
+    {"id": "sym_antiemetic_agent", "label": "antiemetic agent", "kind": "CONCEPT", "resolution_status": "PROVISIONAL", "notes": "Type used to bind the unspecified co-administered agent in the synergism and antagonism claims. The abstract never names the partner drug, so it is existentially quantified rather than invented."},
+    {"id": "sym_postoperative_nausea", "label": "postoperative nausea", "kind": "CONCEPT", "resolution_status": "PROVISIONAL"},
+    {"id": "sym_postoperative_vomiting", "label": "postoperative vomiting", "kind": "CONCEPT", "resolution_status": "PROVISIONAL"},
+    {"id": "sym_postoperative_nausea_or_vomiting", "label": "postoperative nausea or vomiting", "kind": "CONCEPT", "resolution_status": "PROVISIONAL", "notes": "The composite endpoint the paper reports separately from nausea and from vomiting. Kept distinct because the paper reports distinct effect estimates for it."},
+    {"id": "sym_rescue_antiemesis", "label": "rescue antiemesis", "kind": "CONCEPT", "resolution_status": "PROVISIONAL", "notes": "Administration of a rescue antiemetic triggered by postoperative nausea and vomiting."},
+    {"id": "sym_surgical_patient", "label": "surgical patient receiving antiemetic prophylaxis", "kind": "CONCEPT", "resolution_status": "PROVISIONAL"},
+
+    {"id": "rel_reduces_risk_of", "label": "REDUCES_RISK_OF", "kind": "RELATION", "resolution_status": "PROVISIONAL", "functional": false, "notes": "agent lowers the incidence of outcome in population, relative to no prophylaxis / placebo. Used for all monotherapy-efficacy claims."},
+    {"id": "rel_more_effective_than", "label": "MORE_EFFECTIVE_THAN", "kind": "RELATION", "resolution_status": "PROVISIONAL", "functional": false, "notes": "agent lowers the incidence of outcome more than comparator does. Head-to-head; distinct from REDUCES_RISK_OF because the comparator is an active drug, not placebo."},
+    {"id": "rel_synergistic_with", "label": "SYNERGISTIC_WITH", "kind": "RELATION", "resolution_status": "PROVISIONAL", "functional": false, "notes": "agent combined with co_agent lowers the incidence of outcome more than agent administered alone."},
+    {"id": "rel_antagonistic_with", "label": "ANTAGONISTIC_WITH", "kind": "RELATION", "resolution_status": "PROVISIONAL", "functional": false, "notes": "agent combined with co_agent lowers the incidence of outcome LESS than agent alone. Deliberately a separate relation and not negate-polarity SYNERGISTIC_WITH: 'no synergism' and 'antagonism' are different claims and the paper asserts both, the first of the combination generally and the second as a further positive finding."}
+  ],
+
+  "contexts": [
+    {
+      "id": "ctx_surgical_prophylaxis",
+      "constraints": [
+        {"key": "population", "op": "=", "value": "surgical_patients"},
+        {"key": "intervention_timing", "op": "=", "value": "prophylactic"},
+        {"key": "study_design", "op": "=", "value": "randomised_controlled_trial"}
+      ]
+    }
+  ],
+
+  "propositions": [
+    {
+      "id": "p_gran_reduces_nausea",
+      "predicate": "rel_reduces_risk_of",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_nausea"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Granisetron was more effective in trials by Fujii et al., relative risk ratios (RRR (95% CI)): nausea 0.53 (0.42-0.67), p=0.00021",
+        "if ... articles by Fujii et al. excluded, then the antiemetic effects of granisetron and ramosetron are greatly reduced",
+        "Putting the record straight: granisetron's efficacy as an antiemetic 'post-Fujii' ... re-states granisetron's efficacy as a prophylactic antiemetic using only trials not authored by Fujii et al."
+      ],
+      "notes": "Direction-of-effect claim. The magnitude dispute ('greatly reduced' once Fujii is removed) is deliberately NOT a second proposition: it is the difference between the Fujii and non-Fujii evidence items attached here."
+    },
+    {
+      "id": "p_gran_reduces_vomiting",
+      "predicate": "rel_reduces_risk_of",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Granisetron was more effective in trials by Fujii et al., relative risk ratios (RRR (95% CI)): ... vomiting 0.60 (0.50-0.73), p=0.00094",
+        "if ... articles by Fujii et al. excluded, then the antiemetic effects of granisetron and ramosetron are greatly reduced"
+      ]
+    },
+    {
+      "id": "p_ramo_reduces_vomiting",
+      "predicate": "rel_reduces_risk_of",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_ramosetron"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Ramosetron was also more effective in studies by Fujii et al.: vomiting 0.60 (0.39-0.91), p=0.02",
+        "if ... articles by Fujii et al. excluded, then the antiemetic effects of granisetron and ramosetron are greatly reduced"
+      ]
+    },
+    {
+      "id": "p_ramo_reduces_nausea_or_vomiting",
+      "predicate": "rel_reduces_risk_of",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_ramosetron"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_nausea_or_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Ramosetron was also more effective in studies by Fujii et al.: ... nausea or vomiting 0.71 (0.56-0.91); p=0.006",
+        "if ... articles by Fujii et al. excluded, then the antiemetic effects of granisetron and ramosetron are greatly reduced"
+      ]
+    },
+
+    {
+      "id": "p_gran_beats_drop_nausea",
+      "predicate": "rel_more_effective_than",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "comparator", "term": {"kind": "symbol_ref", "symbol_ref": "sym_droperidol"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_nausea"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "In comparison with granisetron, droperidol was less effective in trials by Fujii et al. than others: nausea 2.41 (1.72-3.36), p=2.5x10(-7)"
+      ],
+      "notes": "Stated in the source as droperidol being inferior to granisetron; encoded as the equivalent granisetron-superiority claim so that it shares a predicate with the other head-to-head claims."
+    },
+    {
+      "id": "p_gran_beats_drop_vomiting",
+      "predicate": "rel_more_effective_than",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "comparator", "term": {"kind": "symbol_ref", "symbol_ref": "sym_droperidol"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "In comparison with granisetron, droperidol was less effective in trials by Fujii et al. than others: ... vomiting 1.73 (1.26-2.38), p=6.4x10(-4)"
+      ]
+    },
+    {
+      "id": "p_gran_beats_drop_rescue",
+      "predicate": "rel_more_effective_than",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "comparator", "term": {"kind": "symbol_ref", "symbol_ref": "sym_droperidol"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_rescue_antiemesis"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Triggered rates of rescue were not different in studies by others for droperidol, granisetron and metoclopramide, but were less common after granisetron than droperidol and metoclopramide in studies by Fujii et al., 0.50 (0.38-0.66), p=1.7x10(-6) ... respectively"
+      ]
+    },
+    {
+      "id": "p_gran_beats_meto_rescue",
+      "predicate": "rel_more_effective_than",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "comparator", "term": {"kind": "symbol_ref", "symbol_ref": "sym_metoclopramide"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_rescue_antiemesis"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Triggered rates of rescue were not different in studies by others for droperidol, granisetron and metoclopramide, but were less common after granisetron than droperidol and metoclopramide in studies by Fujii et al., ... 0.47 (0.34-0.64), p=2.6x10(-6), respectively"
+      ]
+    },
+    {
+      "id": "p_gran_or_meto_reduces_rescue",
+      "predicate": "rel_reduces_risk_of",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "function", "name": "any_of", "args": [{"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}, {"kind": "symbol_ref", "symbol_ref": "sym_metoclopramide"}]}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_rescue_antiemesis"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Postoperative nausea and vomiting was less likely to trigger rescue antiemesis after granisetron and metoclopramide in studies by Fujii et al., 0.40 (0.27-0.60), p=9.7x10(-6)"
+      ],
+      "notes": "JUDGEMENT CALL, flagged. The source reports these two drugs as one pooled analysis, so splitting into a granisetron proposition and a metoclopramide proposition would invent two claims the paper does not separately make; merging them into one would violate 'do not merge claims differing in agent' if read drug-by-drug. Resolved with a disjunctive function term any_of(granisetron, metoclopramide) over the agent role. Also note this estimate is a Fujii-versus-others ratio with no corresponding non-Fujii estimate, so only Fujii evidence is attached: retracting Fujii leaves this UNRESOLVED rather than REFUTED, which is the faithful answer."
+    },
+
+    {
+      "id": "p_gran_synergy_nausea",
+      "predicate": "rel_synergistic_with",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "co_agent", "term": {"kind": "variable", "name": "a"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_nausea"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "quantification": [{"quantifier": "exists", "variable": "a", "type": "sym_antiemetic_agent"}],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "in studies by Fujii et al., postoperative nausea and vomiting was more likely if granisetron was administered alone: nausea 4.20 (1.94-9.08), p=2.6x10(-4)",
+        "There was no synergism between antiemetics in trials by other authors."
+      ],
+      "notes": "The source states the contrapositive (PONV more likely on granisetron alone than in combination); that is the synergism claim. The partner drug is never named, hence an existential over antiemetic_agent rather than a fabricated co-agent symbol."
+    },
+    {
+      "id": "p_gran_synergy_vomiting",
+      "predicate": "rel_synergistic_with",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "co_agent", "term": {"kind": "variable", "name": "a"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "quantification": [{"quantifier": "exists", "variable": "a", "type": "sym_antiemetic_agent"}],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "in studies by Fujii et al., postoperative nausea and vomiting was more likely if granisetron was administered alone: ... vomiting 4.50 (2.55-7.97), p=2.3x10(-7)",
+        "There was no synergism between antiemetics in trials by other authors."
+      ]
+    },
+    {
+      "id": "p_gran_synergy_nausea_or_vomiting",
+      "predicate": "rel_synergistic_with",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_granisetron"}},
+        {"role": "co_agent", "term": {"kind": "variable", "name": "a"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_nausea_or_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "quantification": [{"quantifier": "exists", "variable": "a", "type": "sym_antiemetic_agent"}],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "in studies by Fujii et al., postoperative nausea and vomiting was more likely if granisetron was administered alone: ... nausea or vomiting 5.00 (2.84-8.81), p=2.5x10(-8)",
+        "There was no synergism between antiemetics in trials by other authors."
+      ]
+    },
+    {
+      "id": "p_drop_synergy_vomiting",
+      "predicate": "rel_synergistic_with",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_droperidol"}},
+        {"role": "co_agent", "term": {"kind": "variable", "name": "a"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "quantification": [{"quantifier": "exists", "variable": "a", "type": "sym_antiemetic_agent"}],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Similarly, droperidol was less effective in studies by Fujii et al. if administered alone: vomiting 2.76 (1.25-6.11), p=0.01",
+        "There was no synergism between antiemetics in trials by other authors."
+      ]
+    },
+    {
+      "id": "p_drop_synergy_nausea_or_vomiting",
+      "predicate": "rel_synergistic_with",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "sym_droperidol"}},
+        {"role": "co_agent", "term": {"kind": "variable", "name": "a"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_nausea_or_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "quantification": [{"quantifier": "exists", "variable": "a", "type": "sym_antiemetic_agent"}],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "Similarly, droperidol was less effective in studies by Fujii et al. if administered alone: ... nausea or vomiting 2.96 (1.46-6.00), p=2.7x10(-3)",
+        "There was no synergism between antiemetics in trials by other authors."
+      ]
+    },
+
+    {
+      "id": "p_antiemetic_antagonism",
+      "predicate": "rel_antagonistic_with",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "variable", "name": "a"}},
+        {"role": "co_agent", "term": {"kind": "variable", "name": "b"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "sym_postoperative_nausea_or_vomiting"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "sym_surgical_patient"}}
+      ],
+      "quantification": [
+        {"quantifier": "exists", "variable": "a", "type": "sym_antiemetic_agent"},
+        {"quantifier": "exists", "variable": "b", "type": "sym_antiemetic_agent"}
+      ],
+      "context": "ctx_surgical_prophylaxis",
+      "polarity": "assert",
+      "modality": "possible",
+      "surface_forms": [
+        "there is no evidence of synergism between antiemetics and indeed, some evidence of antagonism between antiemetic agents"
+      ],
+      "notes": "The only claim in the paper whose sole support is non-Fujii, so it is the one claim that gets STRONGER rather than weaker under a Fujii retraction. Named drugs are not given for the antagonism finding, so both slots are existential. modality=possible because the paper says 'some evidence of', not that antagonism is established."
+    }
+  ],
+
+  "assertions": [
+    {"id": "a_fujii_gran_nausea", "proposition_id": "p_gran_reduces_nausea", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active", "notes": "Encoded as the original authors asserted it, per spec rule 8, even though Carlisle argues it is an artefact and the underlying articles were later retracted. Retraction is applied by the query, not here."},
+    {"id": "a_fujii_gran_vomiting", "proposition_id": "p_gran_reduces_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_ramo_vomiting", "proposition_id": "p_ramo_reduces_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_ramo_nv", "proposition_id": "p_ramo_reduces_nausea_or_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_gvd_nausea", "proposition_id": "p_gran_beats_drop_nausea", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_gvd_vomiting", "proposition_id": "p_gran_beats_drop_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_gvd_rescue", "proposition_id": "p_gran_beats_drop_rescue", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_gvm_rescue", "proposition_id": "p_gran_beats_meto_rescue", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_gm_rescue", "proposition_id": "p_gran_or_meto_reduces_rescue", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_syn_gran_n", "proposition_id": "p_gran_synergy_nausea", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_syn_gran_v", "proposition_id": "p_gran_synergy_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_syn_gran_nv", "proposition_id": "p_gran_synergy_nausea_or_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_syn_drop_v", "proposition_id": "p_drop_synergy_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+    {"id": "a_fujii_syn_drop_nv", "proposition_id": "p_drop_synergy_nausea_or_vomiting", "source": "Fujii et al. (primary RCT reports)", "stance": "supports", "status": "active"},
+
+    {"id": "a_carlisle_gran_nausea", "proposition_id": "p_gran_reduces_nausea", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "supports", "status": "active", "notes": "Supports an attenuated version: 'antiemetic effects ... greatly reduced', i.e. smaller but not abolished. The schema has no strength field on Assertion, so the attenuation lives in this note and in the two opposed-magnitude evidence items."},
+    {"id": "a_carlisle_gran_vomiting", "proposition_id": "p_gran_reduces_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "supports", "status": "active", "notes": "Attenuated; see a_carlisle_gran_nausea."},
+    {"id": "a_carlisle_ramo_vomiting", "proposition_id": "p_ramo_reduces_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "supports", "status": "active", "notes": "Attenuated; 'greatly reduced', not absent."},
+    {"id": "a_carlisle_ramo_nv", "proposition_id": "p_ramo_reduces_nausea_or_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "supports", "status": "active", "notes": "Attenuated; 'greatly reduced', not absent."},
+    {"id": "a_carlisle_gvd_nausea", "proposition_id": "p_gran_beats_drop_nausea", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_gvd_vomiting", "proposition_id": "p_gran_beats_drop_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_gvd_rescue", "proposition_id": "p_gran_beats_drop_rescue", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_gvm_rescue", "proposition_id": "p_gran_beats_meto_rescue", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_gm_rescue", "proposition_id": "p_gran_or_meto_reduces_rescue", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active", "notes": "Carlisle presents the low Fujii rescue rate as an anomaly of the Fujii data rather than a drug property."},
+    {"id": "a_carlisle_syn_gran_n", "proposition_id": "p_gran_synergy_nausea", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_syn_gran_v", "proposition_id": "p_gran_synergy_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_syn_gran_nv", "proposition_id": "p_gran_synergy_nausea_or_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_syn_drop_v", "proposition_id": "p_drop_synergy_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_syn_drop_nv", "proposition_id": "p_drop_synergy_nausea_or_vomiting", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "refutes", "status": "active"},
+    {"id": "a_carlisle_antagonism", "proposition_id": "p_antiemetic_antagonism", "source": "Carlisle JB 2012, Anaesthesia 67:1076-1090", "stance": "supports", "status": "active"},
+
+    {"id": "a_kranke_gran_nausea", "proposition_id": "p_gran_reduces_nausea", "source": "Kranke P et al. 2012, Anaesthesia (PMID 22897144)", "stance": "supports", "status": "active", "notes": "Re-states granisetron's prophylactic efficacy using only non-Fujii trials."},
+    {"id": "a_kranke_gran_vomiting", "proposition_id": "p_gran_reduces_vomiting", "source": "Kranke P et al. 2012, Anaesthesia (PMID 22897144)", "stance": "supports", "status": "active"}
+  ],
+
+  "evidence": [
+    {"id": "e_fujii_gran_nausea", "proposition_id": "p_gran_reduces_nausea", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "RRR vs other authors 0.53 (0.42-0.67), p=0.00021: granisetron markedly more effective in the Fujii trial set."},
+    {"id": "e_other_gran_nausea", "proposition_id": "p_gran_reduces_nausea", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "Supports the direction but at a much smaller magnitude; the paper says the effect is 'greatly reduced' once Fujii is excluded, not abolished."},
+    {"id": "e_kranke_gran_nausea", "proposition_id": "p_gran_reduces_nausea", "kind": "citation", "stance": "supports", "status": "active", "source": "Kranke P et al. 2012, 'granisetron's efficacy as an antiemetic post-Fujii' (PMID 22897144)", "independence_group": "ig_non_fujii_trials", "notes": "Shares the non-Fujii trial pool with e_other_gran_nausea, so it is placed in the same independence group rather than counted as an independent replication."},
+
+    {"id": "e_fujii_gran_vomiting", "proposition_id": "p_gran_reduces_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "RRR vs other authors 0.60 (0.50-0.73), p=0.00094."},
+    {"id": "e_other_gran_vomiting", "proposition_id": "p_gran_reduces_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "Direction preserved, magnitude greatly reduced."},
+    {"id": "e_kranke_gran_vomiting", "proposition_id": "p_gran_reduces_vomiting", "kind": "citation", "stance": "supports", "status": "active", "source": "Kranke P et al. 2012, 'granisetron's efficacy as an antiemetic post-Fujii' (PMID 22897144)", "independence_group": "ig_non_fujii_trials"},
+
+    {"id": "e_fujii_ramo_vomiting", "proposition_id": "p_ramo_reduces_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "RRR vs other authors 0.60 (0.39-0.91), p=0.02."},
+    {"id": "e_other_ramo_vomiting", "proposition_id": "p_ramo_reduces_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "Weak support: the paper says ramosetron's effect is 'greatly reduced' without Fujii, which is attenuation rather than reversal. Unlike granisetron there is no post-Fujii re-statement paper, so this is the weakest supports-stance judgement in the graph."},
+
+    {"id": "e_fujii_ramo_nv", "proposition_id": "p_ramo_reduces_nausea_or_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "RRR vs other authors 0.71 (0.56-0.91), p=0.006."},
+    {"id": "e_other_ramo_nv", "proposition_id": "p_ramo_reduces_nausea_or_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "Attenuated support; see e_other_ramo_vomiting."},
+
+    {"id": "e_fujii_gvd_nausea", "proposition_id": "p_gran_beats_drop_nausea", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Droperidol relatively less effective than granisetron in Fujii trials, RRR 2.41 (1.72-3.36), p=2.5x10(-7)."},
+    {"id": "e_other_gvd_nausea", "proposition_id": "p_gran_beats_drop_nausea", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "In other authors' trials droperidol was NOT correspondingly inferior to granisetron; a null against a claimed difference refutes the difference claim (spec rule 5)."},
+
+    {"id": "e_fujii_gvd_vomiting", "proposition_id": "p_gran_beats_drop_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "RRR 1.73 (1.26-2.38), p=6.4x10(-4)."},
+    {"id": "e_other_gvd_vomiting", "proposition_id": "p_gran_beats_drop_vomiting", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "No corresponding droperidol inferiority outside the Fujii trials."},
+
+    {"id": "e_fujii_gvd_rescue", "proposition_id": "p_gran_beats_drop_rescue", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Rescue less common after granisetron than droperidol, 0.50 (0.38-0.66), p=1.7x10(-6)."},
+    {"id": "e_other_gvd_rescue", "proposition_id": "p_gran_beats_drop_rescue", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "'Triggered rates of rescue were not different in studies by others for droperidol, granisetron and metoclopramide' -- an explicit null against this specific difference."},
+
+    {"id": "e_fujii_gvm_rescue", "proposition_id": "p_gran_beats_meto_rescue", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Rescue less common after granisetron than metoclopramide, 0.47 (0.34-0.64), p=2.6x10(-6)."},
+    {"id": "e_other_gvm_rescue", "proposition_id": "p_gran_beats_meto_rescue", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "Same explicit null as e_other_gvd_rescue."},
+
+    {"id": "e_fujii_gm_rescue", "proposition_id": "p_gran_or_meto_reduces_rescue", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "0.40 (0.27-0.60), p=9.7x10(-6). This estimate is itself the Fujii-versus-others contrast, so no separate non-Fujii evidence item exists; the abstract does not state a standalone non-Fujii result for it, and inventing a refuting item would exceed the text."},
+
+    {"id": "e_fujii_syn_gran_n", "proposition_id": "p_gran_synergy_nausea", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Nausea 4.20 (1.94-9.08), p=2.6x10(-4) for granisetron alone versus in combination."},
+    {"id": "e_other_syn_gran_n", "proposition_id": "p_gran_synergy_nausea", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "'There was no synergism between antiemetics in trials by other authors.'"},
+
+    {"id": "e_fujii_syn_gran_v", "proposition_id": "p_gran_synergy_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Vomiting 4.50 (2.55-7.97), p=2.3x10(-7)."},
+    {"id": "e_other_syn_gran_v", "proposition_id": "p_gran_synergy_vomiting", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "'There was no synergism between antiemetics in trials by other authors.'"},
+
+    {"id": "e_fujii_syn_gran_nv", "proposition_id": "p_gran_synergy_nausea_or_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Nausea or vomiting 5.00 (2.84-8.81), p=2.5x10(-8)."},
+    {"id": "e_other_syn_gran_nv", "proposition_id": "p_gran_synergy_nausea_or_vomiting", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "'There was no synergism between antiemetics in trials by other authors.'"},
+
+    {"id": "e_fujii_syn_drop_v", "proposition_id": "p_drop_synergy_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Vomiting 2.76 (1.25-6.11), p=0.01 for droperidol alone versus in combination."},
+    {"id": "e_other_syn_drop_v", "proposition_id": "p_drop_synergy_vomiting", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "'There was no synergism between antiemetics in trials by other authors.'"},
+
+    {"id": "e_fujii_syn_drop_nv", "proposition_id": "p_drop_synergy_nausea_or_vomiting", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_fujii_et_al", "notes": "Nausea or vomiting 2.96 (1.46-6.00), p=2.7x10(-3)."},
+    {"id": "e_other_syn_drop_nv", "proposition_id": "p_drop_synergy_nausea_or_vomiting", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "'There was no synergism between antiemetics in trials by other authors.'"},
+
+    {"id": "e_other_antagonism", "proposition_id": "p_antiemetic_antagonism", "kind": "experiment", "stance": "supports", "status": "active", "source": "Pooled RCTs by authors other than Fujii et al., as meta-analysed by Carlisle 2012", "independence_group": "ig_non_fujii_trials", "notes": "'some evidence of antagonism between antiemetic agents'. Wholly non-Fujii, so this proposition is unaffected by a Fujii retraction."}
+  ]
+}

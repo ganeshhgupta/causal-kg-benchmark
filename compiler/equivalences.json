@@ -1,0 +1,32 @@
+{
+  "_comment": "Declared relation-level equivalences used to normalise claims before matching. DESIGN COMMITMENT: canonicalization is done by explicit, auditable rules, not by a similarity threshold. The reason is that this project's hardest safety gate is the false-merge rate, and a threshold gives no account of WHY two claims were merged. With declared rules, every merge traces to a named rule and a bad merge is a bug in a specific rule that can be removed, rather than a number that has to be retuned and hoped about. Adding a rule is a deliberate act and must carry a justification.",
+
+  "relation_equivalences": [
+    {
+      "id": "EQ-SYNERGY-AS-COMBINATION-SUPERIORITY",
+      "left": {"predicate": "R-SYNERGISTIC", "roles": ["combination", "baseline"]},
+      "right": {"predicate": "R-MORE-EFFECTIVE-THAN", "roles": ["better", "worse"]},
+      "role_map": {"combination": "better", "baseline": "worse"},
+      "canonical_predicate": "COMBINATION_OUTPERFORMS",
+      "guard": {"role": "better", "symbol_must_denote": "combination"},
+      "justification": "To say agents act synergistically for an outcome IS to say their combination outperforms the single agents. Definitional, not empirical. Verified against both source papers: Carlisle 2012 reports 'no synergism between antiemetics', and Fujii's 2002 review states the same claim as a combination being 'more effective than one drug alone'. Two relations, one claim.",
+      "guard_rationale": "Without the guard this rule over-applies. MORE_EFFECTIVE_THAN is also used for plain drug-versus-drug comparisons (granisetron beats droperidol), which have nothing to do with synergy, and normalising those onto COMBINATION_OUTPERFORMS would make them look related to the synergy claim. The rule therefore fires only when the superior term actually denotes a combination. Caught by reasoning through the decoy pairs before running, not after.",
+      "added_in_cycle": 5,
+      "added_because": "eval/canonicalization_eval.py measured F1 0.000 with no matcher able to see this real cross-document duplicate."
+    }
+  ],
+
+  "symbol_denotations": {
+    "_comment": "Declared properties of symbols that rule guards test. Kept explicit and small rather than inferred from labels, because a guard that silently mis-fires reintroduces exactly the false merges the rules exist to prevent.",
+    "combination": [
+      "C-MULTI-RECEPTOR-COMBO",
+      "C-5HT3-PLUS-DEX",
+      "C-5HT3-PLUS-TRAD"
+    ]
+  },
+
+  "notes": {
+    "scope": "One rule. Deliberately. A rule is added only when a measured matching failure demands it, on the same discipline as the K-IR schema changes: earned, not designed upfront. A file of speculative equivalences would be the Cyc trap in miniature.",
+    "what_normalisation_does_not_do": "It maps relations onto a shared canonical predicate and reorders roles. It does NOT weaken arguments, so a specific instance never normalises onto the general principle it instantiates. That distinction is handled separately as subsumption, and reporting subsumption as equality is exactly the false merge the gate forbids."
+  }
+}

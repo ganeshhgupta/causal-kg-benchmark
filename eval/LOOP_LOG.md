@@ -279,3 +279,70 @@ targets are above the state of the art. The two targets worth keeping as hard
 gates are the safety ones, because they are properties rather than accuracy
 numbers: false merges and false survivals should be zero. The headline should be
 the margin over baselines.
+
+---
+
+## Cycle 4 (2026-09-26): the compiler stage actually ran
+
+**Blocker cleared.** Session moved to WSL, tmux 3.6 present, so a fresh
+no-context subagent could finally be spawned. The extractor was given only the
+Carlisle abstract, the v0.3 schema and `compiler/EXTRACTION_SPEC.md`, and was
+explicitly fenced off from the reference graph and gold labels. This is the
+first cycle where the compile stage is real rather than simulated.
+
+**Blind extraction result.**
+
+| metric | value |
+|---|---|
+| claim_recall | 6/6 = 1.000 |
+| claim_precision | 6/15 = 0.400 |
+| answer_accuracy | 5/6 = 0.833 |
+| false_survival | 0 |
+| false_collapse | 0 |
+
+The compiler represented every gold claim and produced the right retraction
+answer for five of six, with zero dangerous errors. It also independently
+grouped the Fujii evidence, which is what makes the query expressible at all.
+
+**Failure 1, in my own scorer, not the extractor.** The first run scored 2/6.
+Cause: `eval/extracted_eval.py` selected retraction targets with
+`"fujii" in group.lower()`, which also matched the compiler's
+`ig_non_fujii_trials`, so the refuting evidence was retracted alongside the
+fraudulent evidence. **This is the identical bug fixed in the reasoner CLI one
+cycle earlier**, reproduced immediately in new code. Two sites, same mistake.
+
+*Fix:* moved the guard into a shared, tested `author_groups()` helper in
+`reasoner/epistemic_query.py` rather than patching the call site. A near-miss
+during that fix is worth recording: the first version used `\b(non...)` and
+still failed on `ig_non_fujii_trials`, because underscore is a word character
+so `\b` never fires. Caught only because the helper was given a test table.
+
+**Failure 2: lint false positive, found by real extracted data.** The compiler
+modelled antagonism as its own proposition and attached evidence *supporting*
+it. `NULL_RESULT_AS_SUPPORT` fired, because it matched the word "antagonism" in
+the source without looking at the claim being supported. *Fix:* the rule now
+skips when the negative marker appears in the claim's own wording. Verified it
+still catches all three real mis-encodings and is now clean on all three graphs.
+
+**Disputed gold label, deliberately not changed.** The single answer mismatch is
+`P-GRANI-ALONE-WORSE`: gold UNRESOLVED, extraction REFUTED. The compiler treated
+"granisetron alone is worse" as a synergism claim and let Carlisle's "no
+synergism in trials by other authors" refute it. That reading is defensible and
+may well be better than gold's. The label was annotated as disputed and left
+alone, because revising a label after seeing a prediction is scoring-to-fit.
+Resolve it from Carlisle's full text.
+
+**The precision number is not what it looks like.** claim_precision 0.400 comes
+from the compiler emitting 15 propositions where gold has 6, splitting nausea
+from vomiting and per-drug comparisons. That is arguably MORE faithful than
+gold, since those are different outcomes with different effect sizes. Gold's
+claim granularity is a free parameter, and scoring claim-to-claim punishes
+defensible choices. This argues the benchmark should be scored on answers to
+questions rather than on claim alignment. Recorded as a measurement-design
+finding, not fixed.
+
+**Compiler's own reported friction** (useful, and consistent with findings
+already on file): no effect-size or strength field, so "supports but greatly
+attenuated" had to go in `notes`; free-string argument roles mean nothing stops
+a second compiler emitting `drug` where this one emitted `agent`. Both are
+already-known deferred gaps, now independently hit by a different agent.

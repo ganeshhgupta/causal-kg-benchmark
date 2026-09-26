@@ -1,6 +1,5 @@
 {
   "_comment": "Gold labels for retraction-propagation queries. Every label cites the published document that establishes it, because the whole reason this task is tractable is that re-analyses excluding retracted trials have already been published. A label with no such citation is not gold and must be marked pending.",
-
   "queries": [
     {
       "id": "Q-FUJII-PONV",
@@ -34,7 +33,8 @@
         "P-GRANI-ALONE-WORSE": {
           "class": "LOST_SUPPORT",
           "after": "UNRESOLVED",
-          "justification": "A Fujii-only finding (nausea RR 4.20, vomiting 4.50, nausea-or-vomiting 5.00) with no non-Fujii evidence either way. Must become UNRESOLVED, not REFUTED: absence of support is not refutation."
+          "justification": "A Fujii-only finding (nausea RR 4.20, vomiting 4.50, nausea-or-vomiting 5.00) with no non-Fujii evidence either way. Must become UNRESOLVED, not REFUTED: absence of support is not refutation.",
+          "disputed": "DISPUTED, label NOT changed. The blind LLM extraction (cycle 4) encoded this as a synergism claim and attached Carlisle's 'There was no synergism between antiemetics in trials by other authors' as REFUTING evidence, yielding REFUTED where gold says UNRESOLVED. That reading is defensible: 'granisetron alone is worse' and 'combining antiemetics helps' are arguably the same claim restated, and if so the non-Fujii null does bear on it. Gold was left at UNRESOLVED deliberately, because revising a label after seeing a system's prediction is scoring-to-fit. Resolve it by reading Carlisle's full text, not by picking the reading that scores better."
         },
         "P-GRANI-METOCLOP-RESCUE": {
           "class": "LOST_SUPPORT",
@@ -77,7 +77,6 @@
       }
     }
   ],
-
   "pending": [
     {
       "id": "Q-SATO-BISPHOSPHONATE",
@@ -88,7 +87,6 @@
       "next_step": "Obtain the Grey 2018 letter or the full Statement of Retraction text, then label per drug claim."
     }
   ],
-
   "notes": {
     "depth": "Q-FUJII-PONV is depth 1: ground evidence to claim, no derivation hops. The reasoner's unbounded-depth propagation is exercised by fixtures/chain-fixture.json, not yet by real data. Real multi-hop ground truth (retraction to meta-analysis to clinical guideline) is the next acquisition target; the VITALITY study reports 1,330 retracted trials feeding 847 systematic reviews and 157 guidelines, with named chains.",
     "calibration": "Published work on easier claim-relation labeling reports around 0.81 macro-F1. Absolute 95% targets across canonicalization, propagation and contradiction are above the state of the art. The defensible headline is a margin over LLM-only and LLM+RAG baselines, with false-merge and false-contradiction rates as hard safety gates."

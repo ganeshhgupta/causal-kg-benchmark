@@ -339,3 +339,27 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def author_groups(groups, author: str) -> set[str]:
+    """Independence groups attributable to `author`, excluding NEGATED groups.
+
+    Recurrence-driven. The reasoner CLI already refuses a source-substring
+    selection that spans several independence groups, because matching 'Fujii'
+    also matched evidence described as 'trials by authors other than Fujii'.
+    The identical bug then reappeared in eval/extracted_eval.py, where a group
+    named 'ig_non_fujii_trials' matched a naive `'fujii' in name` test and the
+    refuting evidence was retracted along with the fraudulent evidence.
+
+    Two sites, same mistake, so the guard lives here rather than at each call
+    site. Corpora name the contrast group after the author under suspicion
+    ('non-Fujii', 'non_fujii', 'other than Fujii'), so that is the normal case.
+    """
+    import re
+    a = re.escape(author)
+    # NB: no \b before 'non' -- underscore is a word character, so \b never
+    # fires in 'ig_non_fujii_trials'. That near-miss is why this is tested.
+    negated = re.compile(
+        rf"(non|other[_\-\s]?than|excluding|without|minus)[_\-\s]*{a}", re.I)
+    return {g for g in groups
+            if g and re.search(a, g, re.I) and not negated.search(g)}
