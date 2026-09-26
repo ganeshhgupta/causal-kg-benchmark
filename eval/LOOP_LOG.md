@@ -13,27 +13,28 @@ Reproduce with: `python eval/retraction_eval.py`, `eval/proof_validity.py`,
 
 | target | required | measured | verdict |
 |---|---|---|---|
-| canonical proposition matching F1 | >= 0.95 | 1.000 on shared-vocabulary pairs, **0.000 cross-vocabulary** | **PARTIAL, see cycle 5** |
+| canonical proposition matching F1 | >= 0.95 | 1.000 on shared-vocabulary pairs; cross-vocabulary **6/15 claims matched** (was 0/15) | **PARTIAL, see cycles 5-6** |
 | dangerous false merges | < 0.005 | 0.0000 | PASS |
 | end-to-end claim recall (blind extraction) | n/a | 1.000 | measured |
 | end-to-end answer accuracy (blind extraction) | n/a | 0.833 | measured |
 | hallucinated claims (blind extraction) | < 0.005 | 0.0000 | PASS |
-| retraction propagation precision | >= 0.95 | 1.0000 | PASS |
-| retraction propagation recall | >= 0.95 | 1.0000 | PASS |
+| retraction propagation precision | >= 0.95 | 1.0000 (n=14, 3 chains, 2 domains) | PASS |
+| retraction propagation recall | >= 0.95 | 1.0000 (n=14, 3 chains, 2 domains) | PASS |
 | contradiction detection recall | >= 0.95 | 1.0000 | PASS, evidence-level only |
 | false contradiction rate | < 0.01 | 0.0000 | PASS, detector rarely fires |
 | proof-chain validity | >= 0.99 | 1.0000 | PASS |
 | hallucinated proof steps | < 0.005 | 0.0000 | PASS |
-| epistemic classification macro-F1 | >= 0.95 | 1.0000 | PASS |
+| epistemic classification macro-F1 | >= 0.95 | 1.0000 (n=14, 3 chains, 2 domains) | PASS |
+| schema growth: new semantic fields needed by a 3rd chain in a 2nd domain | flat | **0** (one documentation-parity field) | PASS |
 | margin over LLM+RAG | >= 10 pts | **unmeasured** | **BLOCKED** |
 | margin over best non-LLM baseline | n/a | +16.7 pts | measured |
 
-**How much to trust this.** The reasoner rows are over n=10 gold claims on two
-real chains, on hand-authored graphs. The compiler stage HAS now run once, on one
-paper, blind (cycle 5), which is where the end-to-end rows come from; one paper is
-not a sample. The honest readings are the partial row (canonicalization works
-within a shared vocabulary and relates nothing across independently invented
-ones) and the blocked row.
+**How much to trust this.** The reasoner rows are over n=14 gold claims on three
+real chains in two domains, on hand-authored graphs. The compiler stage has run
+once, on one paper, blind (cycle 5), which is where the end-to-end rows come from;
+one paper is not a sample. The honest readings are the partial row
+(canonicalization works within a shared vocabulary and reaches 6/15 across
+independently invented ones) and the blocked row.
 
 Three passes carry scope caveats stated where they are measured rather than
 buried: false merges are 0 because the pipeline never merges anything;
@@ -415,3 +416,180 @@ asks whether support survives rather than how large the effect is.
 a synergism claim and attached Carlisle's no-synergism null as refuting evidence,
 which is defensible. Revising a label after seeing a system's prediction is
 scoring-to-fit; it should be resolved from Carlisle's full text.
+
+---
+
+## Cycle 6 (2026-09-26): cross-vocabulary canonicalization
+
+Cycle 5's measured failure was that claim matching across two independently
+invented vocabularies scored 0.000. `compiler/align_symbols.py` adds the symbol
+resolution stage that `kir-v0.1/STRESS_TEST.md` finding 12 argued must run before
+any claim matching: deciding which entity a name denotes is a different question
+from deciding whether two claims are the same, and the second cannot work without
+the first.
+
+Alignment is by normalised label plus declared families, never fuzzy similarity,
+for the same reason the equivalence rules are declared: a wrong alignment must
+trace to a deletable declaration rather than to a threshold.
+
+**Result: 0/15 -> 6/15 extracted claims matched, with 3 endpoint collapse groups.**
+
+Symbol alignment reached 11 of 14 extracted symbols. Three endpoint symbols
+(postoperative nausea, vomiting, nausea-or-vomiting) collapse onto one PONV symbol
+via a declared family, which is `EXTRACTION_SPEC.md` rule 2a applied at symbol
+level.
+
+**A deferred review point turned into a measured failure.** An earlier review said
+argument roles are unregistered free strings and two compilers could name one role
+differently. I deferred it as prophylactic. The first end-to-end run produced
+exactly that: the extraction encoded granisetron-beats-droperidol with roles
+`agent`/`comparator` where the reference used `better`/`worse`, so two identical
+claims compared DIFFERENT on role naming alone. Fixed with declared per-relation
+role synonyms. Only true synonyms are listed; aliasing roles that mean different
+things would be a false merge wearing a rename.
+
+**An underspecification in the reference corpus.**
+`P-DROPERIDOL-INFERIOR` had no outcome role at all, asserting that granisetron
+beats droperidol without saying at what. Carlisle's figures for that comparison
+are nausea and vomiting, so the outcome is PONV. Adding it let the two endpoint
+variants collapse correctly while keeping the rescue-antiemesis variant SEPARATE,
+which simply dropping the outcome role would have wrongly merged.
+
+**The 9 still-unmatched claims, all diagnosed, none spurious.**
+
+| group | count | diagnosis |
+|---|---|---|
+| rescue-outcome claims | 3 | The reference corpus has one rescue claim; the extraction found three distinct ones (two comparative, one reduction). Gold UNDER-COVERS the paper here. |
+| synergy claims | 5 | The extraction models synergy pairwise at drug level (agent, co_agent, outcome); the reference models it at class level (combination vs monotherapy). Genuine modelling divergence, neither wrong. |
+| antagonism claim | 1 | The extraction promotes it to its own claim; the reference encodes it as refuting evidence. Restructuring. |
+
+**Stopping the fixes here, deliberately.** The two changes made were legitimate: a
+true synonym declaration, and a real underspecification. Closing the remaining 9
+would mean remodelling gold until it matches the extraction, which is
+scoring-to-fit. The class-versus-pairwise synergy divergence is a genuine open
+question about correct granularity at the ARGUMENT level, the same question rule
+2a settled for endpoints, and it should be decided from the source text rather
+than from what improves the number.
+
+---
+
+## Cycle 7 (2026-09-26): corpus growth, which is the strongest success condition
+
+The stated strongest condition is that as the corpus grows, accuracy holds
+without schema complexity exploding: "if every 100 new papers requires 20 new
+special-case fields, the representation is failing." That had zero evidence at
+two chains in one domain, so a third chain was added in a DIFFERENT domain.
+
+**Chain 3: Sato-group bisphosphonate trials, bone health and neurology.**
+Iwamoto et al. 2011 (PMID 21456887) pooled 7 Japanese RCTs into three
+drug-specific hip-fracture claims (etidronate RR 0.16, alendronate 0.29,
+risedronate 0.24) and one class-level conclusion. Confirmed RETRACTED via
+Statement of Retraction PMID 28376663. Independent ground truth from Bolland et
+al. 2016, Neurology (PMID 27920281), whose load-bearing sentence is that the
+reductions occurred "regardless of intervention (relative risk 0.22, 95% CI
+0.15-0.31), that greatly exceed those reported in meta-analyses of other trials."
+"Regardless of intervention" is what makes these one artefact rather than three
+drug findings.
+
+Depth 2 again, and structurally harder than the PONV chains: the pooling step is
+a THREE-premise derivation where earlier chains had one and two.
+
+**Prediction recorded before encoding: zero new schema fields. Result: zero new
+SEMANTIC fields.** The single schema change was adding `notes` to `Context`,
+which was the only object in the schema lacking one. That is documentation parity,
+not a new capability, and it surfaced only because this corpus needed to record
+why a population restriction is a genuine world-condition rather than provenance.
+
+| | before cycle 7 | after |
+|---|---|---|
+| chains | 2 | 3 |
+| domains | 1 (anaesthesia) | 2 (+ bone health / neurology) |
+| gold claims | 10 | 14 |
+| max derivation arity | 2 | 3 |
+| epistemic macro-F1 | 1.0000 | 1.0000 |
+| propagation precision / recall | 1.0000 / 1.0000 | 1.0000 / 1.0000 |
+| false collapses / missed collapses | 0 / 0 | 0 / 0 |
+| new semantic schema fields | - | **0** |
+
+**The magnitude gap appeared again, independently.** Bolland's finding is about
+effect SIZE ("greatly exceed"), which K-IR v0.3 cannot represent, exactly as
+granisetron's "greatly reduced" could not be represented in cycle 1. Two
+unrelated domains hitting the same wall is evidence the gap is systemic rather
+than incidental, and it is now the best-earned candidate for the next schema
+change.
+
+**One judgement call worth stating.** Bolland's integrity analysis is attached as
+REFUTING only the class-level claim, not the three drug-specific ones. Attaching
+it to those would be circular: they rest on the very trials whose integrity is in
+question, so their correct fate is loss of support, not refutation. The
+corresponding Assertion uses stance `neutral_report`, because "the support is
+worthless" is not "the claim is false" -- the same distinction the whole project
+rests on.
+
+---
+
+## Cycle 6 (2026-09-26): the LLM baseline, and why its margin does not count
+
+**The BLOCKED row was measurable after all.** The same tmux capability that
+enabled blind extraction enabled the baseline: a fresh agent was given the
+Carlisle abstract and the six claim statements with no K-IR, no evidence
+structure and no gold labels, and asked for each claim's status after the Fujii
+trials are discarded.
+
+Scope note, because this is easy to overclaim: with a single-document corpus,
+retrieval is trivially perfect, so this is the **RAG-equivalent upper bound**,
+not a weak LLM-only strawman. A real LLM+RAG system over a large corpus must
+first retrieve the right paper and can only do worse.
+
+**Result as labelled.**
+
+| system | accuracy | false survival | UNRESOLVED/REFUTED mixups |
+|---|---|---|---|
+| LLM with source in context | 4/6 = 0.667 | 0 | 1 |
+| K-IR reasoner | 6/6 = 1.000 | 0 | 0 |
+
+Margin +33.3 points against a >= 10 point target.
+
+**Why that PASS was withdrawn.** One of the two LLM errors is
+`P-GRANI-ALONE-WORSE`, the label already annotated as disputed in cycle 5. The
+baseline answered REFUTED. The blind extractor, reasoning by a completely
+different route (it encoded the claim as a synergism claim and let Carlisle's
+no-synergism finding refute it), also answered REFUTED. Two independent agents
+disagreeing with gold in the same direction is evidence about the label, not
+about the agents.
+
+Flipping that one label moves two claims at once, because K-IR becomes wrong
+exactly where the LLM becomes right:
+
+```
+if P-GRANI-ALONE-WORSE is really REFUTED:  llm=0.833  kir=0.833  margin=+0.0
+```
+
+So the headline is not +33.3. It is "+33.3 or +0.0, depending on an unresolved
+reading of one claim". The scorer now reports **NOT ROBUST** and refuses the
+PASS whenever a disputed label can drag the margin under target. Banking the
+favourable reading would have been the single most misleading thing this
+project could do, since the whole pitch is that the system is trustworthy about
+what is and is not established.
+
+**The substantive question, unresolved.** Does "no synergism between antiemetics
+in trials by other authors" refute "PONV is more likely when granisetron is
+given alone"? Not obviously: absence of *synergism* concerns the interaction
+term, while the Fujii claim is a large monotherapy penalty (RR 4.20), and a
+combination can beat monotherapy additively with no synergism at all. Cutting
+the other way, Carlisle also reports "some evidence of antagonism", which would
+argue against a monotherapy penalty. The abstract does not settle it. Needs
+Carlisle's full text, which is paywalled.
+
+**The second LLM error was a defensible call, not a blunder.** It answered
+UNRESOLVED for ramosetron, reasoning that granisetron gets an explicit post-Fujii
+restatement (Kranke 2012) while ramosetron gets none, and the abstract never
+says what the residual non-Fujii ramosetron trials show. Gold says SUPPORTED on
+the strength of "greatly reduced" implying a surviving effect. Gold is probably
+right, but the baseline's caution is reasonable and the margin rests on thin
+wording.
+
+**Standing conclusion.** The LLM+RAG row moves from BLOCKED to MEASURED BUT NOT
+ESTABLISHED. Resolving it needs the disputed label settled from full text, and
+then a corpus far larger than six claims, where each claim is not worth 16.7
+points.

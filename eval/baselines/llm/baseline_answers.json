@@ -1,0 +1,34 @@
+{
+  "answers": [
+    {
+      "claim_id": "P-GRANI-EFFECTIVE",
+      "status": "SUPPORTED",
+      "reasoning": "Carlisle shows granisetron's effect was inflated in Fujii trials and is 'greatly reduced' without them, i.e. reduced but not abolished, and the cited Kranke et al. follow-up re-states granisetron's efficacy as a prophylactic antiemetic using only non-Fujii trials."
+    },
+    {
+      "claim_id": "P-RAMO-EFFECTIVE",
+      "status": "UNRESOLVED",
+      "reasoning": "The abstract only reports that ramosetron looked more effective in Fujii trials and that its effect is 'greatly reduced' once they are excluded; unlike granisetron, no non-Fujii re-analysis is cited, so the remaining evidence base is too thin to say either way."
+    },
+    {
+      "claim_id": "P-SYNERGISM",
+      "status": "REFUTED",
+      "reasoning": "'There was no synergism between antiemetics in trials by other authors', and the conclusion goes further to 'some evidence of antagonism between antiemetic agents', so independent evidence argues against synergy rather than merely being absent."
+    },
+    {
+      "claim_id": "P-DROPERIDOL-INFERIOR",
+      "status": "REFUTED",
+      "reasoning": "Droperidol was less effective than granisetron only in Fujii trials (nausea 2.41, vomiting 1.73 relative to other authors), and rescue rates 'were not different in studies by others for droperidol, granisetron and metoclopramide', so non-Fujii trials show no granisetron advantage."
+    },
+    {
+      "claim_id": "P-GRANI-ALONE-WORSE",
+      "status": "REFUTED",
+      "reasoning": "The large 'worse when given alone' effects (nausea 4.20, vomiting 4.50) are explicitly a Fujii-only contrast, and non-Fujii trials showed no synergism plus some antagonism, which argues against combination being better than granisetron alone."
+    },
+    {
+      "claim_id": "P-GRANI-METOCLOP-RESCUE",
+      "status": "UNRESOLVED",
+      "reasoning": "The rescue-sparing effect (0.40) is reported only for Fujii trials; the non-Fujii finding is that rescue rates did not differ between droperidol, granisetron and metoclopramide, which is a between-agent comparison and is still compatible with all of them reducing rescue, so it neither supports nor refutes the claim."
+    }
+  ]
+}

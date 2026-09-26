@@ -1,0 +1,30 @@
+{
+  "_comment": "Input for the LLM baseline. Claim statements only: no gold labels, no K-IR structure, no evidence annotations. Claim ids are kept ONLY so answers can be joined back for scoring; they carry no information about the answer.",
+  "question": "The randomised controlled trials by Fujii et al. have been retracted for data fabrication. For each claim below, what is its epistemic status AFTER discarding all Fujii et al. trials? Answer SUPPORTED, REFUTED, or UNRESOLVED.",
+  "claims": [
+    {
+      "claim_id": "P-GRANI-EFFECTIVE",
+      "claim": "Granisetron is an effective prophylactic antiemetic for postoperative nausea and vomiting."
+    },
+    {
+      "claim_id": "P-RAMO-EFFECTIVE",
+      "claim": "Ramosetron is an effective prophylactic antiemetic for postoperative nausea and vomiting."
+    },
+    {
+      "claim_id": "P-SYNERGISM",
+      "claim": "Combining antiemetic agents produces synergistic prevention of postoperative nausea and vomiting."
+    },
+    {
+      "claim_id": "P-DROPERIDOL-INFERIOR",
+      "claim": "Granisetron is more effective than droperidol for preventing postoperative nausea and vomiting."
+    },
+    {
+      "claim_id": "P-GRANI-ALONE-WORSE",
+      "claim": "Postoperative nausea and vomiting is more likely when granisetron is given as the sole antiemetic."
+    },
+    {
+      "claim_id": "P-GRANI-METOCLOP-RESCUE",
+      "claim": "Granisetron with metoclopramide reduces the need for rescue antiemesis."
+    }
+  ]
+}
