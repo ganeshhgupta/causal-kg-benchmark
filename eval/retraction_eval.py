@@ -104,11 +104,44 @@ def score_query(q, verbose=True):
     conflations = [r[0] for r in rows
                    if {r[3], r[4]} == {"UNRESOLVED", "REFUTED"}]
 
+    # --- epistemic classification macro-F1 over the 4-valued status ---------
+    # Over gold after-statuses, not transition classes: this is the
+    # supported/refuted/unresolved/inconsistent target.
+    statuses = sorted({r[3] for r in rows} | {r[4] for r in rows})
+    f1s, status_detail = [], {}
+    for st in statuses:
+        tp_s = sum(1 for r in rows if r[3] == st and r[4] == st)
+        fp_s = sum(1 for r in rows if r[3] != st and r[4] == st)
+        fn_s = sum(1 for r in rows if r[3] == st and r[4] != st)
+        p = tp_s / (tp_s + fp_s) if tp_s + fp_s else None
+        rc = tp_s / (tp_s + fn_s) if tp_s + fn_s else None
+        if p is not None and rc is not None and p + rc > 0:
+            f1 = 2 * p * rc / (p + rc)
+        else:
+            f1 = 0.0 if (tp_s + fp_s + fn_s) else None
+        status_detail[st] = {"support": tp_s + fn_s, "precision": p,
+                            "recall": rc, "f1": f1}
+        if tp_s + fn_s:  # only classes with gold support count toward the macro
+            f1s.append(f1 or 0.0)
+    macro_f1 = sum(f1s) / len(f1s) if f1s else None
+
+    # --- propagation precision/recall on "did this claim lose support?" -----
+    gold_lost = {r[0] for r in rows if r[3] != "SUPPORTED"}
+    pred_lost = {r[0] for r in rows if r[4] != "SUPPORTED"}
+    tp_p = len(gold_lost & pred_lost)
+    prop_prec = tp_p / len(pred_lost) if pred_lost else None
+    prop_rec = tp_p / len(gold_lost) if gold_lost else None
+
     return {
         "query": q["id"],
         "n": len(rows),
         "exact_match": exact / len(rows) if rows else None,
         "per_class": per_class,
+        "status_detail": status_detail,
+        "epistemic_macro_f1": macro_f1,
+        "propagation_precision": prop_prec,
+        "propagation_recall": prop_rec,
+        "propagation_support": len(gold_lost),
         "false_collapse_rate": len(false_collapse) / len(rows) if rows else None,
         "missed_collapse_rate": len(missed_collapse) / len(rows) if rows else None,
         "false_collapse": sorted(false_collapse),
@@ -131,7 +164,38 @@ def main():
         print(f"   {'false_collapse_rate':24} {r['false_collapse_rate']:.3f}  {r['false_collapse']}")
         print(f"   {'missed_collapse_rate':24} {r['missed_collapse_rate']:.3f}  {r['missed_collapse']}")
         print(f"   {'UNRESOLVED/REFUTED mixups':24} {r['unresolved_refuted_conflations']}")
+        for st, m in sorted(r["status_detail"].items()):
+            if not m["support"]:
+                continue
+            print(f"   status {st:17} support={m['support']}  f1={m['f1']:.3f}")
+        print(f"   {'epistemic macro-F1':24} {r['epistemic_macro_f1']:.4f}")
+        print(f"   {'propagation precision':24} {r['propagation_precision']:.4f}"
+              if r["propagation_precision"] is not None else
+              f"   {'propagation precision':24} n/a")
+        print(f"   {'propagation recall':24} {r['propagation_recall']:.4f}"
+              f"   (gold lost-support claims: {r['propagation_support']})"
+              if r["propagation_recall"] is not None else
+              f"   {'propagation recall':24} n/a")
         print()
+
+    # --- pooled across queries, which is the number that matters ------------
+    pooled_n = sum(r["n"] for r in results)
+    pooled_macro = sum(r["epistemic_macro_f1"] * r["n"] for r in results) / pooled_n
+    p_num = sum((r["propagation_precision"] or 0) * r["n"] for r in results)
+    r_num = sum((r["propagation_recall"] or 0) * r["n"] for r in results)
+    print("=" * 72)
+    print(f"POOLED over {len(results)} queries, {pooled_n} gold claims")
+    print(f"   epistemic macro-F1      {pooled_macro:.4f}   target >= 0.95  "
+          f"{'PASS' if pooled_macro >= 0.95 else 'FAIL'}")
+    print(f"   propagation precision   {p_num / pooled_n:.4f}   target >= 0.95  "
+          f"{'PASS' if p_num / pooled_n >= 0.95 else 'FAIL'}")
+    print(f"   propagation recall      {r_num / pooled_n:.4f}   target >= 0.95  "
+          f"{'PASS' if r_num / pooled_n >= 0.95 else 'FAIL'}")
+    print(f"   false collapses         {sum(len(r['false_collapse']) for r in results)}")
+    print(f"   missed collapses        {sum(len(r['missed_collapse']) for r in results)}")
+    print(f"\n   n={pooled_n} on hand-authored graphs. These measure the reasoner. "
+          f"The compiler stage is still unmeasured.")
+    print()
 
     pending = gold.get("pending", [])
     if pending:

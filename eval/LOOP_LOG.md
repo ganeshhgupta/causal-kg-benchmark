@@ -5,6 +5,39 @@ gold -> fix ONLY the failure`. The point of the log is that a fix is only
 legitimate if a measured failure preceded it, so each entry names the failure
 first and the change second.
 
+## Scoreboard against the stated targets
+
+Reproduce with: `python eval/retraction_eval.py`, `eval/proof_validity.py`,
+`eval/canonicalization_eval.py`, `eval/contradiction_eval.py`,
+`eval/baselines/naive_baselines.py`.
+
+| target | required | measured | verdict |
+|---|---|---|---|
+| canonical proposition matching F1 | >= 0.95 | **0.000** | **FAIL** |
+| dangerous false merges | < 0.005 | 0.000 | PASS, but only because nothing merges |
+| retraction propagation precision | >= 0.95 | 1.0000 | PASS |
+| retraction propagation recall | >= 0.95 | 1.0000 | PASS |
+| contradiction detection recall | >= 0.95 | 1.0000 | PASS, evidence-level only |
+| false contradiction rate | < 0.01 | 0.0000 | PASS, detector rarely fires |
+| proof-chain validity | >= 0.99 | 1.0000 | PASS |
+| hallucinated proof steps | < 0.005 | 0.0000 | PASS |
+| epistemic classification macro-F1 | >= 0.95 | 1.0000 | PASS |
+| margin over LLM+RAG | >= 10 pts | **unmeasured** | **BLOCKED** |
+| margin over best non-LLM baseline | n/a | +16.7 pts | measured |
+
+**How much to trust this.** Every passing number is over n=10 gold claims on
+two real chains, and measures the REASONER on hand-authored graphs. The compiler
+stage has never run, so none of it speaks to end-to-end performance. The two
+honest readings are the failure (canonicalization at 0.000, see cycle 4) and the
+blocked row.
+
+Three passes carry scope caveats stated where they are measured rather than
+buried: false merges are 0 because the pipeline never merges anything;
+contradiction recall covers evidence-level conflict, which INCONSISTENT status
+already encodes, while structural contradiction is untested because neither real
+corpus contains a functional relation with a qualifying pair; and the +16.7 point
+margin is one claim's difference at n=6.
+
 ---
 
 ## Cycle 1 (2026-09-26): reason and compare, on real data
