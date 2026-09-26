@@ -31,10 +31,10 @@
           "justification": "Fujii trials made droperidol look much worse than granisetron (nausea RR 2.41); other authors found triggered rescue rates not different between agents. The null against the claimed difference survives, the positive claim does not."
         },
         "P-GRANI-ALONE-WORSE": {
-          "class": "LOST_SUPPORT",
-          "after": "UNRESOLVED",
-          "justification": "A Fujii-only finding (nausea RR 4.20, vomiting 4.50, nausea-or-vomiting 5.00) with no non-Fujii evidence either way. Must become UNRESOLVED, not REFUTED: absence of support is not refutation.",
-          "disputed": "DISPUTED, label NOT changed. The blind LLM extraction (cycle 4) encoded this as a synergism claim and attached Carlisle's 'There was no synergism between antiemetics in trials by other authors' as REFUTING evidence, yielding REFUTED where gold says UNRESOLVED. That reading is defensible: 'granisetron alone is worse' and 'combining antiemetics helps' are arguably the same claim restated, and if so the non-Fujii null does bear on it. Gold was left at UNRESOLVED deliberately, because revising a label after seeing a system's prediction is scoring-to-fit. Resolve it by reading Carlisle's full text, not by picking the reading that scores better."
+          "class": "RESOLVED_INCONSISTENCY",
+          "after": "REFUTED",
+          "justification": "RESOLVED AGAINST THE ORIGINAL LABEL (cycle 7), on the text. Carlisle writes: 'There was no synergism between antiemetics in trials by other authors. IN CONTRAST, in studies by Fujii et al., postoperative nausea and vomiting was more likely if granisetron was administered alone: nausea 4.20 (1.94-9.08)...'. The 'in contrast' construction explicitly pairs the two sentences: Carlisle is presenting the monotherapy penalty AS the Fujii-side counterpart of the synergism question, so the non-Fujii no-synergism finding is evidence directly against this claim, not merely silent on it. Carlisle's further 'some evidence of antagonism' cuts the same way. The claim is therefore INCONSISTENT before retraction and REFUTED after.",
+          "label_history": "Originally labelled LOST_SUPPORT/UNRESOLVED on the reasoning that no non-Fujii evidence bore on it. The blind extractor (cycle 5) and the LLM baseline (cycle 6) independently answered REFUTED, by different routes. Two agents disagreeing with gold in the same direction prompted re-reading the source, which settled it against the original label. NOTE THE DIRECTION OF THE CORRECTION: flipping this label makes the K-IR reasoner WRONG on this claim and erases the +33.3 point margin over the LLM baseline. It was changed because the text says so, not because it helps, and it does not help."
         },
         "P-GRANI-METOCLOP-RESCUE": {
           "class": "LOST_SUPPORT",

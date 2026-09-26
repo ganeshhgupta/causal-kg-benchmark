@@ -50,6 +50,15 @@ GOLD_INCONSISTENT = {
     "P-MULTI-RECEPTOR-PRINCIPLE":
         "Fujii's review asserts the combination principle; Carlisle's non-Fujii "
         "pooling refutes it. Genuine conflict.",
+    "P-GRANI-ALONE-WORSE":
+        "ADDED cycle 7, as a necessary consequence of resolving that claim's label. "
+        "Carlisle pairs the sentences explicitly ('no synergism ... IN CONTRAST, in "
+        "studies by Fujii et al., PONV was more likely if granisetron was administered "
+        "alone'), so the non-Fujii null refutes it while the Fujii trials support it. "
+        "That is the same live conflict as P-SYNERGISM. This entry was previously "
+        "absent because the claim was mis-labelled as having no non-Fujii evidence at "
+        "all; once that was corrected the detector was right and this gold list was "
+        "stale, not the other way round.",
 }
 
 # Gold: pairs that must NOT be reported as contradicting each other.

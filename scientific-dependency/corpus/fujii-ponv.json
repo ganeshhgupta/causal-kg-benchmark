@@ -256,7 +256,7 @@
       "surface_forms": [
         "Postoperative nausea and vomiting is more likely when granisetron is given as the sole antiemetic."
       ],
-      "notes": "A Fujii-only artefact, and a striking one: nausea 4.20 (1.94-9.08), p=2.6e-4; vomiting 4.50 (2.55-7.97), p=2.3e-7; nausea or vomiting 5.00 (2.84-8.81), p=2.5e-8. No non-Fujii evidence bears on it either way, so it collapses to UNRESOLVED rather than REFUTED. This is the clean test that absence of support is not refutation."
+      "notes": "A Fujii-only artefact, and a striking one: nausea 4.20 (1.94-9.08), p=2.6e-4; vomiting 4.50 (2.55-7.97), p=2.3e-7; nausea or vomiting 5.00 (2.84-8.81), p=2.5e-8. No non-Fujii evidence bears on it either way, so it collapses to UNRESOLVED rather than REFUTED. This is the clean test that absence of support is not refutation. CORRECTED cycle 7: originally encoded with Fujii-only evidence, which was wrong. See EV-OTHER-NO-SYNERGISM."
     },
     {
       "id": "P-GRANI-METOCLOP-RESCUE",
@@ -430,6 +430,16 @@
       "status": "active",
       "source": "Fujii et al. randomised controlled trials (PONV series)",
       "independence_group": "FUJII-SERIES"
+    },
+    {
+      "id": "EV-OTHER-NO-SYNERGISM",
+      "proposition_id": "P-GRANI-ALONE-WORSE",
+      "kind": "experiment",
+      "stance": "refutes",
+      "status": "active",
+      "source": "trials by authors other than Fujii: no synergism between antiemetics (Carlisle 2012)",
+      "independence_group": "NON-FUJII",
+      "notes": "ENCODING BUG FIX (cycle 7). This evidence was missing. Carlisle pairs the sentences explicitly -- 'There was no synergism between antiemetics in trials by other authors. In contrast, in studies by Fujii et al., PONV was more likely if granisetron was administered alone' -- so the non-Fujii null bears directly on this claim. The hand-built graph missed that; the blind LLM extraction did not. CONTAMINATION-MARKER: baseline-prompted fix. this fix was prompted by the baseline's answer, so any margin measured on these same six claims afterwards is contaminated and is reported as such."
     }
   ]
 }

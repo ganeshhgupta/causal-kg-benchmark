@@ -115,7 +115,23 @@ def main():
         alt = dict(expected); alt[pid] = llm.get(pid)
         worst = min(worst, (metrics("k", kir, alt)["accuracy"]
                             - metrics("l", llm, alt)["accuracy"]) * 100)
-    if margin >= 10 and worst < 10:
+    # Contamination check. If the reference graph carries a fix that was
+    # prompted by the baseline's own answers, then a margin measured on those
+    # same claims is not an independent comparison and must not read as a clean
+    # PASS. The marker is written into the corpus at the point of the fix.
+    contaminated = [e["id"] for e in graph.evidence.values()
+                    if "CONTAMINATION-MARKER" in (e.get("notes") or "")]
+    if contaminated:
+        print(f"\nCONTAMINATION: the reference graph contains {len(contaminated)} "
+              f"fix(es) prompted by this baseline's answers: {contaminated}")
+        print("  The margin below is measured on the same six claims that revealed "
+              "the bug, so it is NOT an independent comparison. An honest margin "
+              "needs unseen claims.")
+
+    if contaminated:
+        verdict = (f"CONTAMINATED -- {margin:+.1f} pts, but measured after a "
+                   f"baseline-prompted fix to the reference graph. Not independent.")
+    elif margin >= 10 and worst < 10:
         verdict = (f"NOT ROBUST -- {margin:+.1f} pts as labelled, but {worst:+.1f} pts "
                    f"if the disputed label goes the other way. Target NOT established.")
     elif margin >= 10:

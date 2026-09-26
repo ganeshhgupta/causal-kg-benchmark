@@ -594,3 +594,60 @@ wording.
 ESTABLISHED. Resolving it needs the disputed label settled from full text, and
 then a corpus far larger than six claims, where each claim is not worth 16.7
 points.
+
+---
+
+## Cycle 7 (2026-09-26): the disputed label was settled against my own result
+
+**Resolved on the text, not on convenience.** Carlisle's abstract reads:
+
+> "There was no synergism between antiemetics in trials by other authors.
+> **In contrast**, in studies by Fujii et al., postoperative nausea and vomiting
+> was more likely if granisetron was administered alone: nausea 4.20 (1.94-9.08)..."
+
+The "in contrast" construction explicitly pairs the two sentences. Carlisle is
+presenting the monotherapy penalty AS the Fujii-side counterpart of the
+synergism question, so the non-Fujii no-synergism finding is evidence directly
+against the claim rather than silent on it. "Some evidence of antagonism" cuts
+the same way. `P-GRANI-ALONE-WORSE` is therefore INCONSISTENT before retraction
+and REFUTED after.
+
+**My gold was wrong. Both agents were right.** The blind extractor (cycle 5) and
+the LLM baseline (cycle 6) independently answered REFUTED by different routes.
+Two agents disagreeing with a hand label in the same direction was the signal
+that prompted re-reading the source.
+
+**Note which way the correction runs.** Flipping the label made the K-IR
+reasoner wrong on that claim and erased the headline:
+
+```
+margin over LLM baseline: +0.0 pts   verdict: TIE/LOSS
+```
+
+It was changed because the text says so. It does not help, which is the point.
+
+**A second, separate error: the corpus encoding.** The hand-built graph attached
+only Fujii evidence to that claim and never attached Carlisle's no-synergism
+finding as refuting it. That is a real modelling bug, and the blind LLM
+extraction did not make it. Fixed by adding `EV-OTHER-NO-SYNERGISM`.
+
+**Why the resulting +16.7 does not count either.** That fix was prompted by the
+baseline's answers, so a margin re-measured on the same six claims is not an
+independent comparison. Rather than leave that in prose where it can be
+forgotten, the corpus now carries a `CONTAMINATION-MARKER` at the point of the
+fix and the scorer detects it, refusing a clean verdict:
+
+```
+verdict: CONTAMINATED -- +16.7 pts, but measured after a baseline-prompted
+         fix to the reference graph. Not independent.
+```
+
+**Standing conclusion, unchanged in substance.** The margin over an LLM with the
+source in context is still NOT established. It has now been, in order: +33.3
+(on a bad label), +0.0 (on the corrected label), and +16.7 (after fixing a bug
+the baseline itself revealed). None of those is a result. Establishing one
+requires claims neither system has seen.
+
+**What this cycle actually demonstrated.** The baseline was more useful as an
+error-finder than as a competitor: it located a wrong gold label and a wrong
+encoding, both in the hand-built artefacts, neither in the reasoner.
