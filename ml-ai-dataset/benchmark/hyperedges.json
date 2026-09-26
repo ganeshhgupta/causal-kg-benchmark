@@ -1,12 +1,14 @@
 {
-  "_comment": "Multi-premise (hyperedge) entailment, same pattern as ../../hyperedges.json's {K001,K010}->K011.",
+  "_comment": "Multi-premise hyperedge. Unlike ../../hyperedges.json's {K001,K010}->K011 (pure algebraic substitution -- V=IR into P=IV strictly and completely derives P=I^2R, a clean logical entailment), this one is engineering composition, not derivation -- see H01's relation/notes below.",
   "hyperedges": [
     {
       "id": "H01",
       "premises": ["M022", "M026"],
       "conclusion": "M027",
-      "relation": "ENTAILS",
-      "rationale": "Adam (M027) is Momentum's first-moment gradient tracking (M022) combined with RMSProp's second-moment/adaptive-per-parameter-learning-rate tracking (M026), plus bias correction for both. Neither premise alone entails Adam -- momentum alone gives plain momentum-SGD, and RMSProp alone gives adaptive-LR without momentum (see pairs.json P08/P09, both COMPATIBLE not ENTAILS)."
+      "relation": "COMPOSES_TO",
+      "entailed": true,
+      "notes": "FIXED per review: originally labeled ENTAILS, matching physics's H01 pattern, but that overclaims. Physics's {K001,K010}->K011 is pure algebraic substitution with no missing information -- a genuine logical entailment. This one is not: (1) M027's statement explicitly includes 'bias correction for both' moment estimates, which neither M022 nor M026 states or implies -- it's a third, independent design element Adam adds, not derivable from the two premises; (2) more fundamentally, 'Momentum exists' and 'RMSProp exists' does not logically force 'therefore Adam exists' the way algebraic substitution forces a derived equation -- combining them into Adam was an engineering design choice, not a logical necessity. Relabeled COMPOSES_TO to avoid teaching a system that 'inspired by / built from' equals logical implication. `entailed: true` is kept so the scorer still treats this as a positive hyperedge (it checks `entailed` first, falling back to the literal string 'ENTAILS' in `relation` only for older gold data) -- COMPOSES_TO is an informal, human-readable label the scorer does not otherwise interpret.",
+      "rationale": "Adam (M027) is Momentum's first-moment gradient tracking (M022) combined with RMSProp's second-moment/adaptive-per-parameter-learning-rate tracking (M026), plus bias correction for both (an element the premises don't provide). Neither premise alone entails Adam -- momentum alone gives plain momentum-SGD, and RMSProp alone gives adaptive-LR without momentum (see pairs.json P08/P09, both COMPATIBLE not ENTAILS)."
     }
   ]
 }

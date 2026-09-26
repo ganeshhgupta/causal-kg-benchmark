@@ -43,7 +43,7 @@ unsafe and counts as a decoy false merge.
 For non-monotonic pair predictions, `direction_relation` may be omitted when
 the gold value is `N/A`; the scorer normalizes that omission to `N/A`.
 
-## Lexicographic headline score
+## Lexicographic headline score (v5)
 
 The headline key is deliberately category-separated so success in one category
 cannot hide collapse in another:
@@ -52,10 +52,11 @@ cannot hide collapse in another:
 2. `1 - pair_false_merge_rate`
 3. `1 - wrong_target_equal_rate`
 4. `1 - manufactured_contradiction_rate`
-5. `compatible_recall`
-6. `correct_merge_rate`
-7. `directional_entailment_accuracy`
-8. `compression_fraction`
+5. `min_supported_class_recall`
+6. `macro_supported_class_recall`
+7. `correct_merge_rate`
+8. `directional_entailment_accuracy`
+9. `compression_fraction`
 
 The pooled false-merge rate is still reported for continuity, but is **never**
 the sole false-merge gate.
@@ -64,20 +65,40 @@ the sole false-merge gate.
 
 A pair is counted as a manufactured contradiction when the system predicts
 `CONTRADICTS` but the gold relation is anything other than `CONTRADICTS`.
-This makes false conflict creation visible in the headline score rather than
-burying it in pair-axis accuracy.
+This makes false conflict creation (precision failure for the CONTRADICTS
+class) visible in the headline score rather than burying it in pair-axis
+accuracy.
 
+### Per-class recall (v5, generalizes v4's COMPATIBLE-only gate)
 
-### COMPATIBLE recognition
+v4 added a standalone `compatible_recall` headline gate because a
+conservative system could default every uncertain `COMPATIBLE` pair to
+`UNRELATED` and still score perfectly on every other metric. v5 generalizes
+this: recall is computed for **every** `logical_relation` class that has at
+least one gold example (`EQUAL`, `ENTAILS`, `ENTAILED_BY`, `CONTRADICTS`,
+`COMPATIBLE`, `UNRELATED` -- whichever actually appear in `pairs.json`), and
+the headline carries both:
 
-`COMPATIBLE` is also a first-class headline gate. The scorer reports recall over
-all gold-COMPATIBLE pairs and places that recall directly in the lexicographic
-key. This prevents a conservative `UNRELATED`-by-default system from receiving
-a perfect headline score while missing every context-preserving compatibility
-case, including P01 and P05.
+- **`min_supported_class_recall`** -- the recall of the worst-performing
+  class. Catches total collapse in any single class outright, e.g. a system
+  that never once predicts `CONTRADICTS` correctly.
+- **`macro_supported_class_recall`** -- the average recall across classes.
+  Needed alongside min because min alone can't distinguish "everything is
+  fine except one class is at 0%" from "everything is uniformly mediocre" --
+  min catches the former, macro reflects the latter.
 
-The report also splits COMPATIBLE misses into those predicted as `UNRELATED`
-and those predicted as `CONTRADICTS`.
+This closes a hole found empirically, not hypothetically: v4's headline had
+no gate for a gold `CONTRADICTS` pair being predicted as `COMPATIBLE` (or
+anything else), because that failure trips none of the other gates
+(`EQUAL`→not a merge, `CONTRADICTS`-predicted→not a manufactured
+contradiction). It went unnoticed through v4 only because the physics gold
+set had zero real `CONTRADICTS` examples to test with; the first real one
+(`ml-ai-dataset/benchmark`'s BatchNorm pair) surfaced it immediately. See
+`regression_tests.py` test 6.
+
+`compatible_recall` and the `compatible_recognition` report block are
+retained for continuity (now just one entry inside `class_recalls.per_class`)
+but are no longer a separate headline slot.
 
 ## Hyperedges
 
@@ -112,3 +133,15 @@ The scorer reports hyperedge accuracy, precision, recall, and F1.
 It also warns when the gold set has no `CONTRADICTS`, no cross-proposition
 `EQUAL`, or no negative hyperedge, so unsupported relation classes cannot look
 silently "tested".
+
+## Regression suite (v5: made genuinely generic)
+
+`regression_tests.py` takes `--gold-dir` and is meant to run against any
+gold set, but tests 2 and 3 previously hardcoded physics-specific IDs
+(`V004ca`, `K004m`, `P01`, `P05`) -- they only ever validated correctly
+against the physics benchmark despite the `--gold-dir` parameter implying
+otherwise. v5 picks targets dynamically from whatever gold set is passed,
+and both are now verified to pass against the physics benchmark (repo root)
+and `ml-ai-dataset/benchmark`. Test 6 (missing a real `CONTRADICTS` pair)
+skips gracefully with a printed note on gold sets that don't have one yet,
+rather than failing or silently not testing anything.

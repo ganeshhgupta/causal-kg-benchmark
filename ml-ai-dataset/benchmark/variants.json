@@ -15,7 +15,7 @@
     {"id":"V-M041a","proposition_id":"M041","form":"nl","text":"During training, dropout randomly turns off a subset of neurons so the network can't over-rely on any single one."},
     {"id":"V-M041b","proposition_id":"M041","form":"nl","text":"Dropout randomly deactivates neurons at both training and test time to regularize the network.", "deliberate_error":"context_dropped", "notes":"Drops the training/inference phase distinction -- dropout is disabled at test time (M042). Direct analog to the physics benchmark's V015a decoy."},
 
-    {"id":"V-M042a","proposition_id":"M042","form":"nl","text":"At inference, dropout's random deactivation is turned off; the full network is used, with activations rescaled to match training-time expectations."},
+    {"id":"V-M042a","proposition_id":"M042","form":"nl","text":"At inference, dropout's random deactivation is turned off and the full network runs as-is; with the now-standard inverted-dropout implementation, the necessary rescaling already happened during training, so nothing extra needs to be done at test time."},
 
     {"id":"V-M053a","proposition_id":"M053","form":"nl","text":"DropConnect works like dropout but zeroes out individual connection weights instead of entire neuron outputs, making it a more fine-grained generalization of the dropout idea."},
 

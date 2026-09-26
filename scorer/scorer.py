@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 """
-Causal-KG Benchmark scorer (v0.3 scorer; compatible with benchmark v0.2).
+Causal-KG Benchmark scorer (v5; compatible with any gold set following the
+propositions/variants/pairs/hyperedges schema, e.g. the physics benchmark
+at repo root or ml-ai-dataset/benchmark).
 
 Core guarantees:
 - Canonicalization checks BOTH relation and predicted proposition target.
 - False merges are split by failure category; pooled rate is never the sole gate.
 - Manufactured contradictions are a first-class safety metric.
+- Per-class logical_relation recall is computed for every class with gold
+  support and headlined as MIN (catches total collapse in any one class,
+  e.g. a system that never predicts CONTRADICTS) and MACRO (overall
+  degradation) -- generalizes v4's single-purpose compatible_recall gate,
+  which is retained in the report for continuity but no longer needed in
+  the headline since it's now one entry in this per-class breakdown.
 - Pair axes remain independent.
 - Compression is computed from the ACTUAL predicted e-class unions.
 - Hyperedges support both positive and future negative gold examples.
@@ -40,7 +48,7 @@ direction_relation is accepted and normalized to N/A.
 import argparse
 import json
 from pathlib import Path
-from collections import Counter
+from collections import Counter, defaultdict
 
 LOGICAL = {"EQUAL", "ENTAILS", "ENTAILED_BY", "CONTRADICTS", "COMPATIBLE", "UNRELATED"}
 SCHEMA = {"SAME", "RELATED", "DIFFERENT"}
@@ -268,25 +276,49 @@ def main():
         len(manufactured_contradictions), contradiction_negative_total
     )
 
-    # First-class recognition of context-preserving compatibility. Without this
-    # gate, a conservative system can default every uncertain COMPATIBLE pair
-    # to UNRELATED and still look perfect on all other headline safety metrics.
-    compatible_pairs = [p for p in pairs if p["logical_relation"] == "COMPATIBLE"]
-    compatible_correct = 0
-    compatible_missed = []
-    compatible_predicted_as_unrelated = []
-    compatible_predicted_as_contradicts = []
-    for pair in compatible_pairs:
+    # Generalized per-class recall over logical_relation, replacing the v4
+    # single-purpose "compatible_recall" gate. v4 added compatible_recall
+    # because a conservative system could default every uncertain COMPATIBLE
+    # pair to UNRELATED and still look perfect on every other headline gate.
+    # The same hole exists for ANY class with real gold examples -- v5 found
+    # this concretely for CONTRADICTS the moment a real gold CONTRADICTS pair
+    # (the ml-ai BatchNorm pair) existed to test it with: predicting
+    # COMPATIBLE for a gold CONTRADICTS pair triggered no existing gate.
+    # Rather than keep adding one bespoke *_recall gate per class as new gold
+    # classes appear, compute recall for every class that has gold support
+    # and headline with the minimum (catches total collapse in ANY one
+    # class) and the macro average (overall degradation, since min alone
+    # can't distinguish "one class totally broken" from "barely below 100%").
+    class_ids = defaultdict(list)
+    class_correct = defaultdict(int)
+    class_confusion_examples = defaultdict(list)
+    for pair in pairs:
+        gold = pair["logical_relation"]
         predicted = pp.get(pair["id"], {}).get("logical_relation")
-        if predicted == "COMPATIBLE":
-            compatible_correct += 1
+        class_ids[gold].append(pair["id"])
+        if predicted == gold:
+            class_correct[gold] += 1
         else:
-            compatible_missed.append(pair["id"])
-            if predicted == "UNRELATED":
-                compatible_predicted_as_unrelated.append(pair["id"])
-            if predicted == "CONTRADICTS":
-                compatible_predicted_as_contradicts.append(pair["id"])
-    compatible_recall = safe_div(compatible_correct, len(compatible_pairs))
+            class_confusion_examples[gold].append({"pair_id": pair["id"], "predicted": predicted})
+
+    class_recalls = {
+        cls: safe_div(class_correct[cls], len(ids))
+        for cls, ids in class_ids.items()
+    }
+    supported_classes = sorted(class_recalls.keys())
+    min_supported_class_recall = min(class_recalls.values()) if class_recalls else 1.0
+    macro_supported_class_recall = safe_div(sum(class_recalls.values()), len(class_recalls)) if class_recalls else 1.0
+    weakest_classes = sorted(
+        [c for c in supported_classes if class_recalls[c] == min_supported_class_recall]
+    )
+
+    # Retained for continuity/back-compat with v4 reports.
+    compatible_pairs = [p for p in pairs if p["logical_relation"] == "COMPATIBLE"]
+    compatible_correct = class_correct.get("COMPATIBLE", 0)
+    compatible_missed = [x["pair_id"] for x in class_confusion_examples.get("COMPATIBLE", [])]
+    compatible_predicted_as_unrelated = [x["pair_id"] for x in class_confusion_examples.get("COMPATIBLE", []) if x["predicted"] == "UNRELATED"]
+    compatible_predicted_as_contradicts = [x["pair_id"] for x in class_confusion_examples.get("COMPATIBLE", []) if x["predicted"] == "CONTRADICTS"]
+    compatible_recall = class_recalls.get("COMPATIBLE", 1.0)
 
     # Pooled false merge is retained for continuity/reporting, but not used as
     # the sole safety gate.
@@ -427,7 +459,8 @@ def main():
         1.0 - pair_false_merge_rate,
         1.0 - wrong_target_equal_rate,
         1.0 - manufactured_contradiction_rate,
-        compatible_recall,
+        min_supported_class_recall,
+        macro_supported_class_recall,
         correct_merge_rate,
         entailment_accuracy,
         compression_fraction,
@@ -471,6 +504,20 @@ def main():
             "predicted_as_unrelated_ids": compatible_predicted_as_unrelated,
             "predicted_as_contradicts_ids": compatible_predicted_as_contradicts,
         },
+        "class_recalls": {
+            "per_class": {
+                cls: {
+                    "support": len(class_ids[cls]),
+                    "correct": class_correct[cls],
+                    "recall": class_recalls[cls],
+                    "missed": class_confusion_examples[cls],
+                }
+                for cls in supported_classes
+            },
+            "min_supported_class_recall": min_supported_class_recall,
+            "macro_supported_class_recall": macro_supported_class_recall,
+            "weakest_classes": weakest_classes,
+        },
         "compression": {
             "source_nodes": source_nodes,
             "surviving_eclasses": surviving_eclasses,
@@ -506,7 +553,8 @@ def main():
             "1-pair_false_merge_rate",
             "1-wrong_target_equal_rate",
             "1-manufactured_contradiction_rate",
-            "compatible_recall",
+            "min_supported_class_recall",
+            "macro_supported_class_recall",
             "correct_merge_rate",
             "directional_entailment_accuracy",
             "compression_fraction",
@@ -529,10 +577,11 @@ def main():
     print("\n3) Contradiction safety")
     print(f"   Manufactured contradictions {manufactured_contradiction_rate:.3%} ({len(manufactured_contradictions)}/{contradiction_negative_total})")
 
-    print("\n4) COMPATIBLE recognition")
-    print(f"   Recall                       {compatible_recall:.3%} ({compatible_correct}/{len(compatible_pairs)})")
-    print(f"   Missed as UNRELATED          {len(compatible_predicted_as_unrelated)}")
-    print(f"   Missed as CONTRADICTS        {len(compatible_predicted_as_contradicts)}")
+    print("\n4) Per-class logical_relation recall (min/macro over gold-supported classes)")
+    for cls in supported_classes:
+        print(f"   {cls:12s} recall={class_recalls[cls]:.3%}  (support={len(class_ids[cls])})")
+    print(f"   MIN recall (headline)        {min_supported_class_recall:.3%}  weakest={weakest_classes}")
+    print(f"   MACRO recall (headline)      {macro_supported_class_recall:.3%}")
 
     print("\n5) Predicted e-class compression")
     print(f"   Source nodes                {source_nodes}")
@@ -575,6 +624,11 @@ def main():
         print("\nCRITICAL manufactured contradictions:", ", ".join(manufactured_contradictions))
     if compatible_missed:
         print("\nCRITICAL missed COMPATIBLE pairs:", ", ".join(compatible_missed))
+    if min_supported_class_recall < 1.0:
+        print(f"\nCRITICAL weakest logical_relation class(es) {weakest_classes} at {min_supported_class_recall:.3%} recall:")
+        for cls in weakest_classes:
+            for miss in class_confusion_examples[cls]:
+                print(f"   {miss['pair_id']}: gold={cls}, predicted={miss['predicted']}")
 
     if dataset_warnings:
         print("\nDataset coverage warnings:")

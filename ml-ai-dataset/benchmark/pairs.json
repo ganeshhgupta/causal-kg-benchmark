@@ -14,7 +14,7 @@
       "schema_relation": "SAME",
       "context_relation": "DISJOINT",
       "direction_relation": "N/A",
-      "rationale": "Direct analog to the physics benchmark's metal/semiconductor pair (P01). BERT (bidirectional masked LM) and GPT (causal LM) are both real, valid, coexisting pretraining paradigms -- COMPATIBLE -- but a single model's pretraining objective is one or the other, not both, so context_relation is DISJOINT (mutually exclusive pretraining_paradigm values). Must not be escalated to CONTRADICTS just because the mechanisms are opposite."
+      "rationale": "Direct analog to the physics benchmark's metal/semiconductor pair (P01). BERT (bidirectional masked LM) and GPT (causal LM) are both real, valid, coexisting pretraining paradigms -- COMPATIBLE -- but a single model's pretraining objective is one or the other, not both, so context_relation is DISJOINT (mutually exclusive pretraining_paradigm values). Must not be escalated to CONTRADICTS just because the mechanisms are opposite. NOTE: this DISJOINT treatment is a benchmark-scoped simplification (see M009/M010's scope_note), not a universal claim that bidirectional and causal objectives can never coexist in one system -- hybrid approaches exist."
     },
     {
       "id": "P02",
@@ -23,7 +23,7 @@
       "schema_relation": "SAME",
       "context_relation": "SUBSUMES",
       "direction_relation": "N/A",
-      "rationale": "DropConnect's own claim text states it 'generalizes dropout' -- zeroing individual weights is the general mechanism, of which zeroing all weights out of one unit (equivalent to zeroing that unit's activation) is a special case. M053 ENTAILS M041, not EQUAL, despite both sentences reading almost identically ('randomly zero X during training to reduce overfitting'). This is the specialization-mistaken-for-identity trap, analog to physics K004m/K004c."
+      "rationale": "DropConnect's own claim text states it 'generalizes dropout' -- zeroing individual weights is the general mechanism, of which zeroing all weights out of one unit (equivalent to zeroing that unit's activation) is a special case. M053 [ENTAILS-labeled here, see caveat] M041, not EQUAL, despite both sentences reading almost identically ('randomly zero X during training to reduce overfitting'). This is the specialization-mistaken-for-identity trap, analog to physics K004m/K004c. CAVEAT (per review): labeling this ENTAILS is an approximation. M041 is a conjunction (masks activations AND prevents co-adaptation AND acts as an implicit ensemble); M053's mechanism entails the masking-pattern consequence via the mechanism-level argument in M053's notes, and the regularization effects follow as downstream consequences of that same masking mechanism -- but strictly, this is a GENERALIZES/method-lineage relation (general mechanism -> specific structured case), not pure propositional-content logical entailment. Filed under ENTAILS as the nearest value in the current 6-value logical_relation enum; a future schema version should add a dedicated GENERALIZES_METHOD (or similar) relation for method-lineage/taxonomy edges so they stop being squeezed into the logical-entailment axis."
     },
     {
       "id": "P03",
@@ -50,7 +50,7 @@
       "schema_relation": "SAME",
       "context_relation": "SAME",
       "direction_relation": "N/A",
-      "rationale": "The first genuine gold CONTRADICTS example in this project (the physics v0.2 benchmark flagged having zero real contradiction pairs as an open gap -- P01/P05 there were both apparent-contradictions-resolved-by-context, never a real one). BN_ORIG (Ioffe & Szegedy 2015's internal-covariate-shift hypothesis) and BN_REVISED (Santurkar et al. 2018's landscape-smoothing finding) are NOT reconciled by different conditions -- they are two claimed explanations of the SAME phenomenon (why BatchNorm helps) under the SAME context, and empirical evidence supports one over the other. Deliberately given identical (empty) context in propositions.json specifically so a system can't dodge the real contradiction by inventing a spurious context split the way it should for P03/P04."
+      "rationale": "The first genuine gold CONTRADICTS example in this project (the physics v0.2 benchmark flagged having zero real contradiction pairs as an open gap -- P01/P05 there were both apparent-contradictions-resolved-by-context, never a real one). BN_ORIG (Ioffe & Szegedy 2015's internal-covariate-shift hypothesis) and BN_REVISED (Santurkar et al. 2018's landscape-smoothing finding) are NOT reconciled by different conditions -- they are two claimed explanations of the SAME phenomenon (why BatchNorm helps) under the SAME context, and empirical evidence supports one over the other. Deliberately given identical (empty) context in propositions.json specifically so a system can't dodge the real contradiction by inventing a spurious context split the way it should for P03/P04. PROVENANCE CAVEAT (see BN_REVISED's notes): the contradiction is between the embedded scientific hypotheses (mechanism claims), not between the historical facts that each paper made its respective claim -- those provenance facts don't conflict at all."
     },
     {
       "id": "P06",
