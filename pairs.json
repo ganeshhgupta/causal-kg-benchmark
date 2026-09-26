@@ -1,0 +1,112 @@
+{
+  "_comment": "Gold pairwise relation judgments between propositions (and a few proposition-vs-decoy-variant pairs). relation in {EQUAL, ENTAILS, ENTAILED_BY, CONTRADICTS, OVERLAPS, UNRELATED}. 'a REL b' reads left-to-right, e.g. K004 ENTAILS K004m means K004 => K004m.",
+  "pairs": [
+    {
+      "id": "P01",
+      "a": "K002",
+      "b": "K003",
+      "relation": "UNRELATED",
+      "rationale": "Surface forms look like opposite claims (dR/dT>0 vs dR/dT<0), but subjects are disjoint types (Metal vs Semiconductor, per K019). Neither entails nor contradicts the other once material_class context is resolved. THE key test for the 'apparent contradiction from omitted context' failure mode."
+    },
+    {
+      "id": "P02",
+      "a": "K004",
+      "b": "K004m",
+      "relation": "ENTAILS",
+      "rationale": "K004 (general solid thermal expansion) entails K004m (metal case) because Metal is instance_of a solid-forming material class. Reverse does not hold: K004m does not entail the general solid law. Canonical GENERALIZES/SPECIALIZES test case."
+    },
+    {
+      "id": "P03",
+      "a": "K004m",
+      "b": "K004c",
+      "relation": "ENTAILS",
+      "rationale": "K004m (metals expand) entails K004c (copper expands) since Copper instance_of Metal. This is the primary false-merge trap: a naive embedding-similarity canonicalizer will likely mark these EQUAL because the sentences are near-identical in structure ('Metals expand when heated' / 'Copper expands when heated')."
+    },
+    {
+      "id": "P04",
+      "a": "K004",
+      "b": "K004c",
+      "relation": "ENTAILS",
+      "rationale": "Transitive closure of P02+P03: general solid expansion entails the copper instance. Used to check the entailment-graph transitivity constraint is actually enforced."
+    },
+    {
+      "id": "P05",
+      "a": "K015",
+      "b": "K016",
+      "relation": "OVERLAPS",
+      "rationale": "Most important case in v0. Surface forms directly negate each other ('water expands when heated' vs 'water contracts when heated'). Both are TRUE, in disjoint temperature_domain contexts (above 4C vs 0-4C). Correct system behavior: do not mark CONTRADICTS; recognize same subject (water, volume/length under heating) with context-dependent truth, i.e. OVERLAPS with a resolvable context split -- exactly the 'A^C1->B, A^C2->not B' pattern that should trigger a context-refinement step rather than a rejection."
+    },
+    {
+      "id": "P06",
+      "a": "K009",
+      "b": "V009c",
+      "relation": "ENTAILED_BY",
+      "rationale": "K009 (boiling point at 1 atm = 100C) entails-under-added-context, but the decoy V009c ('water boils at 100C', no pressure clause) is a strictly weaker/ambiguous claim -- it holds at 1 atm but is false at altitude. Treat K009 ENTAILS V009c-as-stated-at-1atm, but V009c alone should not be filed as EQUAL to K009 since it silently drops a load-bearing condition. Scored as a false-merge trap."
+    },
+    {
+      "id": "P07",
+      "a": "K012",
+      "b": "V012c",
+      "relation": "OVERLAPS",
+      "rationale": "K012 (distance/time under constant velocity) and V012c ('instantaneous speed = distance/time', no constancy qualifier) share subject matter but V012c is only true in the special case that reduces to K012's assumption; in general instantaneous speed is a derivative, not distance/time. Another context-dropped false-merge trap."
+    },
+    {
+      "id": "P08",
+      "a": "K001",
+      "b": "K011",
+      "relation": "ENTAILS",
+      "rationale": "K001 (V=IR) together with K010 (P=IV) jointly entail K011 (P=I^2R) by substitution. As a HYPEREDGE: {K001, K010} -> K011. K001 alone does not entail K011 (needs K010 too) -- flagged so the benchmark scorer doesn't credit a system for merging K001 and K011 directly.",
+      "hyperedge_premises": ["K001", "K010"]
+    },
+    {
+      "id": "P09",
+      "a": "K010",
+      "b": "K011",
+      "relation": "OVERLAPS",
+      "rationale": "Same hyperedge as P08 -- K010 alone is a necessary but not sufficient premise for K011. Marked OVERLAPS (shares structure/derivation) rather than ENTAILS to avoid crediting single-premise entailment for what is actually a 2-premise hyperedge conclusion."
+    },
+    {
+      "id": "P10",
+      "a": "K018",
+      "b": "K002",
+      "relation": "UNRELATED",
+      "rationale": "K018 is an ontological classification fact (Metal instance_of Conductor); K002 is a quantitative causal law about metals. Same subject type (Metal) but disjoint semantic content -- tests that the classifier doesn't over-merge same-subject propositions of different logical kinds (ontological vs causal)."
+    },
+    {
+      "id": "P11",
+      "a": "K006",
+      "b": "K007",
+      "relation": "UNRELATED",
+      "rationale": "Ideal gas law and Newton's second law share no concepts and no derivational relationship. Baseline negative control."
+    },
+    {
+      "id": "P12",
+      "a": "K005",
+      "b": "K007",
+      "relation": "UNRELATED",
+      "rationale": "Density definition vs force law -- both simple algebraic identities, unrelated subjects. Negative control."
+    },
+    {
+      "id": "P13",
+      "a": "K019",
+      "b": "K002",
+      "relation": "OVERLAPS",
+      "rationale": "K019 (Metal and Semiconductor disjoint) is the ontological fact that JUSTIFIES resolving P01 as UNRELATED rather than CONTRADICTS -- it shares the Metal concept and is load-bearing background for P01, but does not itself entail or get entailed by K002.",
+      "supports_pair": "P01"
+    },
+    {
+      "id": "P14",
+      "a": "K014",
+      "b": "K004",
+      "relation": "UNRELATED",
+      "rationale": "Both are MONOTONIC_* propositions with a similar formal shape (radius/escape_velocity vs temperature/length) but completely different subject domains (astrophysics vs thermal expansion). Tests that the classifier doesn't over-merge on shared predicate SHAPE (MONOTONIC_POSITIVE/NEGATIVE) alone."
+    },
+    {
+      "id": "P15",
+      "a": "K013",
+      "b": "K009",
+      "relation": "UNRELATED",
+      "rationale": "Heat-capacity relation vs a boiling-point instance fact -- adjacent topically (both about heat/water-ish) but no logical relationship. Near-miss negative control to test embedding-similarity false positives."
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "_comment": "Gold canonical K-IR propositions for Benchmark v0. Each is the target equivalence class that paraphrase 'variants' (variants.json) should collapse onto. 'context' fields are the conditions/assumptions that make the statement true -- they are the whole point of the benchmark.",
+  "propositions": [
+    {
+      "id": "K001",
+      "statement": "V(x) = I(x) * R(x)",
+      "nl_gloss": "Voltage equals current times resistance (Ohm's law).",
+      "concepts": ["C09", "C08", "C02"],
+      "context": {"material_class": "ohmic_conductor"},
+      "notes": "Classic law-of-nature proposition; no differentiability subtleties."
+    },
+    {
+      "id": "K002",
+      "statement": "MONOTONIC_POSITIVE(Temperature(x), ElectricalResistance(x))",
+      "nl_gloss": "For metals, electrical resistance increases as temperature increases.",
+      "concepts": ["C01", "C02", "C13"],
+      "context": {"material_class": "metal", "domain": "normal_operating_range (no phase change, no superconducting transition)"},
+      "notes": "dR/dT > 0 for metals. Deliberately paired with K003 to test context-sensitive contradiction handling."
+    },
+    {
+      "id": "K003",
+      "statement": "MONOTONIC_NEGATIVE(Temperature(x), ElectricalResistance(x))",
+      "nl_gloss": "For semiconductors, electrical resistance decreases as temperature increases.",
+      "concepts": ["C01", "C02", "C14"],
+      "context": {"material_class": "semiconductor", "domain": "normal_operating_range"},
+      "notes": "dR/dT < 0 for semiconductors. Surface-level negation of K002; correct system must NOT mark K002/K003 as CONTRADICTS once material_class context is taken into account -- they are UNRELATED (different subject material), not contradictory."
+    },
+    {
+      "id": "K004",
+      "statement": "MONOTONIC_POSITIVE(Temperature(x), LinearExtent(x))",
+      "nl_gloss": "A solid body's linear dimensions increase as its temperature increases, at constant pressure.",
+      "concepts": ["C01", "C03", "C12"],
+      "context": {"phase_state": "solid", "pressure": "constant"},
+      "notes": "General thermal expansion law for solids."
+    },
+    {
+      "id": "K004m",
+      "statement": "MONOTONIC_POSITIVE(Temperature(x), LinearExtent(x))",
+      "nl_gloss": "Metals expand when heated.",
+      "concepts": ["C01", "C03", "C13"],
+      "context": {"phase_state": "solid", "pressure": "constant", "material_class": "metal"},
+      "notes": "SPECIALIZATION of K004 (metal is instance_of Material/solid). Correct relation to K004: K004m ENTAILS-nothing-new / K004 ENTAILS K004m is the wrong direction -- actually K004 (general) ENTAILS K004m (specific) given Metal instance_of solid-forming material. Used to test the 'specialization mistaken for identity' failure mode."
+    },
+    {
+      "id": "K004c",
+      "statement": "MONOTONIC_POSITIVE(Temperature(Copper_instance), LinearExtent(Copper_instance))",
+      "nl_gloss": "Copper expands when heated.",
+      "concepts": ["C01", "C03", "C16"],
+      "context": {"phase_state": "solid", "pressure": "constant", "material_class": "metal", "material": "copper"},
+      "notes": "SPECIALIZATION of K004m (Copper instance_of Metal). K004m ENTAILS K004c, not EQUAL. This is the canonical 'false merge' trap case from the design discussion."
+    },
+    {
+      "id": "K005",
+      "statement": "Density(x) = Mass(x) / Volume(x)",
+      "nl_gloss": "Density equals mass divided by volume.",
+      "concepts": ["C07", "C06", "C04"],
+      "context": {},
+      "notes": "Definitional identity, always true, no context needed."
+    },
+    {
+      "id": "K006",
+      "statement": "Pressure(x) * Volume(x) = n * R_gas * Temperature(x)",
+      "nl_gloss": "Ideal gas law: PV = nRT.",
+      "concepts": ["C05", "C04", "C01"],
+      "context": {"phase_state": "gas", "gas_model": "ideal"},
+      "notes": "Fails for real gases at high pressure / low temperature -- context is load-bearing."
+    },
+    {
+      "id": "K007",
+      "statement": "Force(x) = Mass(x) * Acceleration(x)",
+      "nl_gloss": "Newton's second law: F = ma.",
+      "concepts": ["C21", "C06"],
+      "context": {"regime": "non-relativistic, constant mass"},
+      "notes": "Classic law; context excludes relativistic speeds and variable-mass systems (e.g. rockets)."
+    },
+    {
+      "id": "K008",
+      "statement": "Boiling(x) <=> (Temperature(x) >= BoilingPoint(x, Pressure(x)) AND PhaseState(x) = liquid)",
+      "nl_gloss": "A liquid boils when its temperature reaches the boiling point at the current pressure.",
+      "concepts": ["C01", "C22", "C05", "C24"],
+      "context": {},
+      "notes": "Rule with an explicit conjunctive condition; used to test hyperedge/AND handling."
+    },
+    {
+      "id": "K009",
+      "statement": "BoilingPoint(Water, AtmosphericPressure) = 100C",
+      "nl_gloss": "Water boils at 100 degrees Celsius at 1 atmosphere of pressure.",
+      "concepts": ["C17", "C22", "C23"],
+      "context": {"pressure": "1 atm"},
+      "notes": "Instance fact, not a general law. Boiling point changes with pressure/altitude -- context is load-bearing."
+    },
+    {
+      "id": "K010",
+      "statement": "Power(x) = Current(x) * Voltage(x)",
+      "nl_gloss": "Electrical power equals current times voltage.",
+      "concepts": ["C10", "C08", "C09"],
+      "context": {},
+      "notes": "Definitional; combines with K001 to derive K011 (tests substitution-based ENTAILS, not surface EQUAL)."
+    },
+    {
+      "id": "K011",
+      "statement": "Power(x) = Current(x)^2 * Resistance(x)",
+      "nl_gloss": "Electrical power dissipated equals current squared times resistance.",
+      "concepts": ["C10", "C08", "C02"],
+      "context": {"material_class": "ohmic_conductor"},
+      "notes": "Derivable from K001 + K010 by substitution (V=IR into P=IV). Relation to K001/K010: ENTAILED_BY {K001, K010} jointly (hyperedge), not EQUAL to either alone."
+    },
+    {
+      "id": "K012",
+      "statement": "Velocity(x) = Distance(x) / Time(x)",
+      "nl_gloss": "Average velocity equals distance divided by time.",
+      "concepts": ["C20", "C19"],
+      "context": {"motion": "constant velocity, straight line"},
+      "notes": "Fails for non-uniform motion without qualifying as 'average'."
+    },
+    {
+      "id": "K013",
+      "statement": "DeltaThermalEnergy(x) = Mass(x) * SpecificHeat(x) * DeltaTemperature(x)",
+      "nl_gloss": "Heat added equals mass times specific heat times temperature change.",
+      "concepts": ["C11", "C06", "C25", "C01"],
+      "context": {"phase_state": "no phase change during heating"},
+      "notes": "Breaks down during phase transitions (latent heat dominates instead)."
+    },
+    {
+      "id": "K014",
+      "statement": "MONOTONIC_NEGATIVE(Radius(x), EscapeVelocity(x))",
+      "nl_gloss": "For a fixed mass, escape velocity increases as radius decreases.",
+      "concepts": ["C26", "C27"],
+      "context": {"mass": "constant"},
+      "notes": "escape_velocity ~ sqrt(mass/radius); monotonicity only holds at fixed mass."
+    },
+    {
+      "id": "K015",
+      "statement": "MONOTONIC_POSITIVE(Temperature(Water_instance), LinearExtent(Water_instance))",
+      "nl_gloss": "Water expands when heated.",
+      "concepts": ["C01", "C03", "C17"],
+      "context": {"phase_state": "liquid", "temperature_domain": "above 4C"},
+      "notes": "TRUE only above 4C. See K016 for the anomalous region -- deliberately constructed contradiction-via-omitted-context pair."
+    },
+    {
+      "id": "K016",
+      "statement": "MONOTONIC_NEGATIVE(Temperature(Water_instance), Volume(Water_instance))",
+      "nl_gloss": "Water contracts as it is heated between 0C and 4C (anomalous expansion).",
+      "concepts": ["C01", "C04", "C17"],
+      "context": {"phase_state": "liquid", "temperature_domain": "0C to 4C"},
+      "notes": "Surface form looks like it CONTRADICTS K015. Correct classification once temperature_domain context is included: neither CONTRADICTS nor UNRELATED -- both are true, in disjoint context windows (OVERLAPS-by-subject, but truth-conditionally compatible once context is resolved). This is the single most important test case in v0."
+    },
+    {
+      "id": "K017",
+      "statement": "Current(x) = dCharge(x)/dTime",
+      "nl_gloss": "Electric current is the rate of flow of charge.",
+      "concepts": ["C08", "C28", "C19"],
+      "context": {},
+      "notes": "Definitional identity."
+    },
+    {
+      "id": "K018",
+      "statement": "INSTANCE_OF(Metal, Conductor)",
+      "nl_gloss": "Metals are conductors.",
+      "concepts": ["C13", "C15"],
+      "context": {},
+      "notes": "Ontological fact, not a causal/quantitative law -- tests that the classifier doesn't force everything into MONOTONIC_* form."
+    },
+    {
+      "id": "K019",
+      "statement": "DISJOINT(Metal, Semiconductor)",
+      "nl_gloss": "No material is both a metal and a semiconductor.",
+      "concepts": ["C13", "C14"],
+      "context": {},
+      "notes": "Supports resolving K002/K003 as UNRELATED rather than CONTRADICTS, since their subjects are disjoint types."
+    },
+    {
+      "id": "K020",
+      "statement": "Volume(x) is CONSERVED under uniform_scaling(x) iff shape unchanged",
+      "nl_gloss": "Scaling an object uniformly changes its volume unless the shape is held exactly proportional in a way that keeps volume fixed (trivial/never in practice).",
+      "concepts": ["C04"],
+      "context": {},
+      "notes": "Deliberately awkward/edge-case proposition to stress-test the classifier on a near-vacuous statement; expect low agreement -- included for calibration, not as a load-bearing fact."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "_comment": "Paraphrase/variant expressions of each canonical proposition in propositions.json. By construction every variant is EQUAL to its proposition_id UNLESS 'deliberate_error' is set -- those are decoys that look like paraphrases but actually shift context/scope, and should NOT be merged (used to score false-merge rate).",
+  "variants": [
+    {"id": "V001a", "proposition_id": "K001", "form": "nl", "text": "Voltage across a resistor is the product of current and resistance."},
+    {"id": "V001b", "proposition_id": "K001", "form": "nl", "text": "For an ohmic conductor, V/I is constant and equal to R."},
+    {"id": "V001c", "proposition_id": "K001", "form": "equation", "text": "V = IR"},
+    {"id": "V001d", "proposition_id": "K001", "form": "code", "text": "def voltage(current, resistance): return current * resistance"},
+
+    {"id": "V002a", "proposition_id": "K002", "form": "nl", "text": "Heating a metal increases its electrical resistance."},
+    {"id": "V002b", "proposition_id": "K002", "form": "nl", "text": "Metal resistors get more resistive as they warm up."},
+    {"id": "V002c", "proposition_id": "K002", "form": "equation", "text": "dR/dT > 0, R the resistance of a metal"},
+    {"id": "V002d", "proposition_id": "K002", "form": "nl", "text": "As temperature rises, a metal's resistance rises with it."},
+
+    {"id": "V003a", "proposition_id": "K003", "form": "nl", "text": "Semiconductor resistance falls as temperature rises."},
+    {"id": "V003b", "proposition_id": "K003", "form": "equation", "text": "dR/dT < 0, R the resistance of a semiconductor"},
+    {"id": "V003c", "proposition_id": "K003", "form": "nl", "text": "Heating a semiconductor makes it a better conductor."},
+
+    {"id": "V004a", "proposition_id": "K004", "form": "nl", "text": "Solid objects get longer when their temperature increases, at fixed pressure."},
+    {"id": "V004b", "proposition_id": "K004", "form": "nl", "text": "Thermal expansion causes solids to increase in size as temperature rises."},
+    {"id": "V004c", "proposition_id": "K004", "form": "equation", "text": "dL/dT > 0 for a solid at constant P"},
+
+    {"id": "V004ma", "proposition_id": "K004m", "form": "nl", "text": "Metals expand when heated."},
+    {"id": "V004mb", "proposition_id": "K004m", "form": "nl", "text": "Heating a metal causes it to get bigger."},
+    {"id": "V004mc", "proposition_id": "K004m", "form": "equation", "text": "dL/dT > 0 for a metal"},
+
+    {"id": "V004ca", "proposition_id": "K004c", "form": "nl", "text": "Copper expands when heated.", "notes": "Do NOT merge with K004m or K004 -- specialization, not equality."},
+    {"id": "V004cb", "proposition_id": "K004c", "form": "nl", "text": "A copper rod gets longer as its temperature increases."},
+
+    {"id": "V005a", "proposition_id": "K005", "form": "nl", "text": "Density is mass per unit volume."},
+    {"id": "V005b", "proposition_id": "K005", "form": "equation", "text": "rho = m/V"},
+    {"id": "V005c", "proposition_id": "K005", "form": "nl", "text": "Divide an object's mass by its volume to get its density."},
+
+    {"id": "V006a", "proposition_id": "K006", "form": "nl", "text": "For an ideal gas, pressure times volume equals the amount of gas times the gas constant times temperature."},
+    {"id": "V006b", "proposition_id": "K006", "form": "equation", "text": "PV = nRT"},
+    {"id": "V006c", "proposition_id": "K006", "form": "nl", "text": "Ideal gases obey PV=nRT."},
+
+    {"id": "V007a", "proposition_id": "K007", "form": "nl", "text": "Force equals mass times acceleration."},
+    {"id": "V007b", "proposition_id": "K007", "form": "equation", "text": "F = ma"},
+    {"id": "V007c", "proposition_id": "K007", "form": "nl", "text": "The net force on an object of constant mass is proportional to its acceleration, with mass as the constant of proportionality."},
+
+    {"id": "V008a", "proposition_id": "K008", "form": "nl", "text": "A liquid starts boiling once it reaches the boiling point for the current pressure."},
+    {"id": "V008b", "proposition_id": "K008", "form": "nl", "text": "Boiling occurs exactly when a liquid's temperature meets or exceeds its pressure-dependent boiling point."},
+
+    {"id": "V009a", "proposition_id": "K009", "form": "nl", "text": "Water boils at 100 degrees C at sea-level atmospheric pressure."},
+    {"id": "V009b", "proposition_id": "K009", "form": "nl", "text": "At 1 atm, water's boiling point is 100C.", "notes": "Should NOT merge with a version omitting the pressure clause -- see V009c decoy."},
+    {"id": "V009c", "proposition_id": "K009", "form": "nl", "text": "Water boils at 100 degrees C.", "deliberate_error": "context_dropped", "notes": "Decoy: omits the 1-atm condition. At altitude water boils below 100C. Correct relation to K009: OVERLAPS/ENTAILED_BY-with-missing-context, not EQUAL."},
+
+    {"id": "V010a", "proposition_id": "K010", "form": "nl", "text": "Electrical power is current times voltage."},
+    {"id": "V010b", "proposition_id": "K010", "form": "equation", "text": "P = IV"},
+
+    {"id": "V011a", "proposition_id": "K011", "form": "nl", "text": "Power dissipated in a resistor is current squared times resistance."},
+    {"id": "V011b", "proposition_id": "K011", "form": "equation", "text": "P = I^2 R"},
+
+    {"id": "V012a", "proposition_id": "K012", "form": "nl", "text": "Average speed is distance traveled divided by time taken."},
+    {"id": "V012b", "proposition_id": "K012", "form": "equation", "text": "v = d/t"},
+    {"id": "V012c", "proposition_id": "K012", "form": "nl", "text": "Speed at any instant equals distance over time.", "deliberate_error": "context_dropped", "notes": "Decoy: drops the constant-velocity/straight-line qualifier -- instantaneous speed for non-uniform motion is NOT distance/time, it's a derivative. Should not be marked EQUAL to K012."},
+
+    {"id": "V013a", "proposition_id": "K013", "form": "nl", "text": "Heat added to an object equals its mass times specific heat times the temperature change."},
+    {"id": "V013b", "proposition_id": "K013", "form": "equation", "text": "Q = mcDeltaT"},
+
+    {"id": "V014a", "proposition_id": "K014", "form": "nl", "text": "A smaller radius gives a higher escape velocity, for the same mass."},
+    {"id": "V014b", "proposition_id": "K014", "form": "nl", "text": "As a collapsing core's radius shrinks at fixed mass, its escape velocity rises."},
+
+    {"id": "V015a", "proposition_id": "K015", "form": "nl", "text": "Water expands when heated.", "notes": "Only true above 4C -- pair with K016 to test the anomalous-water contradiction case."},
+    {"id": "V015b", "proposition_id": "K015", "form": "nl", "text": "Liquid water's volume increases with temperature, above 4 degrees C."},
+
+    {"id": "V016a", "proposition_id": "K016", "form": "nl", "text": "Between 0C and 4C, water contracts as it warms."},
+    {"id": "V016b", "proposition_id": "K016", "form": "nl", "text": "Water reaches its maximum density at 4C, having contracted while heating from 0C to 4C."},
+
+    {"id": "V017a", "proposition_id": "K017", "form": "nl", "text": "Current is the rate at which charge flows."},
+    {"id": "V017b", "proposition_id": "K017", "form": "equation", "text": "I = dQ/dt"},
+
+    {"id": "V018a", "proposition_id": "K018", "form": "nl", "text": "All metals are conductors."},
+    {"id": "V018b", "proposition_id": "K018", "form": "nl", "text": "Being a metal implies being a conductor."},
+
+    {"id": "V019a", "proposition_id": "K019", "form": "nl", "text": "Nothing is both a metal and a semiconductor."},
+    {"id": "V019b", "proposition_id": "K019", "form": "nl", "text": "Metal and semiconductor are mutually exclusive material classes."}
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "_comment": "Concept ontology for Benchmark v0 (thermal / electrical / material physics domain). type follows a minimal upper ontology: Entity, Type, Quantity, Property, Constant.",
+  "concepts": [
+    {"id": "C01", "name": "Temperature", "type": "Quantity"},
+    {"id": "C02", "name": "ElectricalResistance", "type": "Quantity"},
+    {"id": "C03", "name": "LinearExtent", "type": "Quantity", "description": "length/dimension of a solid body"},
+    {"id": "C04", "name": "Volume", "type": "Quantity"},
+    {"id": "C05", "name": "Pressure", "type": "Quantity"},
+    {"id": "C06", "name": "Mass", "type": "Quantity"},
+    {"id": "C07", "name": "Density", "type": "Quantity"},
+    {"id": "C08", "name": "Current", "type": "Quantity"},
+    {"id": "C09", "name": "Voltage", "type": "Quantity"},
+    {"id": "C10", "name": "Power", "type": "Quantity"},
+    {"id": "C11", "name": "ThermalEnergy", "type": "Quantity"},
+    {"id": "C12", "name": "Material", "type": "Type"},
+    {"id": "C13", "name": "Metal", "type": "Type", "instance_of": "C12"},
+    {"id": "C14", "name": "Semiconductor", "type": "Type", "instance_of": "C12", "disjoint_with": "C13"},
+    {"id": "C15", "name": "Conductor", "type": "Type", "description": "supertype covering Metal (and some non-metals)"},
+    {"id": "C16", "name": "Copper", "type": "Type", "instance_of": "C13"},
+    {"id": "C17", "name": "Water", "type": "Type", "instance_of": "C12"},
+    {"id": "C18", "name": "Body", "type": "Entity", "description": "generic physical object variable, e.g. x"},
+    {"id": "C19", "name": "Time", "type": "Quantity"},
+    {"id": "C20", "name": "Velocity", "type": "Quantity"},
+    {"id": "C21", "name": "Force", "type": "Quantity"},
+    {"id": "C22", "name": "BoilingPoint", "type": "Quantity", "description": "function of (material, pressure)"},
+    {"id": "C23", "name": "AtmosphericPressure", "type": "Constant", "value": "1 atm"},
+    {"id": "C24", "name": "PhaseState", "type": "Property", "domain": ["solid", "liquid", "gas"]},
+    {"id": "C25", "name": "SpecificHeat", "type": "Quantity", "description": "material-specific constant"},
+    {"id": "C26", "name": "Radius", "type": "Quantity"},
+    {"id": "C27", "name": "EscapeVelocity", "type": "Quantity"},
+    {"id": "C28", "name": "Charge", "type": "Quantity"}
+  ]
+}
