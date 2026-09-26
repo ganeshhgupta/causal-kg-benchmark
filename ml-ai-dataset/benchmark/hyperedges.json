@@ -1,0 +1,12 @@
+{
+  "_comment": "Multi-premise (hyperedge) entailment, same pattern as ../../hyperedges.json's {K001,K010}->K011.",
+  "hyperedges": [
+    {
+      "id": "H01",
+      "premises": ["M022", "M026"],
+      "conclusion": "M027",
+      "relation": "ENTAILS",
+      "rationale": "Adam (M027) is Momentum's first-moment gradient tracking (M022) combined with RMSProp's second-moment/adaptive-per-parameter-learning-rate tracking (M026), plus bias correction for both. Neither premise alone entails Adam -- momentum alone gives plain momentum-SGD, and RMSProp alone gives adaptive-LR without momentum (see pairs.json P08/P09, both COMPATIBLE not ENTAILS)."
+    }
+  ]
+}

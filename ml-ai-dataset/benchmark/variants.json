@@ -1,0 +1,43 @@
+{
+  "_comment": "Paraphrase variants of the propositions.json entries, same policy as the physics benchmark: a variant is EQUAL only if it doesn't silently drop a load-bearing condition or confuse the claim with a sibling technique's mechanism. deliberate_error decoys are real, plausible ML mistakes, not contrived ones.",
+  "variants": [
+    {"id":"V-M022a","proposition_id":"M022","form":"nl","text":"Momentum-based optimizers keep a running average of past gradients to smooth out updates and speed up convergence in narrow valleys."},
+    {"id":"V-M022b","proposition_id":"M022","form":"equation","text":"v_t = beta*v_{t-1} + (1-beta)*grad_t; the parameter update uses v_t instead of the raw gradient."},
+
+    {"id":"V-M024a","proposition_id":"M024","form":"nl","text":"AdaGrad gives parameters that are updated less often a proportionally larger learning rate, by dividing by the accumulated sum of squared past gradients."},
+
+    {"id":"V-M026a","proposition_id":"M026","form":"nl","text":"RMSProp divides the gradient by a decaying average of recent squared gradients, avoiding AdaGrad's ever-shrinking learning rate."},
+    {"id":"V-M026b","proposition_id":"M026","form":"nl","text":"RMSProp divides the gradient by the sum of all past squared gradients.", "deliberate_error":"sibling_confusion", "notes":"This is AdaGrad's mechanism (M024/M025), not RMSProp's -- RMSProp specifically replaces the cumulative sum with an exponential decay to fix AdaGrad's vanishing-LR problem. A system that can't tell the two adaptive-LR methods apart will wrongly merge this into M026."},
+
+    {"id":"V-M027a","proposition_id":"M027","form":"nl","text":"Adam is essentially momentum plus RMSProp, with bias-corrected moving averages of the gradient and its square."},
+    {"id":"V-M027b","proposition_id":"M027","form":"nl","text":"Adam adapts the learning rate per parameter using only a running average of squared gradients, without any momentum term.", "deliberate_error":"dropped_component", "notes":"Drops Adam's momentum (first-moment) component -- this describes plain RMSProp, not Adam. Adam's defining feature is combining BOTH moment estimates."},
+
+    {"id":"V-M041a","proposition_id":"M041","form":"nl","text":"During training, dropout randomly turns off a subset of neurons so the network can't over-rely on any single one."},
+    {"id":"V-M041b","proposition_id":"M041","form":"nl","text":"Dropout randomly deactivates neurons at both training and test time to regularize the network.", "deliberate_error":"context_dropped", "notes":"Drops the training/inference phase distinction -- dropout is disabled at test time (M042). Direct analog to the physics benchmark's V015a decoy."},
+
+    {"id":"V-M042a","proposition_id":"M042","form":"nl","text":"At inference, dropout's random deactivation is turned off; the full network is used, with activations rescaled to match training-time expectations."},
+
+    {"id":"V-M053a","proposition_id":"M053","form":"nl","text":"DropConnect works like dropout but zeroes out individual connection weights instead of entire neuron outputs, making it a more fine-grained generalization of the dropout idea."},
+
+    {"id":"V-BN-ORIG-a","proposition_id":"BN_ORIG","form":"nl","text":"The original motivation for batch normalization was that it reduces internal covariate shift -- the shifting distribution of layer inputs during training."},
+    {"id":"V-BN-REVISED-a","proposition_id":"BN_REVISED","form":"nl","text":"Later research found batch normalization's real benefit is making the loss landscape smoother for optimization, not reducing internal covariate shift as originally claimed."},
+
+    {"id":"V-M067a","proposition_id":"M067","form":"nl","text":"ResNet adds shortcut/identity connections so a block only needs to learn the residual (difference) from its input, which helps gradients flow through very deep networks."},
+    {"id":"V-M067b","proposition_id":"M067","form":"nl","text":"Skip connections in ResNet let very deep networks (100+ layers) train successfully by giving gradients an unimpeded path backward."},
+
+    {"id":"V-M069a","proposition_id":"M069","form":"nl","text":"DenseNet's dense connectivity, where every layer receives the feature maps of all preceding layers, promotes feature reuse and helps gradients reach early layers."},
+
+    {"id":"V-M005a","proposition_id":"M005","form":"nl","text":"Full self-attention has quadratic time and memory cost in the sequence length, since every token attends to every other token."},
+    {"id":"V-M005b","proposition_id":"M005","form":"nl","text":"Self-attention scales linearly with sequence length.", "deliberate_error":"context_dropped", "notes":"True only for sparse/linear-attention variants (M018), false for standard full self-attention. Classic dropped-exception overgeneralization, analog to physics's K004m Invar-alloy decoy."},
+
+    {"id":"V-M018a","proposition_id":"M018","form":"nl","text":"Restricting each token's attention to a local window or fixed pattern reduces attention's cost from quadratic to roughly linear in sequence length."},
+
+    {"id":"V-M009a","proposition_id":"M009","form":"nl","text":"BERT is trained by masking some input tokens and predicting them using context from both directions."},
+
+    {"id":"V-M010a","proposition_id":"M010","form":"nl","text":"GPT is trained purely to predict the next token given only the preceding tokens, never seeing future context during training."},
+
+    {"id":"V-M167a","proposition_id":"M167","form":"nl","text":"DQN combines Q-learning with a deep neural network function approximator so it can operate directly on high-dimensional inputs like pixels."},
+
+    {"id":"V-M243a","proposition_id":"M243","form":"nl","text":"Pruning trims individual weights or whole structural units, like channels or neurons, out of a trained network to shrink it."}
+  ]
+}

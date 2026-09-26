@@ -1,0 +1,204 @@
+{
+  "variant_predictions": [
+    {
+      "variant_id": "V-M022a",
+      "proposition_id": "M022",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M022b",
+      "proposition_id": "M022",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M024a",
+      "proposition_id": "M024",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M026a",
+      "proposition_id": "M026",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M026b",
+      "proposition_id": "M026",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V-M027a",
+      "proposition_id": "M027",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M027b",
+      "proposition_id": "M027",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V-M041a",
+      "proposition_id": "M041",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M041b",
+      "proposition_id": "M041",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V-M042a",
+      "proposition_id": "M042",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M053a",
+      "proposition_id": "M053",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-BN-ORIG-a",
+      "proposition_id": "BN_ORIG",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-BN-REVISED-a",
+      "proposition_id": "BN_REVISED",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M067a",
+      "proposition_id": "M067",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M067b",
+      "proposition_id": "M067",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M069a",
+      "proposition_id": "M069",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M005a",
+      "proposition_id": "M005",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M005b",
+      "proposition_id": "M005",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V-M018a",
+      "proposition_id": "M018",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M009a",
+      "proposition_id": "M009",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M010a",
+      "proposition_id": "M010",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M167a",
+      "proposition_id": "M167",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V-M243a",
+      "proposition_id": "M243",
+      "logical_relation": "EQUAL"
+    }
+  ],
+  "pair_predictions": [
+    {
+      "pair_id": "P01",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P02",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P03",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE"
+    },
+    {
+      "pair_id": "P04",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE"
+    },
+    {
+      "pair_id": "P05",
+      "logical_relation": "CONTRADICTS",
+      "schema_relation": "SAME",
+      "context_relation": "SAME",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P06",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "SAME",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P07",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "SAME",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P08",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SAME",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P09",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SAME",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P10",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SAME",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P11",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SUBSUMED_BY",
+      "direction_relation": "N/A"
+    }
+  ],
+  "hyperedge_predictions": [
+    {
+      "hyperedge_id": "H01",
+      "entailed": true
+    }
+  ]
+}

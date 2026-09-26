@@ -1,0 +1,29 @@
+{
+  "_comment": "Canonicalization-benchmark layer on top of the 500-entry ml-ai-dataset, built the same way as ../../propositions.json (physics v0.2): a curated subset chosen specifically because it exhibits the same failure patterns (specialization-vs-identity, apparent-contradiction-from-missing-phase/context, genuine scientific-revision contradiction, compatible siblings, hyperedges). Most entries reuse the exact 'claim' text from ../dataset.json (noted via source_id) with an added context field; two are new (BN_ORIG / BN_REVISED) because the raw dataset's single BatchNorm-mechanism entries needed to be split into two atomic, directly-opposable propositions.",
+  "propositions": [
+    {"id":"M022","source_id":"M022","context":{},"statement":"Momentum accumulates an exponentially decaying moving average of past gradients to accelerate convergence and dampen oscillation in narrow loss-surface valleys."},
+    {"id":"M024","source_id":"M024","context":{},"statement":"AdaGrad adapts each parameter's learning rate by dividing by the square root of the sum of its past squared gradients, giving infrequently-updated parameters larger effective steps."},
+    {"id":"M025","source_id":"M025","context":{},"statement":"AdaGrad's accumulated squared-gradient denominator grows monotonically, causing its effective learning rate to shrink toward zero over long training runs."},
+    {"id":"M026","source_id":"M026","context":{},"statement":"RMSProp fixes AdaGrad's vanishing-learning-rate problem by using an exponentially decaying moving average of squared gradients instead of a cumulative sum."},
+    {"id":"M027","source_id":"M027","context":{},"statement":"Adam combines a momentum-style first moment estimate with an RMSProp-style adaptive second moment estimate, plus bias correction for both."},
+
+    {"id":"M041","source_id":"M041","context":{"phase":"training"},"statement":"Dropout randomly zeroes a fraction of unit activations during training, preventing co-adaptation of neurons and acting as an implicit ensemble of subnetworks."},
+    {"id":"M042","source_id":"M042","context":{"phase":"inference"},"statement":"At test time, dropout is disabled and activations are scaled to match the expected magnitude seen during training."},
+    {"id":"M053","source_id":"M053","context":{},"statement":"DropConnect generalizes dropout by randomly zeroing individual weights (connections) rather than whole unit activations."},
+
+    {"id":"BN_ORIG","source_id":null,"context":{},"notes":"Ioffe & Szegedy 2015's original hypothesis, now empirically challenged by BN_REVISED.","statement":"Batch normalization improves training primarily by reducing internal covariate shift: the change in the distribution of each layer's inputs during training caused by updates to preceding layers."},
+    {"id":"BN_REVISED","source_id":"M044","context":{},"notes":"Santurkar et al. 2018's empirical finding, which directly challenges BN_ORIG as an explanation of the SAME phenomenon (why BatchNorm improves training) -- not a different-context reconciliation like the water/dropout/attention pairs. Deliberately given the SAME (empty) context as BN_ORIG: this is a genuine contradiction between two claimed mechanisms, not an apparent one resolvable by adding a condition.","statement":"Batch normalization's main benefit is smoothing the optimization landscape, not reducing internal covariate shift."},
+
+    {"id":"M067","source_id":"M067","context":{},"statement":"ResNet's residual (skip) connections let a layer learn a residual function relative to its input, mitigating vanishing gradients and enabling training of networks over 100 layers deep."},
+    {"id":"M069","source_id":"M069","context":{},"statement":"DenseNet connects each layer to every other layer in a feed-forward fashion within a block, encouraging feature reuse and alleviating vanishing gradients."},
+
+    {"id":"M005","source_id":"M005","context":{"attention_type":"full/dense self-attention"},"statement":"Self-attention computes pairwise interactions between all token pairs, costing O(n^2) time and memory in sequence length n."},
+    {"id":"M018","source_id":"M018","context":{"attention_type":"sparse/windowed attention"},"statement":"Sparse attention patterns restrict each token to attend to a limited set of positions, reducing the quadratic cost of full self-attention for long sequences."},
+
+    {"id":"M009","source_id":"M009","context":{"pretraining_paradigm":"bidirectional masked LM"},"statement":"BERT uses a bidirectional Transformer encoder pretrained with masked language modeling and next-sentence prediction."},
+    {"id":"M010","source_id":"M010","context":{"pretraining_paradigm":"causal/unidirectional LM"},"statement":"GPT uses a unidirectional (causal) Transformer decoder pretrained by next-token prediction."},
+
+    {"id":"M167","source_id":"M167","context":{},"statement":"Deep Q-Networks approximate the Q-function with a deep neural network, enabling Q-learning to scale to high-dimensional inputs like raw pixels, such as Atari games."},
+    {"id":"M243","source_id":"M243","context":{},"statement":"Network pruning removes individual weights or entire structural units, such as neurons, channels, or filters, from a trained network, reducing its size and, for structured pruning, potentially its inference compute."}
+  ]
+}

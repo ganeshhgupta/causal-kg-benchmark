@@ -1,0 +1,110 @@
+{
+  "_comment": "Gold cross-proposition judgments, same 4-axis schema as ../../pairs.json (physics v0.2). context_relation determined strictly by context-predicate satisfiability, per that benchmark's rule: SAME iff predicate sets equal (including both-empty); SUBSUMES/SUBSUMED_BY iff one is a strict subset (an empty set trivially subsumes any non-empty one); OVERLAPS iff both non-empty, independent, jointly satisfiable; DISJOINT iff jointly unsatisfiable.",
+  "axes": {
+    "logical_relation": "EQUAL | ENTAILS | ENTAILED_BY | CONTRADICTS | COMPATIBLE | UNRELATED",
+    "schema_relation": "SAME | RELATED | DIFFERENT",
+    "context_relation": "SAME | SUBSUMES | SUBSUMED_BY | OVERLAPS | DISJOINT",
+    "direction_relation": "SAME | OPPOSITE | N/A"
+  },
+  "pairs": [
+    {
+      "id": "P01",
+      "a": "M009", "b": "M010",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "N/A",
+      "rationale": "Direct analog to the physics benchmark's metal/semiconductor pair (P01). BERT (bidirectional masked LM) and GPT (causal LM) are both real, valid, coexisting pretraining paradigms -- COMPATIBLE -- but a single model's pretraining objective is one or the other, not both, so context_relation is DISJOINT (mutually exclusive pretraining_paradigm values). Must not be escalated to CONTRADICTS just because the mechanisms are opposite."
+    },
+    {
+      "id": "P02",
+      "a": "M053", "b": "M041",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "N/A",
+      "rationale": "DropConnect's own claim text states it 'generalizes dropout' -- zeroing individual weights is the general mechanism, of which zeroing all weights out of one unit (equivalent to zeroing that unit's activation) is a special case. M053 ENTAILS M041, not EQUAL, despite both sentences reading almost identically ('randomly zero X during training to reduce overfitting'). This is the specialization-mistaken-for-identity trap, analog to physics K004m/K004c."
+    },
+    {
+      "id": "P03",
+      "a": "M041", "b": "M042",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE",
+      "rationale": "The flagship case, direct analog to physics's water K015/K016 pair. 'Dropout randomly zeroes activations' (true DURING TRAINING) and 'dropout is disabled, nothing is zeroed' (true DURING INFERENCE) read as a direct negation of each other if the phase is dropped, but both are true, in disjoint phases. Tests context preservation, not contradiction resolution -- a system that drops the phase while canonicalizing will manufacture a contradiction that isn't there."
+    },
+    {
+      "id": "P04",
+      "a": "M005", "b": "M018",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE",
+      "rationale": "Second instance of the phase/context-erasure pattern. 'Self-attention costs O(n^2)' and 'attention can be made roughly linear' look contradictory in the abstract, but the first is scoped to full/dense attention and the second to sparse/windowed attention -- disjoint attention_type contexts, both true, COMPATIBLE not CONTRADICTS."
+    },
+    {
+      "id": "P05",
+      "a": "BN_ORIG", "b": "BN_REVISED",
+      "logical_relation": "CONTRADICTS",
+      "schema_relation": "SAME",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "The first genuine gold CONTRADICTS example in this project (the physics v0.2 benchmark flagged having zero real contradiction pairs as an open gap -- P01/P05 there were both apparent-contradictions-resolved-by-context, never a real one). BN_ORIG (Ioffe & Szegedy 2015's internal-covariate-shift hypothesis) and BN_REVISED (Santurkar et al. 2018's landscape-smoothing finding) are NOT reconciled by different conditions -- they are two claimed explanations of the SAME phenomenon (why BatchNorm helps) under the SAME context, and empirical evidence supports one over the other. Deliberately given identical (empty) context in propositions.json specifically so a system can't dodge the real contradiction by inventing a spurious context split the way it should for P03/P04."
+    },
+    {
+      "id": "P06",
+      "a": "M024", "b": "M026",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "AdaGrad and RMSProp share the same predicate shape (adapt per-parameter LR by dividing by a function of past squared gradients) and the same (empty) context -- their difference is in STATEMENT CONTENT (cumulative sum vs exponential decay), not in context or schema. Tests that schema_relation SAME plus context_relation SAME must not by themselves imply EQUAL or ENTAILS -- these are two distinct, related algorithms, not the same algorithm under different framing."
+    },
+    {
+      "id": "P07",
+      "a": "M067", "b": "M069",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "ResNet and DenseNet are sibling architectures in the 'connectivity pattern mitigates vanishing gradients' family -- both true, same shape, same (empty) context, neither entails the other. Same pattern as P06, different domain, for robustness."
+    },
+    {
+      "id": "P08",
+      "a": "M022", "b": "M027",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "Direct analog to physics's K001/K011 hyperedge-premise pair (P08 there). Momentum (M022) alone does NOT entail Adam (M027) -- Adam requires RMSProp's contribution too (see hyperedges.json H01: {M022,M026} -> M027). Marked COMPATIBLE, not ENTAILS, to avoid crediting single-premise entailment for a 2-premise hyperedge conclusion. schema_relation RELATED (momentum's shape is simpler than, and a component of, but not identical to, Adam's combined shape)."
+    },
+    {
+      "id": "P09",
+      "a": "M026", "b": "M027",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "Same hyperedge as P08 -- RMSProp alone is a necessary but not sufficient premise for Adam."
+    },
+    {
+      "id": "P10",
+      "a": "M167", "b": "M022",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "Negative control that also stress-tests the axes' independence: both propositions have empty context (context_relation SAME, trivially) and DQN in practice is typically trained with a momentum-based optimizer, but the CLAIMS themselves (DQN's architecture/replay-buffer design vs momentum's gradient-averaging mechanism) are genuinely unrelated. Demonstrates that context_relation SAME must not by itself suggest any logical connection."
+    },
+    {
+      "id": "P11",
+      "a": "M005", "b": "M243",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SUBSUMED_BY",
+      "direction_relation": "N/A",
+      "rationale": "Baseline negative control with an asymmetric context relationship for variety: M005's attention_type-restricted context is SUBSUMED_BY M243's unrestricted (empty) context, but the two claims (attention cost vs. weight pruning) are entirely unrelated topics. Shows context_relation SUBSUMED_BY, like SAME in P10, carries no implication about logical_relation."
+    }
+  ]
+}
