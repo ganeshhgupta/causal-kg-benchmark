@@ -16,6 +16,34 @@
     }
   ],
 
+  "role_aliases": {
+    "_comment": "Per-relation role-name synonyms, applied after symbol alignment. EARNED, not prophylactic: an earlier review flagged that argument roles are unregistered free strings and two compilers could emit different names for one role, and I deferred it as speculative. The first end-to-end run then produced exactly that failure. The blind extraction encoded granisetron-beats-droperidol with roles agent/comparator while the reference used better/worse, so two identical claims compared as DIFFERENT purely on role naming. Only genuine synonyms are listed: a role pair that means something different must NOT be aliased, because that is a false merge wearing a rename.",
+    "R-MORE-EFFECTIVE-THAN": {"better": ["agent", "superior"], "worse": ["comparator", "inferior"]},
+    "COMBINATION_OUTPERFORMS": {"better": ["agent", "combination", "superior"], "worse": ["comparator", "baseline", "inferior"]},
+    "R-REDUCES": {"agent": ["intervention", "drug"], "outcome": ["endpoint"]}
+  },
+
+  "symbol_families": {
+    "_comment": "Declared outcome families, used when aligning two independently invented vocabularies. Implements EXTRACTION_SPEC.md rule 2a at the symbol level: separate endpoints of one outcome family collapse to the family, because the same trials support all of them and they are not independently retractable. Needed because the blind extraction emitted three endpoint symbols (postoperative nausea, postoperative vomiting, postoperative nausea or vomiting) where the reference graph has one. Declared rather than inferred from label substrings, since 'nausea' being a substring of 'nausea or vomiting' is a coincidence of English, not evidence about endpoints.",
+    "PONV": {
+      "canonical_label": "postoperative nausea and vomiting",
+      "member_labels": [
+        "postoperative nausea and vomiting",
+        "postoperative nausea",
+        "postoperative vomiting",
+        "postoperative nausea or vomiting",
+        "nausea",
+        "vomiting",
+        "nausea or vomiting"
+      ]
+    }
+  },
+
+  "non_discriminating_roles": {
+    "_comment": "Roles that may be absent from one graph without blocking a match, because they restate a constant of the corpus rather than distinguishing claims. 'population' qualifies here ONLY because every claim in this corpus is about the same surgical-prophylaxis population; in a corpus spanning populations it would be discriminating and dropping it would be a false merge. Recorded with that caveat so the exemption is not silently carried into a corpus where it is wrong.",
+    "roles": ["population"]
+  },
+
   "symbol_denotations": {
     "_comment": "Declared properties of symbols that rule guards test. Kept explicit and small rather than inferred from labels, because a guard that silently mis-fires reintroduces exactly the false merges the rules exist to prevent.",
     "combination": [

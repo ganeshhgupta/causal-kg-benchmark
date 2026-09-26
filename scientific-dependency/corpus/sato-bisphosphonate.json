@@ -1,0 +1,102 @@
+{
+  "_comment": "REAL DATA, depth 2, and a DIFFERENT DOMAIN from the PONV chains (bone health and neurology rather than anaesthesia). Added specifically to test the project's strongest success condition: as the corpus grows, do metrics hold WITHOUT the schema needing new fields. Prediction recorded before encoding: zero new fields. Sources, all verified via Europe PMC. (1) Iwamoto J, Takeda T, Matsumoto H, 'Efficacy of oral bisphosphonates for preventing hip fracture in disabled patients with neurological diseases: a meta-analysis of randomized controlled trials among the Japanese population', Curr Med Res Opin 2011;27:1141-1148, doi:10.1185/03007995.2011.570747, PMID 21456887. Pooled 7 RCTs, all Japanese: two etidronate (ALS, stroke), two alendronate (stroke, Parkinson's), three risedronate (stroke, Parkinson's), reporting hip-fracture relative risks of 0.16 (0.03-0.87), 0.29 (0.10-0.80) and 0.24 (0.10-0.58). Confirmed to carry 'Retraction in' -> PMID 28376663 (Statement of Retraction, 2017). (2) Bolland MJ, Avenell A, Gamble GD, Grey A, 'Systematic review and statistical analysis of the integrity of 33 randomized controlled trials', Neurology 2016;87:2391-2402, doi:10.1212/wnl.0000000000003387, PMID 27920281. Verbatim finding: 'There were very large reductions in hip fracture incidence, regardless of intervention (relative risk 0.22, 95% confidence interval 0.15-0.31, p < 0.0001, range of relative risk 0.10-0.33), that greatly exceed those reported in meta-analyses of other trials.' The phrase 'regardless of intervention' is the load-bearing ground truth: the drug-specific effects are artefacts of one data-integrity failure, not three separate drug findings.",
+  "graph_version": "sato-bisphosphonate-1",
+
+  "symbols": [
+    {"id": "R-REDUCES", "label": "REDUCES_RISK_OF", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-PREVENTS", "label": "PREVENTS", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false, "aliases": ["prevents"]},
+
+    {"id": "C-ETIDRONATE", "label": "etidronate", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-ALENDRONATE", "label": "alendronate", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-RISEDRONATE", "label": "risedronate", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-ORAL-BISPHOSPHONATE", "label": "oral bisphosphonate", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-HIP-FRACTURE", "label": "hip fracture", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
+    {"id": "C-DISABLED-NEURO", "label": "disabled patients with neurological disease", "kind": "CONCEPT", "resolution_status": "RESOLVED"}
+  ],
+
+  "contexts": [
+    {"id": "CTX-JAPANESE-NEURO", "constraints": [
+      {"key": "population", "op": "=", "value": "disabled_japanese_patients_with_neurological_disease"}
+    ], "notes": "Iwamoto's own stated limitation: 'It remains uncertain whether the findings are relevant for Western patients.' Encoded as a genuine world-condition, not as provenance."}
+  ],
+
+  "propositions": [
+    {
+      "id": "P-ETIDRONATE-PREVENTS",
+      "predicate": "R-REDUCES",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-ETIDRONATE"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-HIP-FRACTURE"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "C-DISABLED-NEURO"}}
+      ],
+      "polarity": "assert", "modality": "generic", "context": "CTX-JAPANESE-NEURO",
+      "surface_forms": ["Etidronate reduces the risk of hip fracture in disabled patients with neurological disease."],
+      "notes": "Level 1. Iwamoto pooled RR 0.16 (0.03-0.87)."
+    },
+    {
+      "id": "P-ALENDRONATE-PREVENTS",
+      "predicate": "R-REDUCES",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-ALENDRONATE"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-HIP-FRACTURE"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "C-DISABLED-NEURO"}}
+      ],
+      "polarity": "assert", "modality": "generic", "context": "CTX-JAPANESE-NEURO",
+      "surface_forms": ["Alendronate reduces the risk of hip fracture in disabled patients with neurological disease."],
+      "notes": "Level 1. Iwamoto pooled RR 0.29 (0.10-0.80)."
+    },
+    {
+      "id": "P-RISEDRONATE-PREVENTS",
+      "predicate": "R-REDUCES",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-RISEDRONATE"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-HIP-FRACTURE"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "C-DISABLED-NEURO"}}
+      ],
+      "polarity": "assert", "modality": "generic", "context": "CTX-JAPANESE-NEURO",
+      "surface_forms": ["Risedronate reduces the risk of hip fracture in disabled patients with neurological disease."],
+      "notes": "Level 1. Iwamoto pooled RR 0.24 (0.10-0.58)."
+    },
+
+    {
+      "id": "P-BISPHOSPHONATE-CLASS-PREVENTS",
+      "predicate": "R-PREVENTS",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-ORAL-BISPHOSPHONATE"}},
+        {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-HIP-FRACTURE"}},
+        {"role": "population", "term": {"kind": "symbol_ref", "symbol_ref": "C-DISABLED-NEURO"}}
+      ],
+      "polarity": "assert", "modality": "generic", "context": "CTX-JAPANESE-NEURO",
+      "surface_forms": ["Oral bisphosphonate treatment prevents hip fracture in disabled Japanese patients with neurological diseases including ALS, stroke and Parkinson's disease."],
+      "notes": "LEVEL 2, the meta-analysis's own conclusion, derived from the three drug-specific claims. This is the claim that the Statement of Retraction (PMID 28376663) voided. Depth 2 in a second, unrelated domain."
+    }
+  ],
+
+  "derivations": [
+    {
+      "id": "D-META-POOL",
+      "rule_id": null,
+      "premises": ["P-ETIDRONATE-PREVENTS", "P-ALENDRONATE-PREVENTS", "P-RISEDRONATE-PREVENTS"],
+      "conclusion": "P-BISPHOSPHONATE-CLASS-PREVENTS",
+      "relation": "GENERALIZES",
+      "validity": "UNVERIFIED",
+      "notes": "A meta-analysis generalising from three drug-specific pooled estimates to a class claim. relation=GENERALIZES and validity=UNVERIFIED because pooling is not entailment. Note this is a THREE-premise derivation, where the PONV chains had one and two: the fixpoint handles arity without change."
+    }
+  ],
+
+  "assertions": [
+    {"id": "A-IWAMOTO-ETI", "proposition_id": "P-ETIDRONATE-PREVENTS", "source": "Iwamoto et al. 2011, Curr Med Res Opin (PMID 21456887, RETRACTED, notice PMID 28376663)", "year": 2011, "stance": "supports", "status": "retracted"},
+    {"id": "A-IWAMOTO-ALN", "proposition_id": "P-ALENDRONATE-PREVENTS", "source": "Iwamoto et al. 2011 (RETRACTED)", "year": 2011, "stance": "supports", "status": "retracted"},
+    {"id": "A-IWAMOTO-RIS", "proposition_id": "P-RISEDRONATE-PREVENTS", "source": "Iwamoto et al. 2011 (RETRACTED)", "year": 2011, "stance": "supports", "status": "retracted"},
+    {"id": "A-IWAMOTO-CLASS", "proposition_id": "P-BISPHOSPHONATE-CLASS-PREVENTS", "source": "Iwamoto et al. 2011 (RETRACTED)", "year": 2011, "stance": "supports", "status": "retracted"},
+    {"id": "A-BOLLAND", "proposition_id": "P-BISPHOSPHONATE-CLASS-PREVENTS", "source": "Bolland et al. 2016, Neurology (PMID 27920281): reductions this large occurred regardless of intervention and greatly exceed other trials", "year": 2016, "stance": "neutral_report", "status": "active", "notes": "stance=neutral_report rather than refutes. Bolland's finding is that the EVIDENCE is unreliable, which is a claim about the trials, not a claim that bisphosphonates fail to prevent hip fracture. Recording it as refuting would conflate 'the support is worthless' with 'the claim is false', which is exactly the UNRESOLVED-is-not-REFUTED distinction the whole project rests on."}
+  ],
+
+  "evidence": [
+    {"id": "EV-SATO-ETI", "proposition_id": "P-ETIDRONATE-PREVENTS", "kind": "experiment", "stance": "supports", "status": "active", "source": "trials pooled by Iwamoto 2011, drawn from the trial series analysed by Bolland 2016 and subsequently retracted", "independence_group": "SATO-GROUP"},
+    {"id": "EV-SATO-ALN", "proposition_id": "P-ALENDRONATE-PREVENTS", "kind": "experiment", "stance": "supports", "status": "active", "source": "trials pooled by Iwamoto 2011, same retracted series", "independence_group": "SATO-GROUP"},
+    {"id": "EV-SATO-RIS", "proposition_id": "P-RISEDRONATE-PREVENTS", "kind": "experiment", "stance": "supports", "status": "active", "source": "trials pooled by Iwamoto 2011, same retracted series", "independence_group": "SATO-GROUP"},
+
+    {"id": "EV-BOLLAND-INTEGRITY", "proposition_id": "P-BISPHOSPHONATE-CLASS-PREVENTS", "kind": "observation", "stance": "refutes", "status": "active", "source": "Bolland 2016 integrity analysis: hip-fracture reductions of this size occurred regardless of intervention (RR 0.22, 0.15-0.31), greatly exceeding meta-analyses of other trials", "independence_group": "NON-SATO", "notes": "Attached as REFUTES only of the CLASS claim as Iwamoto stated it, because 'the effect appears regardless of which drug was given' is direct evidence against a genuine drug-class effect of that magnitude in this population. It is deliberately NOT attached to the three drug-specific claims, where the same reasoning would be circular: those claims rest on the very trials whose integrity is in question, so their correct fate is loss of support, not refutation."}
+  ]
+}

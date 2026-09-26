@@ -193,8 +193,9 @@ def main():
           f"{'PASS' if r_num / pooled_n >= 0.95 else 'FAIL'}")
     print(f"   false collapses         {sum(len(r['false_collapse']) for r in results)}")
     print(f"   missed collapses        {sum(len(r['missed_collapse']) for r in results)}")
-    print(f"\n   n={pooled_n} on hand-authored graphs. These measure the reasoner. "
-          f"The compiler stage is still unmeasured.")
+    print(f"\n   n={pooled_n} on hand-authored graphs across "
+          f"{len(results)} chains. These measure the reasoner. The compiler stage "
+          f"has been measured separately, once, on one paper (eval/extracted_eval.py).")
     print()
 
     pending = gold.get("pending", [])

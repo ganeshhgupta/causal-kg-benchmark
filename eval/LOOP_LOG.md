@@ -7,9 +7,10 @@ first and the change second.
 
 ## Scoreboard against the stated targets
 
-Reproduce with: `python eval/retraction_eval.py`, `eval/proof_validity.py`,
-`eval/canonicalization_eval.py`, `eval/contradiction_eval.py`,
-`eval/baselines/naive_baselines.py`.
+Reproduce everything with one command: `python eval/run_all.py`. It gates on the
+checks that must not regress, reports the advisory ones, and deliberately does
+NOT run any LLM baseline, because those cost money and should be an explicit
+opt-in rather than something a "run everything" script silently bills for.
 
 | target | required | measured | verdict |
 |---|---|---|---|

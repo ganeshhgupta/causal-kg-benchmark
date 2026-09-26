@@ -75,18 +75,42 @@
       "excluded_from_gold": {
         "P-TRAD-COMBO-LIMITED": "The retraction notice scopes the damage to table III, table IV, section 3 and section 4.2. Confirming this general class-pharmacology claim sits outside those sections requires the paywalled full text. It is encoded with independent evidence so the reasoner treats it as surviving, but that placement is an assumption and is therefore not scored."
       }
-    }
-  ],
-  "pending": [
+    },
     {
       "id": "Q-SATO-BISPHOSPHONATE",
-      "status": "LABELS PENDING VERIFICATION",
-      "question": "The Yoshihiro Sato trials were retracted. Which claims in meta-analyses that included them lose support?",
-      "what_is_verified": "Iwamoto J, Takeda T, Matsumoto H, 'Efficacy of oral bisphosphonates for preventing hip fracture in disabled patients with neurological diseases: a meta-analysis of randomized controlled trials among the Japanese population', Curr Med Res Opin 2011;27:1141-1148, doi:10.1185/03007995.2011.570747 (PMID 21456887). Confirmed via Europe PMC to carry a 'Retraction in' link to PMID 28376663 (Statement of Retraction, 2017). It pooled 7 RCTs, all in Japanese patients: two etidronate, two alendronate, three risedronate, reporting hip-fracture relative risks of 0.16 (0.03-0.87), 0.29 (0.10-0.80) and 0.24 (0.10-0.58) respectively. A meta-analysis being retracted BECAUSE its constituent trials were retracted is the cleanest possible total-collapse case.",
-      "what_is_not_verified": "Which of the 7 pooled RCTs were Sato's, and therefore whether all three drug claims collapse or only some. Grey A, Avenell A, Gamble G, Bolland M, 'Inaccurate retraction notice for meta-analysis by Iwamoto et al.', Acta Neurol Scand 2018 (PMID 30133693, doi:10.1111/ane.12962) addresses exactly this but is not open access; Wiley returned 403 and PubMed CAPTCHA-blocked. Not guessing.",
-      "next_step": "Obtain the Grey 2018 letter or the full Statement of Retraction text, then label per drug claim."
+      "graph": "corpus/sato-bisphosphonate.json",
+      "question": "The Sato-group trials were retracted. Which claims in the Iwamoto meta-analysis lose support, and which are refuted?",
+      "retract_independence_group": "SATO-GROUP",
+      "depth": 2,
+      "domain": "bone health / neurology (second domain, added to test whether metrics hold as the corpus grows)",
+      "gold_label_source": "Iwamoto et al. 2011, Curr Med Res Opin (PMID 21456887), confirmed RETRACTED via Statement of Retraction PMID 28376663. Plus Bolland et al. 2016, Neurology 87:2391-2402 (PMID 27920281), verbatim: 'There were very large reductions in hip fracture incidence, regardless of intervention (relative risk 0.22, 95% CI 0.15-0.31, p<0.0001, range 0.10-0.33), that greatly exceed those reported in meta-analyses of other trials.'",
+      "expected": {
+        "P-ETIDRONATE-PREVENTS": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "Its only support was the retracted trial series. UNRESOLVED not REFUTED: bisphosphonates do reduce fracture risk generally, so what collapsed is the evidence for this population and magnitude, not the claim's plausibility."
+        },
+        "P-ALENDRONATE-PREVENTS": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "Same."
+        },
+        "P-RISEDRONATE-PREVENTS": {
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "Same."
+        },
+        "P-BISPHOSPHONATE-CLASS-PREVENTS": {
+          "class": "RESOLVED_INCONSISTENCY",
+          "after": "REFUTED",
+          "justification": "The meta-analysis's own conclusion, depth 2 via a THREE-premise pooling derivation. Refuted rather than merely unsupported because Bolland's 'regardless of intervention' finding is direct independent evidence against a genuine drug-class effect of that magnitude in this population."
+        }
+      },
+      "notes": "The magnitude gap appears here INDEPENDENTLY of the PONV chain: Bolland's finding is about effect size ('greatly exceed'), which K-IR v0.3 cannot represent. Two unrelated domains hitting the same gap is evidence it is systemic rather than incidental.",
+      "inference_caveat": "THE PER-DRUG LABELS REST ON AN INFERENCE, not an enumerated trial list. These labels were previously WITHHELD because it was unverified which of Iwamoto's 7 pooled RCTs were Sato's, and that specific fact is STILL unverified: Grey et al. 2018 (PMID 30133693) addresses it but is not open access. They are labelled now on two grounds that do not require the enumeration: (a) the meta-analysis was retracted in full via PMID 28376663, so none of its pooled claims stand as published findings; and (b) Bolland 2016's 'regardless of intervention' shows the implausibility is drug-independent, so it cannot be that one drug's evidence is sound while the others' is not. If a future reader obtains the trial-by-trial attribution and finds that some pooled trials were by other authors, the three LOST_SUPPORT labels are what should be rechecked first."
     }
   ],
+  "pending": [],
   "notes": {
     "depth": "Q-FUJII-PONV is depth 1: ground evidence to claim, no derivation hops. The reasoner's unbounded-depth propagation is exercised by fixtures/chain-fixture.json, not yet by real data. Real multi-hop ground truth (retraction to meta-analysis to clinical guideline) is the next acquisition target; the VITALITY study reports 1,330 retracted trials feeding 847 systematic reviews and 157 guidelines, with named chains.",
     "calibration": "Published work on easier claim-relation labeling reports around 0.81 macro-F1. Absolute 95% targets across canonicalization, propagation and contradiction are above the state of the art. The defensible headline is a margin over LLM-only and LLM+RAG baselines, with false-merge and false-contradiction rates as hard safety gates."

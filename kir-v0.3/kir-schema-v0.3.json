@@ -47,7 +47,8 @@
       "additionalProperties": false,
       "properties": {
         "id": {"type": "string"},
-        "constraints": {"type": "array", "items": {"$ref": "#/$defs/ContextConstraint"}, "description": "Empty array = unconditional. Unchanged from v0.2: composition semantics across context values (what may be inferred across world=fiction vs world=actual) is still undefined. A context algebra is the next thing to lift out of the benchmark layer, where pairs.json already has SAME / SUBSUMES / SUBSUMED_BY / OVERLAPS / DISJOINT determination rules."}
+        "constraints": {"type": "array", "items": {"$ref": "#/$defs/ContextConstraint"}, "description": "Empty array = unconditional. Unchanged from v0.2: composition semantics across context values (what may be inferred across world=fiction vs world=actual) is still undefined. A context algebra is the next thing to lift out of the benchmark layer, where pairs.json already has SAME / SUBSUMES / SUBSUMED_BY / OVERLAPS / DISJOINT determination rules."},
+        "notes": {"type": "string", "description": "Added in cycle 7. Context was the only object in the schema without a notes field, which surfaced when a third corpus needed to record WHY a population restriction is a genuine world-condition rather than provenance. Parity fix, no new semantics."}
       }
     },
 
