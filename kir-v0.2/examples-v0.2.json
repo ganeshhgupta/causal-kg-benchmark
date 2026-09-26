@@ -1,0 +1,390 @@
+{
+  "_comment": "Worked examples for K-IR v0.2's 8-object shape. Covers all 6 'particularly dangerous' cases from review, PLUS two v0.1 STRESS_TEST.md gaps the new shape fixes as a side effect (Finding 10 via Symbol.functional, Finding 6's implication case via Derivation), PLUS one demonstration of the generic-Context payoff (world=fiction). Deliberate non-fixes are annotated inline rather than hidden.",
+
+  "symbols": [
+    {"id": "R-REQUIRES", "label": "REQUIRES", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false, "notes": "A process can require many inputs -- set-valued, so two REQUIRES facts with different requirements are NOT contradictory."},
+    {"id": "R-COMPOSED_OF", "label": "COMPOSED_OF", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": null, "notes": "Deliberately null: whether 'what is dark matter made of' is single- or set-valued depends on whether the claim is about the WHOLE or a FRACTION. See P-DARKMATTER -- this unclassified case is exactly what Symbol.functional=null is for (unsafe to auto-derive contradictions from)."},
+    {"id": "R-HOLDS", "label": "HOLDS", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": null, "notes": "Generic catch-all carried over from v0.1; unsafe to auto-derive from. The v0.2 fix is to use a SPECIFIC relation symbol with a declared functional flag (see R-PRIMARY_MECHANISM / R-GUARANTEES) instead of overloading HOLDS."},
+    {"id": "R-PRIMARY_MECHANISM", "label": "PRIMARY_MECHANISM", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": true, "notes": "FIXES v0.1 FINDING 4: single-valued. Two assertions of PRIMARY_MECHANISM(BatchNorm, X) and PRIMARY_MECHANISM(BatchNorm, Y) with X != Y under the SAME context are now MECHANICALLY contradictory, exactly like x=3 vs x=5, with no hand-labeled CONTRADICTS edge."},
+    {"id": "R-GUARANTEES", "label": "GUARANTEES", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false, "notes": "FIXES v0.1 FINDING 10: set-valued. A protocol guarantees many properties at once, so GUARANTEES(TCP, OrderedByteStream) and GUARANTEES(TCP, MessageBoundaries) are NOT auto-contradictory -- the second is simply false and is rejected at the evidence layer, not by a pairwise CONTRADICTS edge. Structurally identical to PRIMARY_MECHANISM but with the opposite flag: that flag is the whole difference, and v0.1 had nowhere to put it."},
+    {"id": "R-DIFFERENTIABLE", "label": "DIFFERENTIABLE", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-CONTINUOUS", "label": "CONTINUOUS", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-EFFECTIVE", "label": "IS_EFFECTIVE_FOR", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-RECOMMENDED", "label": "IS_RECOMMENDED", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-IS_A", "label": "IS_A", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-RESIDES_AT", "label": "RESIDES_AT", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
+    {"id": "R-UPDATE_RULE_OF", "label": "IS_UPDATE_RULE_OF", "kind": "RELATION", "resolution_status": "PROVISIONAL", "functional": false, "notes": "PROVISIONAL on purpose: invented while compiling the Adam example. Under v0.1 this would have been an unvalidated bare string with no trace that it was made up on the spot (Finding 0). It is still open-world -- nothing blocks it -- but it is now a registered, inspectable object flagged as unreviewed vocabulary."},
+
+    {"id": "C-CHLOROPHYLL", "label": "chlorophyll", "kind": "CONCEPT", "resolution_status": "UNRESOLVED_PARENT", "parent": null, "provenance": {"source": "ingested user statement", "evidence_type": "ingested_unverified", "confidence": "established"}, "notes": "DANGEROUS CASE 1. Created on ingestion of 'Chlorophyll is needed for photosynthesis.' No Pigment/Molecule/ChemicalEntity supertype exists in this graph yet. The proposition below is still well-formed and epistemically SUPPORTED: concept resolution and epistemic status are INDEPENDENT axes. Knowledge does not wait for its ontology to be complete, and the compiler does not force chlorophyll onto the nearest existing concept."},
+    {"id": "C-PHOTOSYNTHESIS", "label": "photosynthesis", "kind": "CONCEPT", "resolution_status": "UNRESOLVED_PARENT", "parent": null, "provenance": {"source": "ingested user statement", "evidence_type": "ingested_unverified", "confidence": "established"}, "notes": "Same as C-CHLOROPHYLL. Later resolving photosynthesis -> BiologicalProcess -> Process changes only this Symbol's parent field; P-CHLOROPHYLL's id and content are untouched."},
+
+    {"id": "C-DARKMATTER", "label": "dark matter", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-PBH", "label": "primordial black holes", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+
+    {"id": "C-BANK-PROVISIONAL", "label": "bank", "kind": "CONCEPT", "resolution_status": "AMBIGUOUS", "parent": null, "ambiguous_candidates": ["C-BANK-FINANCIAL", "C-BANK-LANDFORM"], "provenance": {"source": "ingested from two unrelated sentences", "evidence_type": "ingested_unverified", "confidence": "hypothesis"}, "notes": "DANGEROUS CASE 4/5 SETUP. Both 'I deposited money at the bank' and 'I sat by the river bank' were ingested as this one symbol because nothing yet signalled two senses. Status moved PROVISIONAL -> AMBIGUOUS once incompatible properties appeared, then REV-002 split it."},
+    {"id": "C-BANK-FINANCIAL", "label": "bank (financial institution)", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null, "aliases": ["bank"]},
+    {"id": "C-BANK-LANDFORM", "label": "bank (landform)", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null, "aliases": ["bank", "riverbank"]},
+    {"id": "C-FIN-INSTITUTION", "label": "financial institution", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-LANDFORM-NEAR-WATER", "label": "landform adjacent to water", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+
+    {"id": "C-TREATMENT-Z", "label": "treatment Z", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-PROTOCOL-Z", "label": "clinical protocol using treatment Z", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-COMPOUND-X", "label": "compound X", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-SYMPTOM-Y", "label": "symptom Y", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+
+    {"id": "C-BATCHNORM", "label": "batch normalization", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-ICS-REDUCTION", "label": "internal covariate shift reduction", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-LOSS-SMOOTHING", "label": "loss landscape smoothing", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-TCP", "label": "TCP", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-ORDERED-BYTE-STREAM", "label": "ordered byte stream delivery", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-MSG-BOUNDARIES", "label": "preservation of message boundaries", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+
+    {"id": "C-REAL-FUNCTION", "label": "real-valued function of a real variable", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-MOMENTUM", "label": "momentum (SGD with momentum)", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-RMSPROP", "label": "RMSProp", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-ADAM", "label": "Adam", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-FIRST-MOMENT", "label": "exponentially decayed first-moment estimate", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-SECOND-MOMENT", "label": "exponentially decayed second-moment estimate", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+
+    {"id": "C-HOLMES", "label": "Sherlock Holmes", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-221B", "label": "221B Baker Street", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null},
+    {"id": "C-MUSEUM", "label": "museum", "kind": "CONCEPT", "resolution_status": "RESOLVED", "parent": null}
+  ],
+
+  "contexts": [
+    {"id": "CTX-OXYGENIC", "constraints": [{"key": "organism_type", "op": "=", "value": "oxygenic_photosynthetic_organism"}]},
+    {"id": "CTX-SAME-POPULATION", "constraints": [{"key": "patient_population", "op": "=", "value": "as_modeled_in_both_trials"}], "notes": "Deliberately coarse: if the two trials actually differed on an unmodeled variable (dosage, genetic subgroup), that is exactly what the INCONSISTENT status below is supposed to force someone to go find. The context must NOT be retro-fitted with a fake distinguishing key just to make the inconsistency disappear."},
+    {"id": "CTX-FICTION-HOLMES", "constraints": [{"key": "world", "op": "=", "value": "SherlockHolmesCanon"}], "notes": "THE GENERIC-CONTEXT PAYOFF. v0.1's Context had fixed fields (entity_type/regime/phase/spatial_domain/temporal_domain/value_domain/assumptions) and literally no slot for 'world' -- this would have been smuggled into free-text `assumptions`, indistinguishable from a genuine physical condition (v0.1 Finding 7's problem, generalized). Here it needed zero schema change, just a new key. CAVEAT, stated rather than glossed: this fixes STORAGE only. Nothing in v0.2 defines what may be inferred across a world boundary, and propositions under world=Fiction do NOT compose with real-world propositions the way two phase=liquid propositions do. Cross-context inference rules remain undesigned."},
+    {"id": "CTX-REAL-WORLD", "constraints": [{"key": "world", "op": "=", "value": "actual"}, {"key": "time", "op": ">=", "value": 1990}]},
+    {"id": "CTX-REALS", "constraints": [{"key": "theory", "op": "=", "value": "RealAnalysis"}, {"key": "domain", "op": "=", "value": "open_interval_of_R"}]}
+  ],
+
+  "propositions": [
+    {
+      "id": "P-CHLOROPHYLL",
+      "predicate": "R-REQUIRES",
+      "arguments": [
+        {"role": "process", "term": {"kind": "symbol_ref", "symbol_ref": "C-PHOTOSYNTHESIS"}},
+        {"role": "requirement", "term": {"kind": "symbol_ref", "symbol_ref": "C-CHLOROPHYLL"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": "CTX-OXYGENIC",
+      "polarity": "assert",
+      "modality": "necessary",
+      "surface_forms": ["Chlorophyll is needed for photosynthesis."],
+      "notes": "DANGEROUS CASE 1. Both arguments point at Symbols with resolution_status=UNRESOLVED_PARENT and the proposition is still fully valid and SUPPORTED. Note the proposition carries no truth value, source or confidence at all now -- those are in A-CHLOROPHYLL / EV-CHLOROPHYLL / the epistemic_status entry."
+    },
+
+    {
+      "id": "P-DARKMATTER",
+      "predicate": "R-COMPOSED_OF",
+      "arguments": [
+        {"role": "whole", "term": {"kind": "symbol_ref", "symbol_ref": "C-DARKMATTER"}},
+        {"role": "constituent", "term": {"kind": "symbol_ref", "symbol_ref": "C-PBH"}}
+      ],
+      "direction": null,
+      "quantification": [],
+      "context": null,
+      "polarity": "assert",
+      "modality": "possible",
+      "surface_forms": ["Dark matter consists of primordial black holes."],
+      "notes": "DANGEROUS CASE 2, LEFT DELIBERATELY BROKEN. Its epistemic_status computes to INCONSISTENT (both active supporting and refuting evidence), not UNRESOLVED -- but the real epistemic situation is neither: the supporting observation is consistent with SOME dark-matter fraction being PBHs in narrow mass windows, while the refuting constraints rule out PBHs as the DOMINANT component. Those are claims about different QUANTITIES/degrees, not about the same binary proposition. The 4-state model (and this whole relation, hence R-COMPOSED_OF.functional=null) is too coarse for any claim with an implicit all/some/none quantity. Recorded as a finding rather than dodged by picking a cleaner example, and numeric/degree representation stays explicitly deferred."
+    },
+
+    {
+      "id": "P-COMPOUND-X",
+      "predicate": "R-EFFECTIVE",
+      "arguments": [
+        {"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-COMPOUND-X"}},
+        {"role": "target", "term": {"kind": "symbol_ref", "symbol_ref": "C-SYMPTOM-Y"}}
+      ],
+      "direction": "positive",
+      "quantification": [],
+      "context": "CTX-SAME-POPULATION",
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": ["Compound X reduces symptom Y in patients."],
+      "notes": "DANGEROUS CASE 3. Two peer-reviewed RCTs, same context as currently modeled, opposite results. The system surfaces INCONSISTENT and stops; it must NOT arbitrarily resolve by sample size or recency. Unlike P-DARKMATTER this is a genuine binary disagreement, so INCONSISTENT is the CORRECT answer here -- the contrast between the two is what shows INCONSISTENT is a real state and not just a dumping ground."
+    },
+
+    {
+      "id": "P-BANK-1",
+      "predicate": "R-IS_A",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-BANK-FINANCIAL"}},
+        {"role": "type", "term": {"kind": "symbol_ref", "symbol_ref": "C-FIN-INSTITUTION"}}
+      ],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "necessary",
+      "surface_forms": ["I deposited money at the bank."],
+      "notes": "Argument originally pointed at C-BANK-PROVISIONAL; reassigned to C-BANK-FINANCIAL by REV-002. Proposition id unchanged -- that stability is the point."
+    },
+    {
+      "id": "P-BANK-2",
+      "predicate": "R-IS_A",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-BANK-LANDFORM"}},
+        {"role": "type", "term": {"kind": "symbol_ref", "symbol_ref": "C-LANDFORM-NEAR-WATER"}}
+      ],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "necessary",
+      "surface_forms": ["I sat by the river bank."],
+      "notes": "DANGEROUS CASE 4/5. Before REV-002 both bank propositions pointed at one symbol, making them look contradictory. The fix is NOT a context field -- there is no shared regime here, these are two senses of one English word -- it is a symbol SPLIT. Distinguishing 'same quantity under different conditions' (water 0-4C, dropout train/inference: fix with Context) from 'one word, two quantities' (bank; and v0.1 Finding 12's relativity velocity case: fix with symbol resolution) is the load-bearing judgment, and v0.2 now has distinct machinery for each."
+    },
+
+    {
+      "id": "P-TREATMENT-Z",
+      "predicate": "R-EFFECTIVE",
+      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-TREATMENT-Z"}}, {"role": "target", "term": {"kind": "literal", "value": "target_condition"}}],
+      "direction": "positive", "quantification": [], "context": null, "polarity": "assert", "modality": "generic",
+      "surface_forms": ["Treatment Z is effective."],
+      "notes": "DANGEROUS CASE 6 root. Its only support (EV-Z-EXPERIMENT) is now status=retracted, so epistemic_status recomputes SUPPORTED -> UNRESOLVED, NOT to REFUTED: retraction removes support, it does not manufacture refutation."
+    },
+    {
+      "id": "P-PROTOCOL-Z",
+      "predicate": "R-RECOMMENDED",
+      "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-PROTOCOL-Z"}}],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "generic",
+      "surface_forms": ["The clinical protocol using treatment Z is recommended."],
+      "notes": "DANGEROUS CASE 6, DOWNSTREAM HALF -- LEFT DELIBERATELY STALE. Its epistemic_status is still SUPPORTED even though its sole support is a derivation from P-TREATMENT-Z, which just collapsed to UNRESOLVED. REV-003 records operation=INVALIDATE_PROOF so the staleness is at least LOGGED and traceable via EV-PROTOCOL-DERIVED.derivation_ref -> D-PROTOCOL. What v0.2 does NOT do is automatically recompute transitively. That needs an actual dependency-graph pass over Derivations, which is compiler work, not a schema field -- so the honest status is 'now detectable and recorded, still not automatic'."
+    },
+
+    {
+      "id": "P-BN-ICS",
+      "predicate": "R-PRIMARY_MECHANISM",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-BATCHNORM"}},
+        {"role": "mechanism", "term": {"kind": "symbol_ref", "symbol_ref": "C-ICS-REDUCTION"}}
+      ],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "generic",
+      "surface_forms": ["BatchNorm works primarily by reducing internal covariate shift."],
+      "notes": "Paired with P-BN-SMOOTHING. Because R-PRIMARY_MECHANISM.functional=true and both share context=null, CONTRADICTS between them is DERIVABLE, not hand-labeled (v0.1 Finding 4 fixed). Note also the provenance split is clean now: the propositions are just content, while 'Ioffe & Szegedy claimed this' vs 'Santurkar et al. claimed that' are two Assertions -- so a genuine scientific dispute is representable without either paper's claim corrupting the graph's consistency."
+    },
+    {
+      "id": "P-BN-SMOOTHING",
+      "predicate": "R-PRIMARY_MECHANISM",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-BATCHNORM"}},
+        {"role": "mechanism", "term": {"kind": "symbol_ref", "symbol_ref": "C-LOSS-SMOOTHING"}}
+      ],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "generic",
+      "surface_forms": ["BatchNorm works primarily by smoothing the optimization landscape."]
+    },
+
+    {
+      "id": "P-TCP-ORDERED",
+      "predicate": "R-GUARANTEES",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-TCP"}},
+        {"role": "property", "term": {"kind": "symbol_ref", "symbol_ref": "C-ORDERED-BYTE-STREAM"}}
+      ],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "universal",
+      "surface_forms": ["TCP provides an ordered byte stream."]
+    },
+    {
+      "id": "P-TCP-BOUNDARIES",
+      "predicate": "R-GUARANTEES",
+      "arguments": [
+        {"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-TCP"}},
+        {"role": "property", "term": {"kind": "symbol_ref", "symbol_ref": "C-MSG-BOUNDARIES"}}
+      ],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "universal",
+      "surface_forms": ["TCP preserves message boundaries."],
+      "notes": "THE CONTROL CASE for Symbol.functional. Structurally identical to the BatchNorm pair (same relation shape, same subject, different value), but R-GUARANTEES.functional=false, so NO contradiction is derived -- correctly, since TCP guarantees many things at once. This one is simply FALSE, and it gets rejected by its own refuting Evidence (epistemic_status REFUTED), not by a pairwise CONTRADICTS edge against P-TCP-ORDERED. That distinction is v0.1 Finding 9 + Finding 10, and it is now structural rather than a matter of the labeller's judgment."
+    },
+
+    {
+      "id": "P-DIFFERENTIABLE",
+      "predicate": "R-DIFFERENTIABLE",
+      "arguments": [{"role": "subject", "term": {"kind": "variable", "name": "f"}}],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "f", "type": "C-REAL-FUNCTION"}],
+      "context": "CTX-REALS", "polarity": "assert", "modality": "universal",
+      "surface_forms": ["f is differentiable."]
+    },
+    {
+      "id": "P-CONTINUOUS",
+      "predicate": "R-CONTINUOUS",
+      "arguments": [{"role": "subject", "term": {"kind": "variable", "name": "f"}}],
+      "direction": null,
+      "quantification": [{"quantifier": "forall", "variable": "f", "type": "C-REAL-FUNCTION"}],
+      "context": "CTX-REALS", "polarity": "assert", "modality": "universal",
+      "surface_forms": ["f is continuous."],
+      "notes": "FIXES PART OF v0.1 FINDING 6. v0.1 could not represent 'Differentiable(f) implies Continuous(f)' because Term had no truth-valued/proposition kind, so it was faked with an invented IMPLIES predicate over pseudo-function-terms. In v0.2 the implication is D-DIFF-CONT, a Derivation between two ordinary propositions -- no recursion needed for this shape. What is still NOT fixed: propositional attitudes ('Alice believes P', 'the paper claims P is unproven'), where the embedded claim really is an argument. Assertion covers the narrow source-claims-P case; general embedding stays deferred."
+    },
+
+    {
+      "id": "P-MOMENTUM",
+      "predicate": "R-UPDATE_RULE_OF",
+      "arguments": [{"role": "component", "term": {"kind": "symbol_ref", "symbol_ref": "C-FIRST-MOMENT"}}, {"role": "method", "term": {"kind": "symbol_ref", "symbol_ref": "C-MOMENTUM"}}],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "universal",
+      "surface_forms": ["Momentum maintains an exponentially decayed estimate of the first moment of the gradient."]
+    },
+    {
+      "id": "P-RMSPROP",
+      "predicate": "R-UPDATE_RULE_OF",
+      "arguments": [{"role": "component", "term": {"kind": "symbol_ref", "symbol_ref": "C-SECOND-MOMENT"}}, {"role": "method", "term": {"kind": "symbol_ref", "symbol_ref": "C-RMSPROP"}}],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "universal",
+      "surface_forms": ["RMSProp scales updates by an exponentially decayed estimate of the second moment of the gradient."]
+    },
+    {
+      "id": "P-ADAM",
+      "predicate": "R-UPDATE_RULE_OF",
+      "arguments": [{"role": "component", "term": {"kind": "literal", "value": "bias_corrected_first_and_second_moment_combination"}}, {"role": "method", "term": {"kind": "symbol_ref", "symbol_ref": "C-ADAM"}}],
+      "direction": null, "quantification": [], "context": null, "polarity": "assert", "modality": "universal",
+      "surface_forms": ["Adam combines first- and second-moment estimates with bias correction."],
+      "notes": "Target of D-ADAM. The bias-correction term is the reason D-ADAM's relation is COMPOSES_TO with rule=EmpiricalComposition and status=unverified rather than ENTAILS: Adam is not logically entailed by momentum + RMSProp, it adds a third element neither premise states. v0.2 lets that be said out loud in one object instead of relabelling a hyperedge and hoping the distinction survives."
+    },
+
+    {
+      "id": "P-HOLMES-221B",
+      "predicate": "R-RESIDES_AT",
+      "arguments": [{"role": "resident", "term": {"kind": "symbol_ref", "symbol_ref": "C-HOLMES"}}, {"role": "place", "term": {"kind": "symbol_ref", "symbol_ref": "C-221B"}}],
+      "direction": null, "quantification": [], "context": "CTX-FICTION-HOLMES", "polarity": "assert", "modality": "universal",
+      "surface_forms": ["Sherlock Holmes lives at 221B Baker Street."]
+    },
+    {
+      "id": "P-221B-MUSEUM",
+      "predicate": "R-IS_A",
+      "arguments": [{"role": "subject", "term": {"kind": "symbol_ref", "symbol_ref": "C-221B"}}, {"role": "type", "term": {"kind": "symbol_ref", "symbol_ref": "C-MUSEUM"}}],
+      "direction": null, "quantification": [], "context": "CTX-REAL-WORLD", "polarity": "assert", "modality": "generic",
+      "surface_forms": ["221B Baker Street is a museum."],
+      "notes": "Paired with P-HOLMES-221B to show contexts with DISJOINT world constraints (world=SherlockHolmesCanon vs world=actual) keep a fictional and a real claim about the same address from interacting. Both are SUPPORTED, neither contradicts the other, and no new schema field was required. The open problem this example does not solve: nothing stops a naive reasoner from chaining across the two contexts and concluding a fictional detective lives in a real museum."
+    }
+  ],
+
+  "assertions": [
+    {"id": "A-CHLOROPHYLL", "proposition_id": "P-CHLOROPHYLL", "source": "standard biology textbook", "stance": "supports", "status": "active"},
+    {"id": "A-DM-FOR", "proposition_id": "P-DARKMATTER", "source": "PBH dark-matter literature", "stance": "supports", "status": "active"},
+    {"id": "A-DM-AGAINST", "proposition_id": "P-DARKMATTER", "source": "CMB/LSS constraint literature", "stance": "refutes", "status": "active"},
+    {"id": "A-X-STUDY-A", "proposition_id": "P-COMPOUND-X", "source": "Study A", "year": 2023, "stance": "supports", "status": "active"},
+    {"id": "A-X-STUDY-B", "proposition_id": "P-COMPOUND-X", "source": "Study B", "year": 2024, "stance": "refutes", "status": "active"},
+    {"id": "A-Z", "proposition_id": "P-TREATMENT-Z", "source": "Paper Z", "year": 2024, "stance": "supports", "status": "retracted", "notes": "The ASSERTION is retracted alongside its evidence -- both are needed: a paper can be retracted (assertion) independently of whether some other group's experiment (evidence) still stands."},
+    {"id": "A-PROTOCOL", "proposition_id": "P-PROTOCOL-Z", "source": "clinical guideline v3", "year": 2025, "stance": "supports", "status": "active", "notes": "Still 'active' -- the guideline has not been withdrawn yet even though its basis collapsed. Exactly the real-world lag that makes REV-003's INVALIDATE_PROOF record worth having."},
+    {"id": "A-BN-ICS", "proposition_id": "P-BN-ICS", "source": "Ioffe & Szegedy 2015", "year": 2015, "stance": "supports", "status": "active"},
+    {"id": "A-BN-SMOOTHING", "proposition_id": "P-BN-SMOOTHING", "source": "Santurkar et al. 2018", "year": 2018, "stance": "supports", "status": "active"},
+    {"id": "A-BN-ICS-REFUTED", "proposition_id": "P-BN-ICS", "source": "Santurkar et al. 2018", "year": 2018, "stance": "refutes", "status": "active", "notes": "Same source both supports one proposition and refutes another -- fine, because Assertion is per-(source, proposition) rather than a global stance attached to the source."},
+    {"id": "A-TCP-ORDERED", "proposition_id": "P-TCP-ORDERED", "source": "RFC 9293", "stance": "supports", "status": "active"},
+    {"id": "A-TCP-BOUNDARIES", "proposition_id": "P-TCP-BOUNDARIES", "source": "common misconception, reported not endorsed", "stance": "neutral_report", "status": "active", "notes": "stance=neutral_report is what keeps a widely-repeated false claim recordable without anything in the graph asserting it."},
+    {"id": "A-DIFF-CONT", "proposition_id": "P-CONTINUOUS", "source": "standard real analysis", "stance": "supports", "status": "active"},
+    {"id": "A-MOMENTUM", "proposition_id": "P-MOMENTUM", "source": "Polyak 1964 / Rumelhart et al. 1986", "stance": "supports", "status": "active"},
+    {"id": "A-RMSPROP", "proposition_id": "P-RMSPROP", "source": "Tieleman & Hinton 2012", "stance": "supports", "status": "active"},
+    {"id": "A-ADAM", "proposition_id": "P-ADAM", "source": "Kingma & Ba 2015", "year": 2015, "stance": "supports", "status": "active"},
+    {"id": "A-HOLMES", "proposition_id": "P-HOLMES-221B", "source": "Conan Doyle canon", "stance": "supports", "status": "active"},
+    {"id": "A-221B-MUSEUM", "proposition_id": "P-221B-MUSEUM", "source": "general knowledge", "stance": "supports", "status": "active"}
+  ],
+
+  "evidence": [
+    {"id": "EV-CHLOROPHYLL", "proposition_id": "P-CHLOROPHYLL", "kind": "citation", "stance": "supports", "status": "active", "source": "textbook consensus"},
+    {"id": "EV-DM-FOR", "proposition_id": "P-DARKMATTER", "kind": "observation", "stance": "supports", "status": "active", "source": "microlensing surveys, narrow mass windows"},
+    {"id": "EV-DM-AGAINST", "proposition_id": "P-DARKMATTER", "kind": "observation", "stance": "refutes", "status": "active", "source": "CMB + large-scale-structure constraints on PBHs as the dominant component"},
+    {"id": "EV-X-A", "proposition_id": "P-COMPOUND-X", "kind": "experiment", "stance": "supports", "status": "active", "source": "Study A RCT, n=200", "independence_group": "TRIAL-A"},
+    {"id": "EV-X-B", "proposition_id": "P-COMPOUND-X", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Study B RCT, n=180", "independence_group": "TRIAL-B"},
+    {"id": "EV-Z-EXPERIMENT", "proposition_id": "P-TREATMENT-Z", "kind": "experiment", "stance": "supports", "status": "retracted", "source": "Paper Z experiment, retracted 2025 for data integrity", "notes": "DANGEROUS CASE 6 trigger. Status flipped active -> retracted. Object is NOT deleted: history survives, only its counting weight changes."},
+    {"id": "EV-PROTOCOL-DERIVED", "proposition_id": "P-PROTOCOL-Z", "kind": "derivation_result", "stance": "supports", "status": "active", "source": "derived from P-TREATMENT-Z", "derivation_ref": "D-PROTOCOL", "notes": "Still 'active' but STALE -- its derivation's premise collapsed. derivation_ref is what makes this mechanically findable."},
+    {"id": "EV-BN-ICS-REFUTE", "proposition_id": "P-BN-ICS", "kind": "experiment", "stance": "refutes", "status": "active", "source": "Santurkar et al. 2018 noise-injection experiments"},
+    {"id": "EV-BN-SMOOTHING", "proposition_id": "P-BN-SMOOTHING", "kind": "experiment", "stance": "supports", "status": "active", "source": "Santurkar et al. 2018 loss-landscape measurements"},
+    {"id": "EV-TCP-ORDERED", "proposition_id": "P-TCP-ORDERED", "kind": "citation", "stance": "supports", "status": "active", "source": "RFC 9293 specification"},
+    {"id": "EV-TCP-BOUNDARIES", "proposition_id": "P-TCP-BOUNDARIES", "kind": "citation", "stance": "refutes", "status": "active", "source": "RFC 9293: TCP is a stream protocol with no record markers"},
+    {"id": "EV-DIFF-CONT", "proposition_id": "P-CONTINUOUS", "kind": "derivation_result", "stance": "supports", "status": "active", "source": "standard theorem", "derivation_ref": "D-DIFF-CONT"},
+    {"id": "EV-ADAM", "proposition_id": "P-ADAM", "kind": "citation", "stance": "supports", "status": "active", "source": "Kingma & Ba 2015, Algorithm 1"},
+    {"id": "EV-HOLMES", "proposition_id": "P-HOLMES-221B", "kind": "citation", "stance": "supports", "status": "active", "source": "A Study in Scarlet and subsequent stories"},
+    {"id": "EV-221B-MUSEUM", "proposition_id": "P-221B-MUSEUM", "kind": "observation", "stance": "supports", "status": "active", "source": "Sherlock Holmes Museum, Baker Street, London"}
+  ],
+
+  "derivations": [
+    {
+      "id": "D-DIFF-CONT",
+      "premises": ["P-DIFFERENTIABLE"],
+      "conclusion": "P-CONTINUOUS",
+      "relation": "ENTAILS",
+      "rule": "MaterialImplication",
+      "theory": "RealAnalysis",
+      "context": "CTX-REALS",
+      "status": "valid",
+      "notes": "The v0.1 Finding 6 fix in action. Also shows why Derivation.context matters: the entailment is stated relative to a theory and domain rather than floating free."
+    },
+    {
+      "id": "D-ADAM",
+      "premises": ["P-MOMENTUM", "P-RMSPROP"],
+      "conclusion": "P-ADAM",
+      "relation": "COMPOSES_TO",
+      "rule": "EmpiricalComposition",
+      "theory": null,
+      "context": null,
+      "status": "unverified",
+      "notes": "Generalizes the benchmarks' hyperedges.json H01. relation=COMPOSES_TO + status=unverified + rule=EmpiricalComposition together record that this is method lineage, NOT logical entailment (bias correction is a third element neither premise mentions). Compare D-DIFF-CONT: relation=ENTAILS, rule=MaterialImplication, status=valid. Same object, honestly different fields -- which is what the old ad-hoc hyperedge file could not express."
+    },
+    {
+      "id": "D-PROTOCOL",
+      "premises": ["P-TREATMENT-Z"],
+      "conclusion": "P-PROTOCOL-Z",
+      "relation": "ENTAILS",
+      "rule": "ClinicalRecommendationFromEfficacy",
+      "theory": null,
+      "context": null,
+      "status": "invalid",
+      "notes": "status moved valid -> invalid when its premise's support was retracted. This is the dependency link that makes transitive invalidation DETECTABLE. It is still not AUTOMATIC: nothing in this schema walked the graph and flipped P-PROTOCOL-Z's epistemic status, which is why that entry is deliberately left stale."
+    }
+  ],
+
+  "epistemic_status": [
+    {"proposition_id": "P-CHLOROPHYLL", "status": "SUPPORTED", "evidence_for": ["EV-CHLOROPHYLL"], "evidence_against": [], "notes": "SUPPORTED despite both its symbols having unresolved parents -- the independence of the two axes, demonstrated."},
+    {"proposition_id": "P-DARKMATTER", "status": "INCONSISTENT", "evidence_for": ["EV-DM-FOR"], "evidence_against": ["EV-DM-AGAINST"], "notes": "Mechanically correct per the rule, substantively wrong: see P-DARKMATTER notes. Kept as a recorded gap (degree/quantity claims need more than 4 states)."},
+    {"proposition_id": "P-COMPOUND-X", "status": "INCONSISTENT", "evidence_for": ["EV-X-A"], "evidence_against": ["EV-X-B"], "notes": "Correctly INCONSISTENT. Not auto-resolved."},
+    {"proposition_id": "P-TREATMENT-Z", "status": "UNRESOLVED", "evidence_for": [], "evidence_against": [], "notes": "Recomputed from SUPPORTED after EV-Z-EXPERIMENT went retracted. evidence_for is empty because retracted evidence is excluded. Not REFUTED -- absence of support is not refutation, and UNRESOLVED must never be read as FALSE."},
+    {"proposition_id": "P-PROTOCOL-Z", "status": "SUPPORTED", "evidence_for": ["EV-PROTOCOL-DERIVED"], "evidence_against": [], "notes": "DELIBERATELY STALE. Should be UNRESOLVED once transitive invalidation runs. Left wrong on purpose so the limitation is visible in the data rather than only described in prose."},
+    {"proposition_id": "P-BN-ICS", "status": "INCONSISTENT", "evidence_for": [], "evidence_against": ["EV-BN-ICS-REFUTE"], "notes": "INTENTIONAL MARKER, not an evidence tally: by the literal rule (evidence_for empty, evidence_against non-empty) this would be REFUTED. It is recorded as INCONSISTENT because the CONTRADICTS derived from R-PRIMARY_MECHANISM.functional=true against P-BN-SMOOTHING is an independent source of inconsistency that the 4-state rule -- defined purely over Evidence -- cannot see. FINDING: EpistemicStatus is underspecified; it needs to fold in derived contradictions from functional relations, not just evidence counts. Recorded, not patched."},
+    {"proposition_id": "P-BN-SMOOTHING", "status": "SUPPORTED", "evidence_for": ["EV-BN-SMOOTHING"], "evidence_against": []},
+    {"proposition_id": "P-TCP-ORDERED", "status": "SUPPORTED", "evidence_for": ["EV-TCP-ORDERED"], "evidence_against": []},
+    {"proposition_id": "P-TCP-BOUNDARIES", "status": "REFUTED", "evidence_for": [], "evidence_against": ["EV-TCP-BOUNDARIES"], "notes": "REFUTED by its own evidence, with no CONTRADICTS edge to P-TCP-ORDERED -- because R-GUARANTEES.functional=false. The clean contrast with P-BN-ICS is the whole point of including both."},
+    {"proposition_id": "P-CONTINUOUS", "status": "SUPPORTED", "evidence_for": ["EV-DIFF-CONT"], "evidence_against": [], "proof_for": "D-DIFF-CONT"},
+    {"proposition_id": "P-ADAM", "status": "SUPPORTED", "evidence_for": ["EV-ADAM"], "evidence_against": [], "proof_for": null, "notes": "proof_for is null even though D-ADAM exists, because D-ADAM.status=unverified and relation=COMPOSES_TO. A composition is not a proof."},
+    {"proposition_id": "P-HOLMES-221B", "status": "SUPPORTED", "evidence_for": ["EV-HOLMES"], "evidence_against": [], "notes": "SUPPORTED *within* context world=SherlockHolmesCanon. The status enum carries no context marker of its own -- it inherits the proposition's. Worth flagging: a query that ignores context would read this as a plain real-world truth."},
+    {"proposition_id": "P-221B-MUSEUM", "status": "SUPPORTED", "evidence_for": ["EV-221B-MUSEUM"], "evidence_against": []}
+  ],
+
+  "revisions": [
+    {
+      "id": "REV-001",
+      "operation": "CREATE",
+      "target_kind": "symbol",
+      "old_ids": [],
+      "new_ids": ["C-CHLOROPHYLL", "C-PHOTOSYNTHESIS"],
+      "reason": "Ingestion of 'Chlorophyll is needed for photosynthesis.' referenced two unknown concepts; created as UNRESOLVED_PARENT rather than rejecting the input or force-fitting an existing parent.",
+      "provenance": {"source": "ingest pipeline", "evidence_type": "ingested_unverified", "confidence": "hypothesis"}
+    },
+    {
+      "id": "REV-002",
+      "operation": "SPLIT",
+      "target_kind": "symbol",
+      "old_ids": ["C-BANK-PROVISIONAL"],
+      "new_ids": ["C-BANK-FINANCIAL", "C-BANK-LANDFORM"],
+      "reason": "Incompatible type assertions under no shared context: one symbol cannot be both a financial institution and a landform, and no context key distinguishes them because these are two senses of one word, not one entity under two conditions.",
+      "reassignments": [
+        {"proposition_id": "P-BANK-1", "reassigned_to": "C-BANK-FINANCIAL"},
+        {"proposition_id": "P-BANK-2", "reassigned_to": "C-BANK-LANDFORM"}
+      ],
+      "provenance": {"source": "disambiguation pass", "evidence_type": "definitional", "confidence": "established"},
+      "notes": "DANGEROUS CASES 4 AND 5. Proposition ids are stable across the split; only argument references moved. Being an append-only log entry rather than a destructive edit is what would make this reversible if the split were later judged wrong."
+    },
+    {
+      "id": "REV-003",
+      "operation": "INVALIDATE_PROOF",
+      "target_kind": "derivation",
+      "old_ids": ["D-PROTOCOL"],
+      "new_ids": [],
+      "reason": "EV-Z-EXPERIMENT was retracted, collapsing P-TREATMENT-Z to UNRESOLVED; D-PROTOCOL's premise no longer holds, so the derivation is marked invalid and anything resting on it is suspect.",
+      "provenance": {"source": "retraction notice 2025", "evidence_type": "empirical_experiment", "confidence": "refuted"},
+      "notes": "DANGEROUS CASE 6. This is the piece the earlier narrow design lacked: retraction is recorded as a first-class graph OPERATION, not only as a status flag buried on one Evidence object. Still not implemented: automatic recomputation of every proposition transitively downstream."
+    },
+    {
+      "id": "REV-004",
+      "operation": "RETRACT",
+      "target_kind": "evidence",
+      "old_ids": ["EV-Z-EXPERIMENT"],
+      "new_ids": [],
+      "reason": "Journal retraction of Paper Z for data integrity issues.",
+      "provenance": {"source": "journal retraction notice", "year": 2025, "evidence_type": "empirical_experiment", "confidence": "refuted"}
+    }
+  ]
+}

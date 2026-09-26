@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kir-v0.2",
+  "title": "K-IR v0.2",
+  "description": "Restructures kir-v0.1 around 8 universal objects (Symbol, Proposition, Context, Assertion, Evidence, Derivation, EpistemicStatus, RevisionEvent) instead of bolting fields onto the v0.1 Proposition. Scope is still exactly the 6 'particularly dangerous' cases from review (unknown concept/parent, unresolved truth, inconsistent evidence, concept split, previously-merged-must-separate, proof invalidation via retraction) PLUS two v0.1 STRESS_TEST.md gaps this shape fixes as a side effect: Finding 10 (functional vs set-valued predicates, via Symbol.functional) and part of Finding 6 (A implies B via Derivation, not a faked function symbol). Deliberately does NOT attempt: rich causality beyond simple composition, INFERENCE RULES for modal/belief/counterfactual/fictional contexts (the Context shape can now STORE a world/theory/frame key -- see 'context.world' example -- but nothing here defines what may or may not be inferred across a context boundary), numeric probability distributions, full bitemporal/versioned identity, or axiom-system-dependent proof checking. See CHANGELOG.md for why the shape changed mid-build.",
+
+  "$defs": {
+
+    "Symbol": {
+      "type": "object",
+      "description": "Everything referenceable is a Symbol: a concept/entity/type (kind=CONCEPT) or a relation/predicate (kind=RELATION). Relations being Symbols too means inventing a new predicate is adding a Symbol, not touching the schema -- and lets relation METADATA (functional vs set-valued) be attached and reasoned over generically instead of hand-derived per case (fixes v0.1 Finding 4/10).",
+      "required": ["id", "label", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "label": {"type": "string"},
+        "kind": {"type": "string", "enum": ["CONCEPT", "RELATION"]},
+        "resolution_status": {
+          "type": "string",
+          "enum": ["RESOLVED", "PROVISIONAL", "AMBIGUOUS", "UNRESOLVED_PARENT"],
+          "description": "Meaningful for kind=CONCEPT. RESOLVED: grounded, known parent or declared primitive. PROVISIONAL: created on ingestion, not yet checked against existing symbols. AMBIGUOUS: multiple candidate referents, see ambiguous_candidates. UNRESOLVED_PARENT: consistently named, but its supertype is not yet known. For kind=RELATION this field is typically RESOLVED once the relation's arity/functional-ness is declared, but may start PROVISIONAL for a relation invented on the fly."
+        },
+        "parent": {"type": ["string", "null"], "description": "Symbol.id of the immediate supertype (CONCEPT) or a more general relation (RELATION), or null."},
+        "aliases": {"type": "array", "items": {"type": "string"}},
+        "ambiguous_candidates": {"type": "array", "items": {"type": "string"}, "description": "Only for resolution_status=AMBIGUOUS: candidate Symbol.ids this label might denote."},
+        "functional": {
+          "type": ["boolean", "null"],
+          "description": "kind=RELATION only. true: single-valued role (e.g. PrimaryMechanism) -- two Assertions of HOLDS(this(subject), differentValue) under the SAME Context are mechanically CONTRADICTS, no hand-labeling needed. false: set-valued role (e.g. Guarantees) -- differing values are NOT automatically contradictory. null: not yet classified (treat as unsafe to auto-derive from, per v0.1 Finding 10)."
+        },
+        "provenance": {"$ref": "#/$defs/Provenance"},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Term": {
+      "description": "A value-position argument. 'symbol_ref' points at a Symbol.id (a concept/entity). 'function' composes Symbols. No raw proposition-as-term here: embedding a full claim as an argument (belief/quotation, e.g. 'Alice believes P') stays out of scope -- represent A-implies-B relations via Derivation instead (see Derivation), which covers the material-implication case cleanly without faking a function symbol.",
+      "oneOf": [
+        {"type": "object", "required": ["kind", "name"], "additionalProperties": false, "properties": {"kind": {"const": "variable"}, "name": {"type": "string"}}},
+        {"type": "object", "required": ["kind", "symbol_ref"], "additionalProperties": false, "properties": {"kind": {"const": "symbol_ref"}, "symbol_ref": {"type": "string"}}},
+        {"type": "object", "required": ["kind", "value"], "additionalProperties": false, "properties": {"kind": {"const": "literal"}, "value": {}}},
+        {"type": "object", "required": ["kind", "name", "args"], "additionalProperties": false, "properties": {"kind": {"const": "function"}, "name": {"type": "string"}, "args": {"type": "array", "items": {"$ref": "#/$defs/Term"}}}}
+      ]
+    },
+
+    "ContextConstraint": {
+      "type": "object",
+      "required": ["key", "op", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "key": {"type": "string", "description": "Open vocabulary, e.g. 'phase', 'regime', 'reference_frame', 'theory', 'world', 'software_version', 'observer'. New kinds of context need no schema change, only a new key -- this is the concrete fix for v0.1's fixed-field Context, which had no slot for 'world' or 'theory' and would have smuggled them into free-text assumptions (v0.1 Finding 7's problem, generalized)."},
+        "op": {"type": "string", "enum": ["=", "!=", "in", "not_in", "<", "<=", ">", ">="]},
+        "value": {}
+      }
+    },
+    "Context": {
+      "type": "object",
+      "required": ["id", "constraints"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "constraints": {"type": "array", "items": {"$ref": "#/$defs/ContextConstraint"}, "description": "Empty array = unconditional/universal context. NOTE (explicit correction): this generalizes STORAGE of any context key, including 'world' or 'theory'. It does NOT define which inferences are valid within or across a context boundary -- two propositions both true under world=Fiction do not compose the way two propositions under phase=liquid do. Cross-context inference rules are out of scope here (see description at schema root)."},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Proposition": {
+      "type": "object",
+      "description": "Semantic content only -- no truth value, no confidence, no source. Those live in Assertion/Evidence/EpistemicStatus so a proposition's identity survives changing evidence.",
+      "required": ["id", "predicate", "arguments", "polarity"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "predicate": {"type": "string", "description": "A Symbol.id of kind=RELATION. (Still just a string reference, not a closed enum -- open-world extensible, but now at least points at a registered, inspectable Symbol instead of an arbitrary unvalidated string, partially closing v0.1 Finding 0.)"},
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "term"],
+            "additionalProperties": false,
+            "properties": {"role": {"type": "string"}, "term": {"$ref": "#/$defs/Term"}}
+          }
+        },
+        "direction": {"type": ["string", "null"], "enum": ["positive", "negative", null]},
+        "quantification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["quantifier", "variable", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "quantifier": {"type": "string", "enum": ["forall", "exists"]},
+              "variable": {"type": "string"},
+              "type": {"type": "string", "description": "Symbol.id of the CONCEPT the variable ranges over."}
+            }
+          }
+        },
+        "context": {"type": ["string", "null"], "description": "Context.id, or null for unconditional."},
+        "polarity": {"type": "string", "enum": ["assert", "negate"]},
+        "modality": {"type": "string", "enum": ["universal", "generic", "possible", "typical", "necessary"]},
+        "surface_forms": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Provenance": {
+      "type": "object",
+      "required": ["source"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {"type": "string"},
+        "year": {"type": ["integer", "null"]},
+        "evidence_type": {"type": "string", "enum": ["theoretical_derivation", "empirical_experiment", "textbook_consensus", "definitional", "superseded_hypothesis", "ingested_unverified"]},
+        "confidence": {"type": "string", "enum": ["established", "contested", "superseded", "hypothesis", "refuted"]}
+      }
+    },
+
+    "Assertion": {
+      "type": "object",
+      "description": "'Source S claims proposition_id (with some stance)' -- kept separate from Evidence because a citation/interpretation (e.g. a paper's stated conclusion) is not the same kind of thing as a raw experimental result, and both need to coexist without corrupting each other (the BatchNorm ORIG/REVISED case: two papers ASSERT different mechanisms; that disagreement is about assertions, not about the propositions' truth).",
+      "required": ["id", "proposition_id", "source", "stance", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "proposition_id": {"type": "string"},
+        "source": {"type": "string"},
+        "year": {"type": ["integer", "null"]},
+        "stance": {"type": "string", "enum": ["supports", "refutes", "neutral_report"], "description": "neutral_report: source states the proposition without taking an evidentiary stance on it (e.g. a survey paper repeating a claim)."},
+        "status": {"type": "string", "enum": ["active", "retracted", "corrected"]},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Evidence": {
+      "type": "object",
+      "description": "A specific empirical/derivational datum bearing on a proposition, distinct from an Assertion (a source's claim). Kept OUTSIDE the proposition so epistemic status is always a computed view.",
+      "required": ["id", "proposition_id", "kind", "stance", "status", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "proposition_id": {"type": "string"},
+        "kind": {"type": "string", "enum": ["experiment", "observation", "derivation_result", "citation"]},
+        "stance": {"type": "string", "enum": ["supports", "refutes"]},
+        "status": {
+          "type": "string",
+          "enum": ["active", "retracted", "corrected"],
+          "description": "active: counted toward epistemic status. retracted: source withdrawn, excluded from computation but never deleted. corrected: superseded by a newer Evidence object; old one kept for history."
+        },
+        "source": {"type": "string"},
+        "independence_group": {"type": ["string", "null"], "description": "Evidence sharing a group id is NOT independent (e.g. reuses the same underlying dataset) -- future compiler work can down-weight non-independent evidence; not computed here."},
+        "derivation_ref": {"type": ["string", "null"], "description": "If kind=derivation_result: the Derivation.id this came from."},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "Derivation": {
+      "type": "object",
+      "description": "Generalizes the ad-hoc hyperedges.json used in the physics/ML benchmarks into a first-class K-IR object, and gives v0.1 Finding 6's 'A implies B' case a home that isn't a faked function symbol: Differentiable(f) implies Continuous(f) becomes premises=[P_diff], conclusion=P_cont, rule='MaterialImplication', theory='RealAnalysis' -- no recursive proposition-as-term required for THIS shape of claim. (Propositional-attitude embedding, e.g. 'Alice believes P', is a different problem and stays deferred.)",
+      "required": ["id", "premises", "conclusion", "relation", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "premises": {"type": "array", "items": {"type": "string"}, "minItems": 1, "description": "Proposition.ids."},
+        "conclusion": {"type": "string", "description": "Proposition.id."},
+        "relation": {"type": "string", "description": "Open vocabulary, e.g. ENTAILS, COMPOSES_TO, GENERALIZES -- deliberately not a closed enum, same philosophy as predicate. COMPOSES_TO (e.g. Momentum+RMSProp -> Adam) is NOT claimed to be logical entailment; keeping this field open and separate from `rule` is what lets a real proof and an informal composition coexist in the same graph without one impersonating the other."},
+        "rule": {"type": ["string", "null"], "description": "The specific inference rule/justification, e.g. 'ClassicalConjunctionElimination', 'MaterialImplication', 'EmpiricalComposition'. Open string for now; a future tightening could make this a Symbol.id of kind RELATION, not done here."},
+        "theory": {"type": ["string", "null"], "description": "e.g. 'ClassicalLogic', 'RealAnalysis' -- the axiom/theory system the rule is valid under. Does not itself implement axiom-dependent proof checking (still deferred), just records the dependency."},
+        "context": {"type": ["string", "null"], "description": "Context.id, if the derivation only holds under some constraint (e.g. x != 0)."},
+        "status": {"type": "string", "enum": ["valid", "invalid", "unverified"]},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "EpistemicStatus": {
+      "type": "object",
+      "description": "A computed VIEW over a proposition's active Evidence, stored top-level (not embedded in Proposition) to make plain that this is derived data, recomputed whenever Evidence.status changes -- never hand-set, never treated as part of the proposition's identity.",
+      "required": ["proposition_id", "status", "evidence_for", "evidence_against"],
+      "additionalProperties": false,
+      "properties": {
+        "proposition_id": {"type": "string"},
+        "status": {
+          "type": "string",
+          "enum": ["SUPPORTED", "REFUTED", "UNRESOLVED", "INCONSISTENT"],
+          "description": "Computed from ADMISSIBLE Evidence, where admissible means status=active AND (if kind=derivation_result) its referenced Derivation.status=valid. SUPPORTED: admissible evidence_for non-empty, evidence_against empty. REFUTED: reverse. UNRESOLVED: both empty. INCONSISTENT: both non-empty -- surfaced for investigation, never auto-resolved by picking a side. UNRESOLVED must never be treated as FALSE downstream. NOTE: the derivation-validity clause was added after validate_examples.py showed that an evidence-status-only rule cannot see a collapsed premise at all -- a retracted experiment leaves every downstream derived 'supporting' Evidence sitting at status=active, so the naive rule reports SUPPORTED forever. This clause makes one hop of invalidation detectable; chains deeper than one hop still require an explicit dependency-graph pass (not implemented)."
+        },
+        "evidence_for": {"type": "array", "items": {"type": "string"}},
+        "evidence_against": {"type": "array", "items": {"type": "string"}},
+        "proof_for": {"type": ["string", "null"], "description": "Derivation.id, if a certified derivation exists (stronger than evidence)."},
+        "proof_against": {"type": ["string", "null"]},
+        "notes": {"type": "string"}
+      }
+    },
+
+    "RevisionEvent": {
+      "type": "object",
+      "description": "First-class, append-only operation log over Symbols/Propositions/Assertions/Evidence/Derivations. Concept split is ONE instance of this (operation=SPLIT), not a separate mechanism -- generalizing it means the same object also records CREATE/MERGE/SUPERSEDE/RETRACT/CORRECT/REFINE_CONTEXT/RETYPE_RELATION/INVALIDATE_PROOF/RESTORE, so 'we incorrectly merged two symbols and N facts now depend on it' has a place to be recorded and later reversed. This schema records the log entry; it does NOT implement an append-only storage engine or automatic downstream-dependency recomputation across arbitrary chains -- that remains compiler/storage-architecture future work.",
+      "required": ["id", "operation", "target_kind", "old_ids", "new_ids", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "operation": {"type": "string", "enum": ["CREATE", "MERGE", "SPLIT", "SUPERSEDE", "RETRACT", "CORRECT", "REFINE_CONTEXT", "RETYPE_RELATION", "INVALIDATE_PROOF", "RESTORE"]},
+        "target_kind": {"type": "string", "enum": ["symbol", "proposition", "assertion", "evidence", "derivation"]},
+        "old_ids": {"type": "array", "items": {"type": "string"}},
+        "new_ids": {"type": "array", "items": {"type": "string"}},
+        "reason": {"type": "string"},
+        "reassignments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["proposition_id", "reassigned_to"],
+            "additionalProperties": false,
+            "properties": {"proposition_id": {"type": "string"}, "reassigned_to": {"type": "string"}}
+          },
+          "description": "For operation=SPLIT/MERGE on target_kind=symbol: which propositions' argument references move to which resulting symbol id."
+        },
+        "provenance": {"$ref": "#/$defs/Provenance"},
+        "notes": {"type": "string"}
+      }
+    }
+  },
+
+  "type": "object",
+  "required": ["symbols", "contexts", "propositions", "assertions", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "_comment": {"type": "string"},
+    "symbols": {"type": "array", "items": {"$ref": "#/$defs/Symbol"}},
+    "contexts": {"type": "array", "items": {"$ref": "#/$defs/Context"}},
+    "propositions": {"type": "array", "items": {"$ref": "#/$defs/Proposition"}},
+    "assertions": {"type": "array", "items": {"$ref": "#/$defs/Assertion"}},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/Evidence"}},
+    "derivations": {"type": "array", "items": {"$ref": "#/$defs/Derivation"}},
+    "epistemic_status": {"type": "array", "items": {"$ref": "#/$defs/EpistemicStatus"}},
+    "revisions": {"type": "array", "items": {"$ref": "#/$defs/RevisionEvent"}}
+  }
+}
