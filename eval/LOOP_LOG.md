@@ -13,8 +13,11 @@ Reproduce with: `python eval/retraction_eval.py`, `eval/proof_validity.py`,
 
 | target | required | measured | verdict |
 |---|---|---|---|
-| canonical proposition matching F1 | >= 0.95 | **0.000** | **FAIL** |
-| dangerous false merges | < 0.005 | 0.000 | PASS, but only because nothing merges |
+| canonical proposition matching F1 | >= 0.95 | 1.000 on shared-vocabulary pairs, **0.000 cross-vocabulary** | **PARTIAL, see cycle 5** |
+| dangerous false merges | < 0.005 | 0.0000 | PASS |
+| end-to-end claim recall (blind extraction) | n/a | 1.000 | measured |
+| end-to-end answer accuracy (blind extraction) | n/a | 0.833 | measured |
+| hallucinated claims (blind extraction) | < 0.005 | 0.0000 | PASS |
 | retraction propagation precision | >= 0.95 | 1.0000 | PASS |
 | retraction propagation recall | >= 0.95 | 1.0000 | PASS |
 | contradiction detection recall | >= 0.95 | 1.0000 | PASS, evidence-level only |
@@ -25,11 +28,12 @@ Reproduce with: `python eval/retraction_eval.py`, `eval/proof_validity.py`,
 | margin over LLM+RAG | >= 10 pts | **unmeasured** | **BLOCKED** |
 | margin over best non-LLM baseline | n/a | +16.7 pts | measured |
 
-**How much to trust this.** Every passing number is over n=10 gold claims on
-two real chains, and measures the REASONER on hand-authored graphs. The compiler
-stage has never run, so none of it speaks to end-to-end performance. The two
-honest readings are the failure (canonicalization at 0.000, see cycle 4) and the
-blocked row.
+**How much to trust this.** The reasoner rows are over n=10 gold claims on two
+real chains, on hand-authored graphs. The compiler stage HAS now run once, on one
+paper, blind (cycle 5), which is where the end-to-end rows come from; one paper is
+not a sample. The honest readings are the partial row (canonicalization works
+within a shared vocabulary and relates nothing across independently invented
+ones) and the blocked row.
 
 Three passes carry scope caveats stated where they are measured rather than
 buried: false merges are 0 because the pipeline never merges anything;
@@ -346,3 +350,68 @@ already on file): no effect-size or strength field, so "supports but greatly
 attenuated" had to go in `notes`; free-string argument roles mean nothing stops
 a second compiler emitting `drug` where this one emitted `agent`. Both are
 already-known deferred gaps, now independently hit by a different agent.
+
+---
+
+## Cycle 5 (2026-09-26): canonicalization, and the first end-to-end run
+
+Two things happened in this cycle and the second corrects the first.
+
+### Canonicalization built, and the measured 0.000 fixed
+
+Root cause of cycle 4's F1 0.000 was partly a bug in the corpus, not in the
+matchers. `P-SYNERGISM`'s surface form is a general claim ("combining antiemetic
+agents produces synergistic prevention") while its arguments were a specific drug
+pair. Carlisle's actual finding is general, so the encoding was simply wrong, and
+the surface forms agreed while the encodings could not.
+
+`compiler/canonicalize.py` plus `compiler/equivalences.json` normalise claims
+using DECLARED equivalences rather than a similarity threshold. The reason is the
+false-merge gate: a wrong merge traces to one named rule that can be deleted,
+instead of to a number that has to be retuned. One rule was added, with a guard,
+because without the guard it over-applied to plain drug-versus-drug comparisons.
+`RELATED` is deliberately not a merge, which is where the instance-versus-general
+decoy lands.
+
+Result on the 7 hand-authored gold pairs: 7/7, F1 1.000, zero false merges.
+
+### First end-to-end run, which corrects that result
+
+A blind LLM extraction of the same paper became available (produced by a separate
+session with no access to the gold labels). Scored through the reasoner:
+
+| metric | value |
+|---|---|
+| claim recall | 1.000 (all 6 gold claims found) |
+| answer accuracy | 0.833 (5/6) |
+| raw claim precision | 0.333 (15 propositions for 6 gold claims) |
+| granularity-adjusted precision | 1.000 |
+| hallucination rate | **0.0000** |
+| false survivals / false collapses | 0 / 0 |
+
+**Finding 1, and it invalidates the canonicalization win above.** The F1 1.000
+was flattered by an artefact: both hand-authored corpora happened to use the same
+symbol ids, so normalisation only had to reconcile predicates. Against a blind
+extraction that invented its own vocabulary, the canonicalizer relates NOTHING --
+every comparison returns DIFFERENT, and the FINER_GRAINED bucket in
+`eval/extraction_granularity.py` is empty for that reason. Cross-vocabulary
+canonicalization is the real problem and it is unsolved. The scoreboard now
+reports both numbers rather than the flattering one.
+
+**Finding 2: the precision hit was a spec gap, not a compiler error.** All 15
+extracted claims are grounded in the source text at 1.00, with zero spurious
+claims. The compiler split by endpoint (nausea, vomiting, nausea-or-vomiting)
+where gold folds them into one PONV claim. Raw precision therefore punished it for
+being more faithful to the paper than gold is.
+
+**Fix, targeted at the spec only.** `compiler/EXTRACTION_SPEC.md` rule 2a now
+states that endpoints of one outcome family are one claim, with the reason tied to
+the task: endpoints of a family are not independently retractable, and this task
+asks whether support survives rather than how large the effect is.
+
+**Not fixed, and deliberately.** The one wrong answer, `P-GRANI-ALONE-WORSE`
+(gold UNRESOLVED, extraction REFUTED), is recorded as `disputed` in
+`gold_queries.json` with the gold label left unchanged. The extraction read it as
+a synergism claim and attached Carlisle's no-synergism null as refuting evidence,
+which is defensible. Revising a label after seeing a system's prediction is
+scoring-to-fit; it should be resolved from Carlisle's full text.
