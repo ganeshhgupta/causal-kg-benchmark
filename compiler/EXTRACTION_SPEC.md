@@ -23,6 +23,23 @@ A single JSON object validating against the schema, containing `symbols`,
    agent, outcome, comparator or regimen. Do not split one claim across several
    propositions.
 
+2a. **Granularity: endpoints of one outcome family are ONE claim.** Where a paper
+   reports the same intervention against the same comparator on several related
+   endpoints (nausea, vomiting, nausea-or-vomiting; or 30-day and 90-day
+   mortality), that is one proposition over the outcome family, not one per
+   endpoint. Two reasons, both task-specific rather than aesthetic: endpoints of
+   one family are not independently retractable, since the same trials support
+   all of them, and this task asks whether support survives rather than how large
+   the effect is. Split only when the endpoints could come apart evidentially,
+   for example if different trials measured them.
+
+   Added after the first blind extraction produced 15 propositions for 6 gold
+   claims. Every one was grounded in the source with zero hallucination, so this
+   was never a compiler error: the spec simply had not said which granularity it
+   wanted, and raw precision punished the compiler for being more faithful to the
+   paper than gold was. If the coarser choice ever loses information the task
+   needs, this rule is what should change, not the labels.
+
 3. **A claim is one object however many sources bear on it.** If two groups
    studied the same claim and disagreed, that is ONE proposition with two
    `evidence` entries of opposite `stance`, never two propositions.
