@@ -1,5 +1,5 @@
 {
-  "_comment": "Gold canonical K-IR propositions for Benchmark v0. Each is the target equivalence class that paraphrase 'variants' (variants.json) should collapse onto. 'context' fields are the conditions/assumptions that make the statement true -- they are the whole point of the benchmark.",
+  "_comment": "Gold canonical K-IR propositions for Benchmark v0. Each is the target equivalence class that paraphrase 'variants' (variants.json) should collapse onto. 'context' fields are the conditions/assumptions that make the statement true -- they are the whole point of the benchmark. Revised per review round 1: fixed K015's LinearExtent->Volume bug, restricted K002/K003/K004 to defensible regimes instead of universal claims, split speed vs velocity in K012, added missing concept references.",
   "propositions": [
     {
       "id": "K001",
@@ -12,42 +12,69 @@
     {
       "id": "K002",
       "statement": "MONOTONIC_POSITIVE(Temperature(x), ElectricalResistance(x))",
-      "nl_gloss": "For metals, electrical resistance increases as temperature increases.",
+      "nl_gloss": "For an ordinary metal in the positive-temperature-coefficient regime, electrical resistance increases as temperature increases.",
       "concepts": ["C01", "C02", "C13"],
-      "context": {"material_class": "metal", "domain": "normal_operating_range (no phase change, no superconducting transition)"},
-      "notes": "dR/dT > 0 for metals. Deliberately paired with K003 to test context-sensitive contradiction handling."
+      "context": {
+        "material_regime": "metallic_conduction",
+        "temperature_regime": "positive_temperature_coefficient",
+        "phase_transition": false,
+        "superconducting_transition": false,
+        "geometry_change": "negligible"
+      },
+      "notes": "dR/dT > 0 for most conducting metals (OpenStax), excluding special low-TCR alloys, phase transitions, and superconducting transitions. Deliberately paired with K003 to test context-sensitive relation classification (see P01: these should come out COMPATIBLE, not CONTRADICTS). Note the context is about a TRANSPORT REGIME, not an eternal property of 'Metal' as a class -- see C14's scope_note."
     },
     {
       "id": "K003",
       "statement": "MONOTONIC_NEGATIVE(Temperature(x), ElectricalResistance(x))",
-      "nl_gloss": "For semiconductors, electrical resistance decreases as temperature increases.",
-      "concepts": ["C01", "C02", "C14"],
-      "context": {"material_class": "semiconductor", "domain": "normal_operating_range"},
-      "notes": "dR/dT < 0 for semiconductors. Surface-level negation of K002; correct system must NOT mark K002/K003 as CONTRADICTS once material_class context is taken into account -- they are UNRELATED (different subject material), not contradictory."
+      "nl_gloss": "For an intrinsic/lightly-doped semiconductor in the standard negative-temperature-coefficient regime, resistance decreases as temperature increases.",
+      "concepts": ["C01", "C02", "C29"],
+      "context": {
+        "transport_regime": "semiconducting_NTC",
+        "material": "intrinsic_silicon",
+        "doping": "fixed",
+        "phase_transition": false
+      },
+      "notes": "dR/dT < 0, canonical example intrinsic silicon (OpenStax notes this sign depends on semiconductor type and doping level, so the claim is scoped to a concrete example rather than 'all semiconductors'). Surface-level negation of K002; correct system must classify K002/K003 as COMPATIBLE (shared MONOTONIC_* structure, disjoint transport-regime context), not CONTRADICTS."
     },
     {
       "id": "K004",
       "statement": "MONOTONIC_POSITIVE(Temperature(x), LinearExtent(x))",
-      "nl_gloss": "A solid body's linear dimensions increase as its temperature increases, at constant pressure.",
+      "nl_gloss": "For an ordinary solid in the positive-thermal-expansion regime, linear dimensions increase as temperature increases, at constant pressure.",
       "concepts": ["C01", "C03", "C12"],
-      "context": {"phase_state": "solid", "pressure": "constant"},
-      "notes": "General thermal expansion law for solids."
+      "context": {
+        "phase_state": "solid",
+        "pressure": "constant",
+        "material_regime": "ordinary_positive_expansion (excludes known negative-thermal-expansion solids, e.g. some zirconium tungstates, certain fused-silica formulations)"
+      },
+      "notes": "'Solid' alone is NOT a sufficient condition -- negative-thermal-expansion (NTE) solids exist. The gating condition is the expansion regime, of which 'ordinary metal' (K004m) is a subtype."
     },
     {
       "id": "K004m",
       "statement": "MONOTONIC_POSITIVE(Temperature(x), LinearExtent(x))",
-      "nl_gloss": "Metals expand when heated.",
+      "nl_gloss": "Metals expand when heated (ordinary metals, positive-expansion regime).",
       "concepts": ["C01", "C03", "C13"],
-      "context": {"phase_state": "solid", "pressure": "constant", "material_class": "metal"},
-      "notes": "SPECIALIZATION of K004 (metal is instance_of Material/solid). Correct relation to K004: K004m ENTAILS-nothing-new / K004 ENTAILS K004m is the wrong direction -- actually K004 (general) ENTAILS K004m (specific) given Metal instance_of solid-forming material. Used to test the 'specialization mistaken for identity' failure mode."
+      "context": {
+        "phase_state": "solid",
+        "pressure": "constant",
+        "material_class": "metal",
+        "material_regime": "ordinary_positive_expansion"
+      },
+      "notes": "SPECIALIZATION of K004: ordinary metals are a subtype of the positive-expansion regime K004 quantifies over. Relation to K004: K004 ENTAILS K004m (context of K004m is SUBSUMED_BY K004's), not EQUAL. Used to test the 'specialization mistaken for identity' failure mode."
     },
     {
       "id": "K004c",
       "statement": "MONOTONIC_POSITIVE(Temperature(Copper_instance), LinearExtent(Copper_instance))",
       "nl_gloss": "Copper expands when heated.",
       "concepts": ["C01", "C03", "C16"],
-      "context": {"phase_state": "solid", "pressure": "constant", "material_class": "metal", "material": "copper"},
-      "notes": "SPECIALIZATION of K004m (Copper instance_of Metal). K004m ENTAILS K004c, not EQUAL. This is the canonical 'false merge' trap case from the design discussion."
+      "context": {
+        "phase_state": "solid",
+        "pressure": "constant",
+        "material_class": "metal",
+        "material": "copper",
+        "material_regime": "ordinary_positive_expansion",
+        "temperature_domain": "below copper's melting point, no phase transition"
+      },
+      "notes": "SPECIALIZATION of K004m (Copper subtype_of Metal; NIST measurements confirm a positive expansion coefficient for copper across a substantial temperature range). K004m ENTAILS K004c, not EQUAL. This is the canonical 'false merge' trap case: a naive embedding-similarity canonicalizer will likely mark K004m and K004c EQUAL because the sentences are near-identical in surface structure."
     },
     {
       "id": "K005",
@@ -59,9 +86,9 @@
     },
     {
       "id": "K006",
-      "statement": "Pressure(x) * Volume(x) = n * R_gas * Temperature(x)",
+      "statement": "Pressure(x) * Volume(x) = AmountOfSubstance(x) * GasConstant * Temperature(x)",
       "nl_gloss": "Ideal gas law: PV = nRT.",
-      "concepts": ["C05", "C04", "C01"],
+      "concepts": ["C05", "C04", "C01", "C32", "C33"],
       "context": {"phase_state": "gas", "gas_model": "ideal"},
       "notes": "Fails for real gases at high pressure / low temperature -- context is load-bearing."
     },
@@ -69,7 +96,7 @@
       "id": "K007",
       "statement": "Force(x) = Mass(x) * Acceleration(x)",
       "nl_gloss": "Newton's second law: F = ma.",
-      "concepts": ["C21", "C06"],
+      "concepts": ["C21", "C06", "C34"],
       "context": {"regime": "non-relativistic, constant mass"},
       "notes": "Classic law; context excludes relativistic speeds and variable-mass systems (e.g. rockets)."
     },
@@ -95,7 +122,7 @@
       "nl_gloss": "Electrical power equals current times voltage.",
       "concepts": ["C10", "C08", "C09"],
       "context": {},
-      "notes": "Definitional; combines with K001 to derive K011 (tests substitution-based ENTAILS, not surface EQUAL)."
+      "notes": "Definitional; combines with K001 to derive K011 (see hyperedges.json) -- tests substitution-based ENTAILS, not surface EQUAL."
     },
     {
       "id": "K011",
@@ -103,15 +130,15 @@
       "nl_gloss": "Electrical power dissipated equals current squared times resistance.",
       "concepts": ["C10", "C08", "C02"],
       "context": {"material_class": "ohmic_conductor"},
-      "notes": "Derivable from K001 + K010 by substitution (V=IR into P=IV). Relation to K001/K010: ENTAILED_BY {K001, K010} jointly (hyperedge), not EQUAL to either alone."
+      "notes": "Derivable from K001 + K010 jointly by substitution (V=IR into P=IV) -- see hyperedges.json. Neither K001 nor K010 alone entails K011."
     },
     {
       "id": "K012",
-      "statement": "Velocity(x) = Distance(x) / Time(x)",
-      "nl_gloss": "Average velocity equals distance divided by time.",
-      "concepts": ["C20", "C19"],
-      "context": {"motion": "constant velocity, straight line"},
-      "notes": "Fails for non-uniform motion without qualifying as 'average'."
+      "statement": "InstantaneousSpeed(x) = DistanceTraveled(x) / ElapsedTime(x)",
+      "nl_gloss": "An object's speed at an instant equals distance traveled divided by elapsed time, when speed is constant over that interval.",
+      "concepts": ["C31", "C30", "C19"],
+      "context": {"motion_regime": "constant_speed"},
+      "notes": "True only when speed does not change during the interval; otherwise distance/time gives only the AVERAGE speed, not the instantaneous value at any particular moment. Distinct from Velocity (C20, a vector: displacement/time) -- K012 is scalar Speed. V012c drops the constant_speed qualifier -- classic dropped-context decoy."
     },
     {
       "id": "K013",
@@ -131,19 +158,29 @@
     },
     {
       "id": "K015",
-      "statement": "MONOTONIC_POSITIVE(Temperature(Water_instance), LinearExtent(Water_instance))",
-      "nl_gloss": "Water expands when heated.",
-      "concepts": ["C01", "C03", "C17"],
-      "context": {"phase_state": "liquid", "temperature_domain": "above 4C"},
-      "notes": "TRUE only above 4C. See K016 for the anomalous region -- deliberately constructed contradiction-via-omitted-context pair."
+      "statement": "MONOTONIC_POSITIVE(Temperature(Water_sample), Volume(Water_sample))",
+      "nl_gloss": "For a fixed mass of liquid water between about 4C and its boiling point, volume increases as temperature increases, at constant pressure.",
+      "concepts": ["C01", "C04", "C17"],
+      "context": {
+        "phase_state": "liquid",
+        "temperature_domain": "4C to boiling_point(P)",
+        "amount": "fixed mass",
+        "pressure": "constant (e.g. 1 atm)"
+      },
+      "notes": "FIXED from v0-draft: predicate is Volume, not LinearExtent -- a liquid sample has no stable intrinsic linear dimension the way a solid rod does. Water has maximum density at ~4C, so volume increases with T above that point. See K016 for the 0-4C anomalous region -- deliberately constructed apparent-contradiction pair (see P05)."
     },
     {
       "id": "K016",
-      "statement": "MONOTONIC_NEGATIVE(Temperature(Water_instance), Volume(Water_instance))",
-      "nl_gloss": "Water contracts as it is heated between 0C and 4C (anomalous expansion).",
+      "statement": "MONOTONIC_NEGATIVE(Temperature(Water_sample), Volume(Water_sample))",
+      "nl_gloss": "For a fixed mass of liquid water between 0C and about 4C, volume decreases as temperature increases, at constant pressure.",
       "concepts": ["C01", "C04", "C17"],
-      "context": {"phase_state": "liquid", "temperature_domain": "0C to 4C"},
-      "notes": "Surface form looks like it CONTRADICTS K015. Correct classification once temperature_domain context is included: neither CONTRADICTS nor UNRELATED -- both are true, in disjoint context windows (OVERLAPS-by-subject, but truth-conditionally compatible once context is resolved). This is the single most important test case in v0."
+      "context": {
+        "phase_state": "liquid",
+        "temperature_domain": "0C to ~4C",
+        "amount": "fixed mass",
+        "pressure": "constant (e.g. 1 atm)"
+      },
+      "notes": "Anomalous expansion of water: density is maximal at ~4C (USGS), so volume falls while warming toward it from 0C. Surface form directly negates K015's direction, but both are true over disjoint temperature_domain windows -- an apparent contradiction created by erasing context, not a real one. This is the single most important test case in v0 (see P05)."
     },
     {
       "id": "K017",
@@ -155,11 +192,11 @@
     },
     {
       "id": "K018",
-      "statement": "INSTANCE_OF(Metal, Conductor)",
+      "statement": "SUBTYPE_OF(Metal, Conductor)",
       "nl_gloss": "Metals are conductors.",
       "concepts": ["C13", "C15"],
       "context": {},
-      "notes": "Ontological fact, not a causal/quantitative law -- tests that the classifier doesn't force everything into MONOTONIC_* form."
+      "notes": "Ontological class fact (was mislabeled INSTANCE_OF in v0-draft; fixed to SUBTYPE_OF since Metal and Conductor are both classes, not an individual-to-class link) -- not a causal/quantitative law. Tests that the classifier doesn't force everything into MONOTONIC_* form."
     },
     {
       "id": "K019",
@@ -167,7 +204,7 @@
       "nl_gloss": "No material is both a metal and a semiconductor.",
       "concepts": ["C13", "C14"],
       "context": {},
-      "notes": "Supports resolving K002/K003 as UNRELATED rather than CONTRADICTS, since their subjects are disjoint types."
+      "notes": "Simplifying assumption for Benchmark-v0 (see C14's scope_note): real metallic/semiconducting behavior is a transport regime, not an eternal class property. Kept as a hard disjointness fact here for tractability. Supports resolving K002/K003 as COMPATIBLE with DISJOINT context, rather than CONTRADICTS (see P01, P13)."
     },
     {
       "id": "K020",

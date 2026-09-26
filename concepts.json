@@ -1,5 +1,5 @@
 {
-  "_comment": "Concept ontology for Benchmark v0 (thermal / electrical / material physics domain). type follows a minimal upper ontology: Entity, Type, Quantity, Property, Constant.",
+  "_comment": "Concept ontology for Benchmark v0 (thermal / electrical / material physics domain). type follows a minimal upper ontology: Entity, Type, Quantity, Property, Constant. Class-to-class links use 'subtype_of' (e.g. Metal subtype_of Material); 'instance_of' is reserved for individual-to-class links (e.g. a specific copper sample instance_of Copper), which this concept ontology does not itself contain -- individuals only appear inside proposition statements (e.g. 'Copper_instance' in K004c).",
   "concepts": [
     {"id": "C01", "name": "Temperature", "type": "Quantity"},
     {"id": "C02", "name": "ElectricalResistance", "type": "Quantity"},
@@ -13,14 +13,14 @@
     {"id": "C10", "name": "Power", "type": "Quantity"},
     {"id": "C11", "name": "ThermalEnergy", "type": "Quantity"},
     {"id": "C12", "name": "Material", "type": "Type"},
-    {"id": "C13", "name": "Metal", "type": "Type", "instance_of": "C12"},
-    {"id": "C14", "name": "Semiconductor", "type": "Type", "instance_of": "C12", "disjoint_with": "C13"},
+    {"id": "C13", "name": "Metal", "type": "Type", "subtype_of": "C12"},
+    {"id": "C14", "name": "Semiconductor", "type": "Type", "subtype_of": "C12", "disjoint_with": "C13", "scope_note": "Treated as a disjoint class from Metal for Benchmark-v0 tractability. Physically, metallic vs. semiconducting behavior is a transport regime that can depend on doping/pressure/phase, not an eternal property of a material identity -- a full K-IR ontology should model transport_regime(x, context) rather than class-level disjointness. Flagged, not fixed, in v0."},
     {"id": "C15", "name": "Conductor", "type": "Type", "description": "supertype covering Metal (and some non-metals)"},
-    {"id": "C16", "name": "Copper", "type": "Type", "instance_of": "C13"},
-    {"id": "C17", "name": "Water", "type": "Type", "instance_of": "C12"},
+    {"id": "C16", "name": "Copper", "type": "Type", "subtype_of": "C13"},
+    {"id": "C17", "name": "Water", "type": "Type", "subtype_of": "C12"},
     {"id": "C18", "name": "Body", "type": "Entity", "description": "generic physical object variable, e.g. x"},
     {"id": "C19", "name": "Time", "type": "Quantity"},
-    {"id": "C20", "name": "Velocity", "type": "Quantity"},
+    {"id": "C20", "name": "Velocity", "type": "Quantity", "description": "vector: displacement / time"},
     {"id": "C21", "name": "Force", "type": "Quantity"},
     {"id": "C22", "name": "BoilingPoint", "type": "Quantity", "description": "function of (material, pressure)"},
     {"id": "C23", "name": "AtmosphericPressure", "type": "Constant", "value": "1 atm"},
@@ -28,6 +28,12 @@
     {"id": "C25", "name": "SpecificHeat", "type": "Quantity", "description": "material-specific constant"},
     {"id": "C26", "name": "Radius", "type": "Quantity"},
     {"id": "C27", "name": "EscapeVelocity", "type": "Quantity"},
-    {"id": "C28", "name": "Charge", "type": "Quantity"}
+    {"id": "C28", "name": "Charge", "type": "Quantity"},
+    {"id": "C29", "name": "Silicon", "type": "Type", "subtype_of": "C14", "description": "canonical semiconductor example, mirrors Copper's role for Metal"},
+    {"id": "C30", "name": "Distance", "type": "Quantity", "description": "scalar path length traveled"},
+    {"id": "C31", "name": "Speed", "type": "Quantity", "description": "scalar: distance / time (contrast with Velocity, a vector)"},
+    {"id": "C32", "name": "AmountOfSubstance", "type": "Quantity"},
+    {"id": "C33", "name": "GasConstant", "type": "Constant"},
+    {"id": "C34", "name": "Acceleration", "type": "Quantity"}
   ]
 }

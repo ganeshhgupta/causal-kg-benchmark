@@ -1,0 +1,12 @@
+{
+  "_comment": "Multi-premise (hyperedge) entailments, split out from pairs.json because neither premise alone entails the conclusion -- forcing these into binary pairs was mislabeling K001/K010's relation to K011 as plain ENTAILS in the v0 draft.",
+  "hyperedges": [
+    {
+      "id": "H01",
+      "premises": ["K001", "K010"],
+      "conclusion": "K011",
+      "relation": "ENTAILS",
+      "rationale": "V=IR (K001) substituted into P=IV (K010) gives P=I^2R (K011). Both premises are required jointly; K001 alone or K010 alone does not entail K011 (see P08, P09 in pairs.json for their individual pairwise classification, which is COMPATIBLE, not ENTAILS)."
+    }
+  ]
+}

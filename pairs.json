@@ -1,112 +1,147 @@
 {
-  "_comment": "Gold pairwise relation judgments between propositions (and a few proposition-vs-decoy-variant pairs). relation in {EQUAL, ENTAILS, ENTAILED_BY, CONTRADICTS, OVERLAPS, UNRELATED}. 'a REL b' reads left-to-right, e.g. K004 ENTAILS K004m means K004 => K004m.",
+  "_comment": "Gold cross-proposition judgments. REVISED per review round 1: replaced the single flat six-way 'relation' label with three orthogonal axes (plus an optional direction_relation for MONOTONIC_* pairs), because the flat label was forcing logical relationship, structural similarity, and context relationship into one field and produced an inconsistent call on P01. Read 'a -> b' as the axes describing proposition a relative to proposition b.",
+  "axes": {
+    "logical_relation": "EQUAL | ENTAILS | ENTAILED_BY | CONTRADICTS | COMPATIBLE | UNRELATED -- COMPATIBLE replaces v0's overloaded OVERLAPS: both can be true, non-entailing.",
+    "schema_relation": "SAME | RELATED | DIFFERENT -- structural/predicate-shape similarity, independent of logical relation.",
+    "context_relation": "SAME | SUBSUMES | SUBSUMED_BY | OVERLAPS | DISJOINT -- how a's context/conditions relate to b's. 'a SUBSUMES b' means a's context is the broader one.",
+    "direction_relation": "SAME | OPPOSITE | N/A -- only meaningful when both propositions are MONOTONIC_POSITIVE/NEGATIVE over the same variable pair."
+  },
   "pairs": [
     {
       "id": "P01",
-      "a": "K002",
-      "b": "K003",
-      "relation": "UNRELATED",
-      "rationale": "Surface forms look like opposite claims (dR/dT>0 vs dR/dT<0), but subjects are disjoint types (Metal vs Semiconductor, per K019). Neither entails nor contradicts the other once material_class context is resolved. THE key test for the 'apparent contradiction from omitted context' failure mode."
+      "a": "K002", "b": "K003",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE",
+      "rationale": "Fixed from v0 draft, which called this UNRELATED -- inconsistent with the benchmark's own OVERLAPS/COMPATIBLE definition, since K002 and K003 clearly share structure (MONOTONIC_?(Temperature(x), ElectricalResistance(x))). Both are true simultaneously because they apply to disjoint transport regimes (metallic_conduction vs semiconducting_NTC, per K019). The key test is that a system must NOT escalate this to CONTRADICTS just because the monotonic direction flips."
     },
     {
       "id": "P02",
-      "a": "K004",
-      "b": "K004m",
-      "relation": "ENTAILS",
-      "rationale": "K004 (general solid thermal expansion) entails K004m (metal case) because Metal is instance_of a solid-forming material class. Reverse does not hold: K004m does not entail the general solid law. Canonical GENERALIZES/SPECIALIZES test case."
+      "a": "K004", "b": "K004m",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "SAME",
+      "rationale": "K004 (ordinary-positive-expansion solids) entails K004m (the metal case) because ordinary metals are a subtype of that expansion regime. K004's context is the broader one (SUBSUMES). Reverse does not hold."
     },
     {
       "id": "P03",
-      "a": "K004m",
-      "b": "K004c",
-      "relation": "ENTAILS",
-      "rationale": "K004m (metals expand) entails K004c (copper expands) since Copper instance_of Metal. This is the primary false-merge trap: a naive embedding-similarity canonicalizer will likely mark these EQUAL because the sentences are near-identical in structure ('Metals expand when heated' / 'Copper expands when heated')."
+      "a": "K004m", "b": "K004c",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "SAME",
+      "rationale": "K004m (metals expand) entails K004c (copper expands) since Copper subtype_of Metal. Primary false-merge trap: a naive embedding-similarity canonicalizer will likely mark K004m/K004c EQUAL because the sentences are near-identical in surface structure ('Metals expand when heated' / 'Copper expands when heated')."
     },
     {
       "id": "P04",
-      "a": "K004",
-      "b": "K004c",
-      "relation": "ENTAILS",
-      "rationale": "Transitive closure of P02+P03: general solid expansion entails the copper instance. Used to check the entailment-graph transitivity constraint is actually enforced."
+      "a": "K004", "b": "K004c",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "SAME",
+      "rationale": "Transitive closure of P02+P03. Used to check that entailment-graph transitivity is actually enforced (x=>y, y=>z therefore x=>z)."
     },
     {
       "id": "P05",
-      "a": "K015",
-      "b": "K016",
-      "relation": "OVERLAPS",
-      "rationale": "Most important case in v0. Surface forms directly negate each other ('water expands when heated' vs 'water contracts when heated'). Both are TRUE, in disjoint temperature_domain contexts (above 4C vs 0-4C). Correct system behavior: do not mark CONTRADICTS; recognize same subject (water, volume/length under heating) with context-dependent truth, i.e. OVERLAPS with a resolvable context split -- exactly the 'A^C1->B, A^C2->not B' pattern that should trigger a context-refinement step rather than a rejection."
+      "a": "K015", "b": "K016",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE",
+      "rationale": "Most important case in v0. This is NOT 'a real contradiction resolved by context' -- it is an apparent/projected contradiction created by ERASING context. Fully qualified, both hold: (4C<T<Tb(P) => dV/dT>0) and (0C<T<~4C => dV/dT<0), over disjoint temperature_domain windows -- jointly satisfiable, no resolution needed. What contradicts is only the context-erased projection ('water: dV/dT>0' vs 'water: dV/dT<0'). The benchmark therefore tests CONTEXT PRESERVATION through canonicalization, not contradiction resolution: a system that drops temperature_domain while canonicalizing K015/K016 will manufacture a contradiction that was never actually there."
     },
     {
       "id": "P06",
-      "a": "K009",
-      "b": "V009c",
-      "relation": "ENTAILED_BY",
-      "rationale": "K009 (boiling point at 1 atm = 100C) entails-under-added-context, but the decoy V009c ('water boils at 100C', no pressure clause) is a strictly weaker/ambiguous claim -- it holds at 1 atm but is false at altitude. Treat K009 ENTAILS V009c-as-stated-at-1atm, but V009c alone should not be filed as EQUAL to K009 since it silently drops a load-bearing condition. Scored as a false-merge trap."
+      "a": "K009", "b": "V009c",
+      "logical_relation": "ENTAILED_BY",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMED_BY",
+      "direction_relation": "N/A",
+      "rationale": "V009c ('water boils at 100C', no pressure clause), if interpreted as an unqualified universal claim, would entail the 1-atm instance K009 -- so K009 is ENTAILED_BY V009c. The reverse does not hold: K009 (scoped to 1 atm) does not license the unqualified generalization V009c, which is scientifically false at altitude/other pressures. K009's context (1 atm) is SUBSUMED_BY V009c's implied unrestricted scope. Fixed from v0 draft, which stated ENTAILED_BY but wrote a rationale describing the opposite direction."
     },
     {
       "id": "P07",
-      "a": "K012",
-      "b": "V012c",
-      "relation": "OVERLAPS",
-      "rationale": "K012 (distance/time under constant velocity) and V012c ('instantaneous speed = distance/time', no constancy qualifier) share subject matter but V012c is only true in the special case that reduces to K012's assumption; in general instantaneous speed is a derivative, not distance/time. Another context-dropped false-merge trap."
+      "a": "K012", "b": "V012c",
+      "logical_relation": "ENTAILED_BY",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMED_BY",
+      "direction_relation": "N/A",
+      "rationale": "Same pattern as P06. V012c ('instantaneous speed always equals distance/time', no constancy qualifier), taken as a universal claim, would entail K012's constant-speed special case; K012 does not generalize to V012c, which is false for non-uniform motion (instantaneous speed is a derivative in general, not distance/time). K012's context (constant_speed) is SUBSUMED_BY V012c's implied unrestricted scope."
     },
     {
       "id": "P08",
-      "a": "K001",
-      "b": "K011",
-      "relation": "ENTAILS",
-      "rationale": "K001 (V=IR) together with K010 (P=IV) jointly entail K011 (P=I^2R) by substitution. As a HYPEREDGE: {K001, K010} -> K011. K001 alone does not entail K011 (needs K010 too) -- flagged so the benchmark scorer doesn't credit a system for merging K001 and K011 directly.",
-      "hyperedge_premises": ["K001", "K010"]
+      "a": "K001", "b": "K011",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "K001 alone does NOT entail K011 -- K010 is also required (see hyperedges.json H01: {K001,K010} -> K011 by substitution). Marked COMPATIBLE rather than ENTAILS to avoid crediting single-premise entailment for what is actually a 2-premise hyperedge conclusion. schema_relation is RELATED, not SAME: V=IR and P=I^2R are different equational forms connected by derivation, not the same predicate shape."
     },
     {
       "id": "P09",
-      "a": "K010",
-      "b": "K011",
-      "relation": "OVERLAPS",
-      "rationale": "Same hyperedge as P08 -- K010 alone is a necessary but not sufficient premise for K011. Marked OVERLAPS (shares structure/derivation) rather than ENTAILS to avoid crediting single-premise entailment for what is actually a 2-premise hyperedge conclusion."
+      "a": "K010", "b": "K011",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "Same hyperedge as P08 -- K010 alone is a necessary but not sufficient premise for K011."
     },
     {
       "id": "P10",
-      "a": "K018",
-      "b": "K002",
-      "relation": "UNRELATED",
-      "rationale": "K018 is an ontological classification fact (Metal instance_of Conductor); K002 is a quantitative causal law about metals. Same subject type (Metal) but disjoint semantic content -- tests that the classifier doesn't over-merge same-subject propositions of different logical kinds (ontological vs causal)."
+      "a": "K018", "b": "K002",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "rationale": "K018 is an ontological class fact (Metal SUBTYPE_OF Conductor); K002 is a quantitative causal law about metals. context_relation is SAME (both scoped to Metal) but logical_relation is UNRELATED and schema_relation is DIFFERENT (ontological SUBTYPE_OF form vs causal MONOTONIC_POSITIVE form) -- tests that shared subject alone doesn't drive a merge."
     },
     {
       "id": "P11",
-      "a": "K006",
-      "b": "K007",
-      "relation": "UNRELATED",
+      "a": "K006", "b": "K007",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "DISJOINT",
+      "direction_relation": "N/A",
       "rationale": "Ideal gas law and Newton's second law share no concepts and no derivational relationship. Baseline negative control."
     },
     {
       "id": "P12",
-      "a": "K005",
-      "b": "K007",
-      "relation": "UNRELATED",
+      "a": "K005", "b": "K007",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "DISJOINT",
+      "direction_relation": "N/A",
       "rationale": "Density definition vs force law -- both simple algebraic identities, unrelated subjects. Negative control."
     },
     {
       "id": "P13",
-      "a": "K019",
-      "b": "K002",
-      "relation": "OVERLAPS",
-      "rationale": "K019 (Metal and Semiconductor disjoint) is the ontological fact that JUSTIFIES resolving P01 as UNRELATED rather than CONTRADICTS -- it shares the Metal concept and is load-bearing background for P01, but does not itself entail or get entailed by K002.",
-      "supports_pair": "P01"
+      "a": "K019", "b": "K002",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SAME",
+      "direction_relation": "N/A",
+      "supports_pair": "P01",
+      "rationale": "K019 (Metal/Semiconductor disjoint) is the background ontological fact that justifies resolving P01 as COMPATIBLE-with-DISJOINT-context rather than CONTRADICTS. Shares the Metal concept (context_relation SAME) but is a different kind of statement (schema_relation DIFFERENT: disjointness fact vs causal law) -- does not itself entail or get entailed by K002."
     },
     {
       "id": "P14",
-      "a": "K014",
-      "b": "K004",
-      "relation": "UNRELATED",
-      "rationale": "Both are MONOTONIC_* propositions with a similar formal shape (radius/escape_velocity vs temperature/length) but completely different subject domains (astrophysics vs thermal expansion). Tests that the classifier doesn't over-merge on shared predicate SHAPE (MONOTONIC_POSITIVE/NEGATIVE) alone."
+      "a": "K014", "b": "K004",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "N/A",
+      "rationale": "Both are MONOTONIC_* propositions (schema_relation SAME) but from completely different subject domains (astrophysics vs thermal expansion; context_relation DISJOINT). Tests that the classifier doesn't over-merge on shared predicate SHAPE alone -- SAME schema_relation must not by itself imply any logical relation."
     },
     {
       "id": "P15",
-      "a": "K013",
-      "b": "K009",
-      "relation": "UNRELATED",
-      "rationale": "Heat-capacity relation vs a boiling-point instance fact -- adjacent topically (both about heat/water-ish) but no logical relationship. Near-miss negative control to test embedding-similarity false positives."
+      "a": "K013", "b": "K009",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "OVERLAPS",
+      "direction_relation": "N/A",
+      "rationale": "Heat-capacity relation vs a boiling-point instance fact -- topically adjacent (both concern water/heat, context_relation OVERLAPS) but no logical relationship. Near-miss negative control against embedding-similarity false positives that key off shared vocabulary rather than shared meaning."
     }
   ]
 }
