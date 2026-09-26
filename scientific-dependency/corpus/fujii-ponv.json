@@ -143,7 +143,7 @@
       "surface_forms": [
         "Granisetron is an effective prophylactic antiemetic for postoperative nausea and vomiting."
       ],
-      "notes": "Carlisle found granisetron more effective in Fujii trials than others (nausea RRR 0.53, 95% CI 0.42-0.67, p=0.00021; vomiting 0.60, 0.50-0.73, p=0.00094) but the claim SURVIVES exclusion with a smaller effect. Kranke 2012 exists specifically to put this on the record post-Fujii. KNOWN REPRESENTATION GAP, flagged not patched: 'still true but the effect is much smaller' is not expressible here. The benchmark labels this STILL_SUPPORTED, which is right about the epistemic state and silent about magnitude. This is the first real task failure that earns quantity semantics."
+      "notes": "Carlisle found granisetron more effective in Fujii trials than others (nausea RRR 0.53, 95% CI 0.42-0.67, p=0.00021; vomiting 0.60, 0.50-0.73, p=0.00094) but the claim SURVIVES exclusion with a smaller effect. Kranke 2012 exists specifically to put this on the record post-Fujii. KNOWN REPRESENTATION GAP, flagged not patched: 'still true but the effect is much smaller' is not expressible here. The benchmark labels this STILL_SUPPORTED, which is right about the epistemic state and silent about magnitude. This is the first real task failure that earns quantity semantics. EVIDENCE-SCOPE: EV-OTHER-RAMO does NOT apply, for the mirror-image reason."
     },
     {
       "id": "P-RAMO-EFFECTIVE",
@@ -170,7 +170,7 @@
       "surface_forms": [
         "Ramosetron is an effective prophylactic antiemetic for postoperative nausea and vomiting."
       ],
-      "notes": "Fujii trials showed ramosetron more effective (vomiting 0.60, 0.39-0.91, p=0.02; nausea or vomiting 0.71, 0.56-0.91, p=0.006). Carlisle's conclusion is that excluding Fujii leaves the effects of granisetron AND ramosetron 'greatly reduced', not abolished. Same magnitude gap as P-GRANI-EFFECTIVE."
+      "notes": "Fujii trials showed ramosetron more effective (vomiting 0.60, 0.39-0.91, p=0.02; nausea or vomiting 0.71, 0.56-0.91, p=0.006). Carlisle's conclusion is that excluding Fujii leaves the effects of granisetron AND ramosetron 'greatly reduced', not abolished. Same magnitude gap as P-GRANI-EFFECTIVE. EVIDENCE-SCOPE: EV-OTHER-GRANI does NOT apply. Carlisle reports separate pooled estimates per drug; the granisetron pool is not evidence about ramosetron."
     },
     {
       "id": "P-SYNERGISM",
@@ -282,7 +282,7 @@
       "surface_forms": [
         "Granisetron with metoclopramide reduces the need for rescue antiemesis."
       ],
-      "notes": "Fujii-only: 0.40 (0.27-0.60), p=9.7e-6. Carlisle reports rescue rates were NOT different between agents in other authors' trials, but that null is about between-agent comparison rather than about this combination versus none, so it is not encoded as refuting this proposition. Collapses to UNRESOLVED."
+      "notes": "Fujii-only: 0.40 (0.27-0.60), p=9.7e-6. Carlisle reports rescue rates were NOT different between agents in other authors' trials, but that null is about between-agent comparison rather than about this combination versus none, so it is not encoded as refuting this proposition. Collapses to UNRESOLVED. EVIDENCE-SCOPE: EV-OTHER-GRANI, EV-OTHER-RAMO do NOT apply. Those pools concern PONV incidence versus placebo; this claim concerns need for rescue antiemesis, a different outcome under a different context."
     }
   ],
   "assertions": [

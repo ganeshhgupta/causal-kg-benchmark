@@ -50,6 +50,13 @@ GOLD_INCONSISTENT = {
     "P-MULTI-RECEPTOR-PRINCIPLE":
         "Fujii's review asserts the combination principle; Carlisle's non-Fujii "
         "pooling refutes it. Genuine conflict.",
+    "P-TRAD-ADJUNCT-SUPERIOR":
+        "ADDED cycle 10, as a necessary consequence of wiring EV-CARLISLE-TRAD. Fujii's "
+        "trials support the 5-HT3-plus-traditional-antiemetic combination; Carlisle's pool "
+        "of other authors' trials covering exactly those drugs found no synergism and some "
+        "antagonism. Same live conflict as P-SYNERGISM and P-MULTI-RECEPTOR-PRINCIPLE. This "
+        "is the second time this gold list has gone stale behind a corrected corpus, which "
+        "is itself the argument for deriving it from the graph rather than hand-listing it.",
     "P-GRANI-ALONE-WORSE":
         "ADDED cycle 7, as a necessary consequence of resolving that claim's label. "
         "Carlisle pairs the sentences explicitly ('no synergism ... IN CONTRAST, in "

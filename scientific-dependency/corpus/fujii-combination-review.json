@@ -1,78 +1,264 @@
 {
   "_comment": "REAL DATA, depth 2. This is the first real multi-hop chain in the corpus: Fujii's own primary RCTs support combination-efficacy claims, his 2002 review synthesises them into a general principle, and the review was then retracted BECAUSE its constituent trials were. Sources, both verified via Europe PMC: (1) the review, Fujii Y, 'Combination Antiemetic Regimens for Prevention of Postoperative Nausea and Vomiting: Focus on High-Risk Patients', Clin Drug Investig 2002;22(9), doi:10.2165/00044011-200222090-00001, PMID 29492850, now marked RETRACTED ARTICLE; (2) the retraction notice, doi:10.1007/s40261-018-0634-4, PMID 29705919 (2018), which states verbatim: 'The Editor-in-Chief has retracted the original article because a number of studies [2-15] included in this review (cited as references 25-29, 31, 32, 47, 48, 50-54) have been retracted, specifically those included in table III, table IV, section 3 and section 4.2. This has rendered the content of the review scientifically unreliable.' That sentence is unusually good ground truth: it scopes the damage to named tables and sections rather than just voiding the paper.",
   "graph_version": "fujii-combo-review-1",
-
   "symbols": [
-    {"id": "R-MORE-EFFECTIVE-THAN", "label": "MORE_EFFECTIVE_THAN", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
-    {"id": "R-INCREASES", "label": "INCREASES_RISK_OF", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
-    {"id": "R-LIMITS-USE", "label": "LIMITS_CLINICAL_USE_OF", "kind": "RELATION", "resolution_status": "RESOLVED", "functional": false},
-
-    {"id": "C-5HT3-PLUS-DEX", "label": "5-HT3 receptor antagonist combined with dexamethasone", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-5HT3-ALONE", "label": "5-HT3 receptor antagonist alone", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-5HT3-PLUS-TRAD", "label": "5-HT3 receptor antagonist combined with a traditional antiemetic at a different receptor", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-MONOTHERAPY", "label": "single-agent antiemetic prophylaxis", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-MULTI-RECEPTOR-COMBO", "label": "antiemetic combination acting at different emetogenic receptors", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-ADVERSE-EFFECTS", "label": "undesirable adverse effects", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-CNS-TOXICITY", "label": "additive central nervous system toxicity", "kind": "CONCEPT", "resolution_status": "RESOLVED"},
-    {"id": "C-TRAD-COMBO", "label": "combination of traditional antiemetics (antihistamine, butyrophenone, benzamide)", "kind": "CONCEPT", "resolution_status": "RESOLVED"}
+    {
+      "id": "R-MORE-EFFECTIVE-THAN",
+      "label": "MORE_EFFECTIVE_THAN",
+      "kind": "RELATION",
+      "resolution_status": "RESOLVED",
+      "functional": false
+    },
+    {
+      "id": "R-INCREASES",
+      "label": "INCREASES_RISK_OF",
+      "kind": "RELATION",
+      "resolution_status": "RESOLVED",
+      "functional": false
+    },
+    {
+      "id": "R-LIMITS-USE",
+      "label": "LIMITS_CLINICAL_USE_OF",
+      "kind": "RELATION",
+      "resolution_status": "RESOLVED",
+      "functional": false
+    },
+    {
+      "id": "C-5HT3-PLUS-DEX",
+      "label": "5-HT3 receptor antagonist combined with dexamethasone",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    },
+    {
+      "id": "C-5HT3-ALONE",
+      "label": "5-HT3 receptor antagonist alone",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    },
+    {
+      "id": "C-5HT3-PLUS-TRAD",
+      "label": "5-HT3 receptor antagonist combined with a traditional antiemetic at a different receptor",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    },
+    {
+      "id": "C-MONOTHERAPY",
+      "label": "single-agent antiemetic prophylaxis",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    },
+    {
+      "id": "C-MULTI-RECEPTOR-COMBO",
+      "label": "antiemetic combination acting at different emetogenic receptors",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    },
+    {
+      "id": "C-ADVERSE-EFFECTS",
+      "label": "undesirable adverse effects",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    },
+    {
+      "id": "C-CNS-TOXICITY",
+      "label": "additive central nervous system toxicity",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    },
+    {
+      "id": "C-TRAD-COMBO",
+      "label": "combination of traditional antiemetics (antihistamine, butyrophenone, benzamide)",
+      "kind": "CONCEPT",
+      "resolution_status": "RESOLVED"
+    }
   ],
-
   "contexts": [],
-
   "propositions": [
     {
       "id": "P-DEX-ENHANCES",
       "predicate": "R-MORE-EFFECTIVE-THAN",
-      "arguments": [{"role": "better", "term": {"kind": "symbol_ref", "symbol_ref": "C-5HT3-PLUS-DEX"}}, {"role": "worse", "term": {"kind": "symbol_ref", "symbol_ref": "C-5HT3-ALONE"}}],
-      "polarity": "assert", "modality": "generic",
-      "surface_forms": ["The efficacy of a combination of a serotonin 5-HT3 receptor antagonist and dexamethasone is superior to that of 5-HT3 receptor antagonists alone for the prevention of PONV."],
-      "notes": "LEVEL 1, primary-trial claim. Rests on Fujii's own RCTs, which are among the retracted references."
+      "arguments": [
+        {
+          "role": "better",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-5HT3-PLUS-DEX"
+          }
+        },
+        {
+          "role": "worse",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-5HT3-ALONE"
+          }
+        }
+      ],
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "The efficacy of a combination of a serotonin 5-HT3 receptor antagonist and dexamethasone is superior to that of 5-HT3 receptor antagonists alone for the prevention of PONV."
+      ],
+      "notes": "LEVEL 1, primary-trial claim. Rests on Fujii's own RCTs, which are among the retracted references. EVIDENCE-SCOPE: EV-CARLISLE-ANTAGONISM, EV-OTHER-ANTAGONISM, EV-CARLISLE-TRAD do NOT apply. Carlisle's non-Fujii pool covers granisetron, ramosetron, droperidol and metoclopramide and never mentions dexamethasone, so it does not test this combination. Genuine scope limit, verified against the source text, not an oversight."
     },
     {
       "id": "P-TRAD-ADJUNCT-SUPERIOR",
       "predicate": "R-MORE-EFFECTIVE-THAN",
-      "arguments": [{"role": "better", "term": {"kind": "symbol_ref", "symbol_ref": "C-5HT3-PLUS-TRAD"}}, {"role": "worse", "term": {"kind": "symbol_ref", "symbol_ref": "C-MONOTHERAPY"}}],
-      "polarity": "assert", "modality": "generic",
-      "surface_forms": ["The combination of a 5-HT3 receptor antagonist with a traditional antiemetic acting at a different emetogenic receptor is more effective in reducing the incidence of PONV than each antiemetic alone acting at one receptor site."],
+      "arguments": [
+        {
+          "role": "better",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-5HT3-PLUS-TRAD"
+          }
+        },
+        {
+          "role": "worse",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-MONOTHERAPY"
+          }
+        }
+      ],
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "The combination of a 5-HT3 receptor antagonist with a traditional antiemetic acting at a different emetogenic receptor is more effective in reducing the incidence of PONV than each antiemetic alone acting at one receptor site."
+      ],
       "notes": "LEVEL 1, primary-trial claim, same dependency."
     },
-
     {
       "id": "P-MULTI-RECEPTOR-PRINCIPLE",
       "predicate": "R-MORE-EFFECTIVE-THAN",
-      "arguments": [{"role": "better", "term": {"kind": "symbol_ref", "symbol_ref": "C-MULTI-RECEPTOR-COMBO"}}, {"role": "worse", "term": {"kind": "symbol_ref", "symbol_ref": "C-MONOTHERAPY"}}],
-      "polarity": "assert", "modality": "generic",
-      "surface_forms": ["A combination of antiemetics with different sites of activity is more effective than one drug alone for prophylaxis against postoperative nausea and vomiting."],
+      "arguments": [
+        {
+          "role": "better",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-MULTI-RECEPTOR-COMBO"
+          }
+        },
+        {
+          "role": "worse",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-MONOTHERAPY"
+          }
+        }
+      ],
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "A combination of antiemetics with different sites of activity is more effective than one drug alone for prophylaxis against postoperative nausea and vomiting."
+      ],
       "notes": "LEVEL 2, the review's general synthesised principle, derived from the two level-1 claims via D-REVIEW-SYNTHESIS. THIS IS THE SAME CLAIM as P-SYNERGISM in corpus/fujii-ponv.json, reached from a different document. Nothing in the pipeline currently notices that, which is the canonicalization problem appearing for real the moment a second corpus was added. Recorded as a finding, not silently deduplicated. Note also it carries INDEPENDENT refuting evidence from Carlisle 2012, so on retraction it should go to REFUTED rather than merely UNRESOLVED."
     },
     {
       "id": "P-COMBO-NOT-MORE-TOXIC",
       "predicate": "R-INCREASES",
-      "arguments": [{"role": "agent", "term": {"kind": "symbol_ref", "symbol_ref": "C-MULTI-RECEPTOR-COMBO"}}, {"role": "outcome", "term": {"kind": "symbol_ref", "symbol_ref": "C-ADVERSE-EFFECTS"}}],
-      "polarity": "negate", "modality": "generic",
-      "surface_forms": ["The risk of undesirable adverse effects does not increase with the combination of a 5-HT3 receptor antagonist and another antiemetic."],
+      "arguments": [
+        {
+          "role": "agent",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-MULTI-RECEPTOR-COMBO"
+          }
+        },
+        {
+          "role": "outcome",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-ADVERSE-EFFECTS"
+          }
+        }
+      ],
+      "polarity": "negate",
+      "modality": "generic",
+      "surface_forms": [
+        "The risk of undesirable adverse effects does not increase with the combination of a 5-HT3 receptor antagonist and another antiemetic."
+      ],
       "notes": "LEVEL 2 safety claim, also derived from the retracted trial series. polarity=negate: the claim is that risk does NOT increase. Safety claims resting on fabricated data are the most consequential kind of collapse, which is why this one is included."
     },
-
     {
       "id": "P-TRAD-COMBO-LIMITED",
       "predicate": "R-LIMITS-USE",
-      "arguments": [{"role": "cause", "term": {"kind": "symbol_ref", "symbol_ref": "C-CNS-TOXICITY"}}, {"role": "target", "term": {"kind": "symbol_ref", "symbol_ref": "C-TRAD-COMBO"}}],
-      "polarity": "assert", "modality": "generic",
-      "surface_forms": ["The clinical use of combined traditional antiemetics, including antihistamines, butyrophenones and benzamides, for the prevention of PONV is limited because of the possibility of additive central nervous system toxicity, such as delayed emergence, drowsiness and extrapyramidal reactions."],
+      "arguments": [
+        {
+          "role": "cause",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-CNS-TOXICITY"
+          }
+        },
+        {
+          "role": "target",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-TRAD-COMBO"
+          }
+        }
+      ],
+      "polarity": "assert",
+      "modality": "generic",
+      "surface_forms": [
+        "The clinical use of combined traditional antiemetics, including antihistamines, butyrophenones and benzamides, for the prevention of PONV is limited because of the possibility of additive central nervous system toxicity, such as delayed emergence, drowsiness and extrapyramidal reactions."
+      ],
       "notes": "THE CONTROL CLAIM. General pharmacology about class side effects, not an efficacy finding from Fujii's trials. GOLD LABEL IS PENDING, deliberately: the retraction notice scopes the damage to 'table III, table IV, section 3 and section 4.2', and confirming this claim sits outside those sections needs the full text, which is paywalled. Encoded with non-Fujii evidence so the reasoner treats it as surviving, but that placement is an assumption and is flagged as unverified rather than scored as gold."
     }
   ],
-
   "rules": [
     {
       "id": "RULE-REVIEW-GENERALIZATION",
       "name": "review synthesis from constituent trials",
-      "variables": [{"name": "combo", "type": "C-MULTI-RECEPTOR-COMBO"}, {"name": "mono", "type": "C-MONOTHERAPY"}],
-      "premise_patterns": [
-        {"predicate": "R-MORE-EFFECTIVE-THAN", "arguments": [{"role": "better", "term": {"kind": "variable", "name": "combo"}}, {"role": "worse", "term": {"kind": "variable", "name": "mono"}}]}
+      "variables": [
+        {
+          "name": "combo",
+          "type": "C-MULTI-RECEPTOR-COMBO"
+        },
+        {
+          "name": "mono",
+          "type": "C-MONOTHERAPY"
+        }
       ],
-      "conclusion_pattern": {"predicate": "R-MORE-EFFECTIVE-THAN", "arguments": [{"role": "better", "term": {"kind": "variable", "name": "combo"}}, {"role": "worse", "term": {"kind": "variable", "name": "mono"}}]},
+      "premise_patterns": [
+        {
+          "predicate": "R-MORE-EFFECTIVE-THAN",
+          "arguments": [
+            {
+              "role": "better",
+              "term": {
+                "kind": "variable",
+                "name": "combo"
+              }
+            },
+            {
+              "role": "worse",
+              "term": {
+                "kind": "variable",
+                "name": "mono"
+              }
+            }
+          ]
+        }
+      ],
+      "conclusion_pattern": {
+        "predicate": "R-MORE-EFFECTIVE-THAN",
+        "arguments": [
+          {
+            "role": "better",
+            "term": {
+              "kind": "variable",
+              "name": "combo"
+            }
+          },
+          {
+            "role": "worse",
+            "term": {
+              "kind": "variable",
+              "name": "mono"
+            }
+          }
+        ]
+      },
       "relation": "GENERALIZES",
       "rule_name": "EmpiricalGeneralizationFromConstituentTrials",
       "theory": null,
@@ -81,16 +267,30 @@
       "notes": "A narrative review generalising from its included trials is NOT logical entailment, so relation=GENERALIZES and validity=UNVERIFIED. This is exactly the distinction v0.3's Rule/Derivation split exists to keep: an informal synthesis must not be able to masquerade as a proof."
     }
   ],
-
   "derivations": [
     {
       "id": "D-REVIEW-SYNTHESIS",
       "rule_id": "RULE-REVIEW-GENERALIZATION",
       "bindings": [
-        {"variable": "combo", "term": {"kind": "symbol_ref", "symbol_ref": "C-MULTI-RECEPTOR-COMBO"}},
-        {"variable": "mono", "term": {"kind": "symbol_ref", "symbol_ref": "C-MONOTHERAPY"}}
+        {
+          "variable": "combo",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-MULTI-RECEPTOR-COMBO"
+          }
+        },
+        {
+          "variable": "mono",
+          "term": {
+            "kind": "symbol_ref",
+            "symbol_ref": "C-MONOTHERAPY"
+          }
+        }
       ],
-      "premises": ["P-DEX-ENHANCES", "P-TRAD-ADJUNCT-SUPERIOR"],
+      "premises": [
+        "P-DEX-ENHANCES",
+        "P-TRAD-ADJUNCT-SUPERIOR"
+      ],
       "conclusion": "P-MULTI-RECEPTOR-PRINCIPLE",
       "relation": "GENERALIZES",
       "validity": "UNVERIFIED",
@@ -99,29 +299,113 @@
     {
       "id": "D-SAFETY-SYNTHESIS",
       "rule_id": null,
-      "premises": ["P-DEX-ENHANCES", "P-TRAD-ADJUNCT-SUPERIOR"],
+      "premises": [
+        "P-DEX-ENHANCES",
+        "P-TRAD-ADJUNCT-SUPERIOR"
+      ],
       "conclusion": "P-COMBO-NOT-MORE-TOXIC",
       "relation": "GENERALIZES",
       "validity": "UNVERIFIED",
       "notes": "Adverse-effect reporting in the same retracted trials."
     }
   ],
-
   "assertions": [
-    {"id": "A-REVIEW-DEX", "proposition_id": "P-DEX-ENHANCES", "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED, notice PMID 29705919)", "year": 2002, "stance": "supports", "status": "retracted"},
-    {"id": "A-REVIEW-TRAD", "proposition_id": "P-TRAD-ADJUNCT-SUPERIOR", "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED)", "year": 2002, "stance": "supports", "status": "retracted"},
-    {"id": "A-REVIEW-PRINCIPLE", "proposition_id": "P-MULTI-RECEPTOR-PRINCIPLE", "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED)", "year": 2002, "stance": "supports", "status": "retracted"},
-    {"id": "A-CARLISLE-REFUTES", "proposition_id": "P-MULTI-RECEPTOR-PRINCIPLE", "source": "Carlisle 2012, Anaesthesia (PMID 22734848): no synergism in trials by other authors, some evidence of antagonism", "year": 2012, "stance": "refutes", "status": "active"},
-    {"id": "A-REVIEW-SAFETY", "proposition_id": "P-COMBO-NOT-MORE-TOXIC", "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED)", "year": 2002, "stance": "supports", "status": "retracted"},
-    {"id": "A-REVIEW-TRADLIMIT", "proposition_id": "P-TRAD-COMBO-LIMITED", "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED), restating general class pharmacology", "year": 2002, "stance": "supports", "status": "retracted"}
+    {
+      "id": "A-REVIEW-DEX",
+      "proposition_id": "P-DEX-ENHANCES",
+      "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED, notice PMID 29705919)",
+      "year": 2002,
+      "stance": "supports",
+      "status": "retracted"
+    },
+    {
+      "id": "A-REVIEW-TRAD",
+      "proposition_id": "P-TRAD-ADJUNCT-SUPERIOR",
+      "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED)",
+      "year": 2002,
+      "stance": "supports",
+      "status": "retracted"
+    },
+    {
+      "id": "A-REVIEW-PRINCIPLE",
+      "proposition_id": "P-MULTI-RECEPTOR-PRINCIPLE",
+      "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED)",
+      "year": 2002,
+      "stance": "supports",
+      "status": "retracted"
+    },
+    {
+      "id": "A-CARLISLE-REFUTES",
+      "proposition_id": "P-MULTI-RECEPTOR-PRINCIPLE",
+      "source": "Carlisle 2012, Anaesthesia (PMID 22734848): no synergism in trials by other authors, some evidence of antagonism",
+      "year": 2012,
+      "stance": "refutes",
+      "status": "active"
+    },
+    {
+      "id": "A-REVIEW-SAFETY",
+      "proposition_id": "P-COMBO-NOT-MORE-TOXIC",
+      "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED)",
+      "year": 2002,
+      "stance": "supports",
+      "status": "retracted"
+    },
+    {
+      "id": "A-REVIEW-TRADLIMIT",
+      "proposition_id": "P-TRAD-COMBO-LIMITED",
+      "source": "Fujii Y, Clin Drug Investig 2002;22(9), PMID 29492850 (RETRACTED), restating general class pharmacology",
+      "year": 2002,
+      "stance": "supports",
+      "status": "retracted"
+    }
   ],
-
   "evidence": [
-    {"id": "EV-FUJII-DEX-TRIALS", "proposition_id": "P-DEX-ENHANCES", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials included as review references 25-29, 31, 32, 47, 48, 50-54, subsequently retracted", "independence_group": "FUJII-SERIES"},
-    {"id": "EV-FUJII-TRAD-TRIALS", "proposition_id": "P-TRAD-ADJUNCT-SUPERIOR", "kind": "experiment", "stance": "supports", "status": "active", "source": "Fujii et al. randomised controlled trials in review tables III and IV, subsequently retracted", "independence_group": "FUJII-SERIES"},
-
-    {"id": "EV-CARLISLE-ANTAGONISM", "proposition_id": "P-MULTI-RECEPTOR-PRINCIPLE", "kind": "experiment", "stance": "refutes", "status": "active", "source": "trials by authors other than Fujii, pooled by Carlisle 2012: no synergism between antiemetics, some evidence of antagonism", "independence_group": "NON-FUJII"},
-
-    {"id": "EV-CLASS-PHARMACOLOGY", "proposition_id": "P-TRAD-COMBO-LIMITED", "kind": "citation", "stance": "supports", "status": "active", "source": "established class pharmacology of antihistamines, butyrophenones and benzamides (sedation, extrapyramidal reactions), independent of the retracted trials", "independence_group": "NON-FUJII", "notes": "PLACEMENT UNVERIFIED. Treated as independent of Fujii because it is general class pharmacology, but the retraction notice's section scoping could not be checked against the paywalled full text. This is why P-TRAD-COMBO-LIMITED carries no gold label."}
+    {
+      "id": "EV-FUJII-DEX-TRIALS",
+      "proposition_id": "P-DEX-ENHANCES",
+      "kind": "experiment",
+      "stance": "supports",
+      "status": "active",
+      "source": "Fujii et al. randomised controlled trials included as review references 25-29, 31, 32, 47, 48, 50-54, subsequently retracted",
+      "independence_group": "FUJII-SERIES"
+    },
+    {
+      "id": "EV-FUJII-TRAD-TRIALS",
+      "proposition_id": "P-TRAD-ADJUNCT-SUPERIOR",
+      "kind": "experiment",
+      "stance": "supports",
+      "status": "active",
+      "source": "Fujii et al. randomised controlled trials in review tables III and IV, subsequently retracted",
+      "independence_group": "FUJII-SERIES"
+    },
+    {
+      "id": "EV-CARLISLE-ANTAGONISM",
+      "proposition_id": "P-MULTI-RECEPTOR-PRINCIPLE",
+      "kind": "experiment",
+      "stance": "refutes",
+      "status": "active",
+      "source": "trials by authors other than Fujii, pooled by Carlisle 2012: no synergism between antiemetics, some evidence of antagonism",
+      "independence_group": "NON-FUJII"
+    },
+    {
+      "id": "EV-CLASS-PHARMACOLOGY",
+      "proposition_id": "P-TRAD-COMBO-LIMITED",
+      "kind": "citation",
+      "stance": "supports",
+      "status": "active",
+      "source": "established class pharmacology of antihistamines, butyrophenones and benzamides (sedation, extrapyramidal reactions), independent of the retracted trials",
+      "independence_group": "NON-FUJII",
+      "notes": "PLACEMENT UNVERIFIED. Treated as independent of Fujii because it is general class pharmacology, but the retraction notice's section scoping could not be checked against the paywalled full text. This is why P-TRAD-COMBO-LIMITED carries no gold label."
+    },
+    {
+      "id": "EV-CARLISLE-TRAD",
+      "proposition_id": "P-TRAD-ADJUNCT-SUPERIOR",
+      "kind": "experiment",
+      "stance": "refutes",
+      "status": "active",
+      "source": "trials by authors other than Fujii, pooled by Carlisle 2012: no synergism between antiemetics, some evidence of antagonism",
+      "independence_group": "NON-FUJII",
+      "notes": "Added cycle 10, flagged by compiler/check_evidence_coverage.py as one of 8 RELATED-claim evidence asymmetries. Adjudicated as a REAL gap rather than a scope distinction because Carlisle's non-Fujii pool contains granisetron and ramosetron (5-HT3 antagonists) together with droperidol and metoclopramide, which this review itself classifies as traditional antiemetics. So Carlisle did test exactly this combination. The sibling claim P-MULTI-RECEPTOR-PRINCIPLE already carried this evidence; the specific instance did not, which was incoherent. CONTAMINATION-MARKER: although this edge was surfaced by a systematic detector and adjudicated on drug-overlap facts, the ERROR CLASS was revealed by the LLM baseline's answers on these same claims. Any margin re-measured on this chain is therefore not an independent comparison, and eval/baselines/unseen_eval.py must refuse to score it."
+    }
   ]
 }

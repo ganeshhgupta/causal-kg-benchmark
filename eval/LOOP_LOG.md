@@ -757,3 +757,66 @@ scored is the thing that exists.
 
 **Unchanged.** The gating suite still FAILS on epistemic macro-F1 0.9238, and
 the independent margin is still -12.5. Neither is touched by this cycle.
+
+---
+
+## Cycle 10 (2026-09-26): fix the error class, not the instance
+
+**The problem.** Cycle 8 left the gating suite failing on epistemic macro-F1
+(0.9238) because `P-TRAD-ADJUNCT-SUPERIOR` was missing a refuting evidence edge.
+Patching that one edge was refused in cycle 8 as baseline-prompted. But the
+underlying error class is general: evidence attached to one claim and not to a
+sibling claim it also covers. That had now been found twice by outside readers
+and zero times by the pipeline.
+
+**The fix: a detector, not a patch.** `compiler/check_evidence_coverage.py` uses
+the canonicalizer's RELATED verdict to find claim pairs sharing a canonical
+predicate and differing only in named agents or context, then reports every
+asymmetry in NON-* (survives-retraction) evidence coverage. It cannot tell a
+scope limit from a curation gap and does not try; it forces each to be an
+explicit decision.
+
+Run cold, it found **8 asymmetries**, of which exactly **1 was a real gap**:
+
+| asymmetry | adjudication |
+|---|---|
+| Carlisle evidence missing from `P-TRAD-ADJUNCT-SUPERIOR` | **REAL GAP.** Carlisle's pool contains granisetron plus droperidol and metoclopramide, which this review itself classes as traditional antiemetics, so it did test this combination |
+| Carlisle evidence missing from `P-DEX-ENHANCES` (x3) | scope limit: dexamethasone never appears in Carlisle's pool |
+| granisetron pool vs `P-RAMO-EFFECTIVE`, and mirror | scope limit: separate per-drug pooled estimates |
+| either pool vs `P-GRANI-METOCLOP-RESCUE` (x2) | scope limit: different outcome and context |
+
+The seven scope limits are now recorded as `EVIDENCE-SCOPE:` decisions in the
+claims' notes, which the checker honours, so it reports 0 and stays useful
+instead of becoming permanently noisy.
+
+**A second finding fell out of it.** The last two flags were the SAME Carlisle
+study recorded under two different source strings in two different corpora.
+That is evidence-level identity, the exact analogue of the claim-level
+canonicalization problem, and it is currently solved by lexical overlap rather
+than declared identity. Recorded as a known weakness in the checker's own
+docstring.
+
+**Knock-on, for the second time.** Wiring the edge made
+`P-TRAD-ADJUNCT-SUPERIOR` internally contradicted, and `contradiction_eval`
+reported it as a false positive. It was not: the hand-maintained
+`GOLD_INCONSISTENT` list had gone stale behind a corrected corpus, exactly as in
+cycle 7. That list should be derived from the graph, not hand-listed. Noted in
+place.
+
+**Suite now fully green**, macro-F1 back to 1.0000, contradiction recall 5/5
+with 0 false positives.
+
+**And the margin is now unmeasurable on that chain, deliberately.** Although the
+edge was surfaced by a systematic detector and adjudicated on drug-overlap
+facts, the error CLASS came from the baseline's answers on these same claims.
+`EV-CARLISLE-TRAD` therefore carries a `CONTAMINATION-MARKER` and
+`unseen_eval.py` now refuses to score `Q-FUJII-COMBO-REVIEW` at all:
+
+```
+REFUSING Q-FUJII-COMBO-REVIEW: graph carries contamination marker ['EV-CARLISLE-TRAD']
+```
+
+So the honest ledger is: every gating metric passes, and the headline margin has
+no valid measurement left, because every chain it could be measured on has now
+been iterated against. That is the correct state to be in, and the only way out
+is claims nobody has touched.
