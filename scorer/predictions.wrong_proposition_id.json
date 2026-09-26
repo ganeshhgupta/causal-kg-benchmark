@@ -1,0 +1,402 @@
+{
+  "variant_predictions": [
+    {
+      "variant_id": "V001a",
+      "proposition_id": "K001",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V001b",
+      "proposition_id": "K001",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V001c",
+      "proposition_id": "K001",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V001d",
+      "proposition_id": "K001",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V002a",
+      "proposition_id": "K002",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V002b",
+      "proposition_id": "K002",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V002c",
+      "proposition_id": "K002",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V002d",
+      "proposition_id": "K002",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V003a",
+      "proposition_id": "K003",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V003b",
+      "proposition_id": "K003",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V003c",
+      "proposition_id": "K003",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V004a",
+      "proposition_id": "K004",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V004b",
+      "proposition_id": "K004",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V004c",
+      "proposition_id": "K004",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V004ma",
+      "proposition_id": "K004m",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V004mb",
+      "proposition_id": "K004m",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V004mc",
+      "proposition_id": "K004m",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V004ca",
+      "proposition_id": "K004m",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V004cb",
+      "proposition_id": "K004c",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V005a",
+      "proposition_id": "K005",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V005b",
+      "proposition_id": "K005",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V005c",
+      "proposition_id": "K005",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V006a",
+      "proposition_id": "K006",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V006b",
+      "proposition_id": "K006",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V006c",
+      "proposition_id": "K006",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V007a",
+      "proposition_id": "K007",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V007b",
+      "proposition_id": "K007",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V007c",
+      "proposition_id": "K007",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V008a",
+      "proposition_id": "K008",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V008b",
+      "proposition_id": "K008",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V009a",
+      "proposition_id": "K009",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V009b",
+      "proposition_id": "K009",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V009c",
+      "proposition_id": "K009",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V010a",
+      "proposition_id": "K010",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V010b",
+      "proposition_id": "K010",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V011a",
+      "proposition_id": "K011",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V011b",
+      "proposition_id": "K011",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V012b",
+      "proposition_id": "K012",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V012c",
+      "proposition_id": "K012",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V013a",
+      "proposition_id": "K013",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V013b",
+      "proposition_id": "K013",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V014a",
+      "proposition_id": "K014",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V014b",
+      "proposition_id": "K014",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V015a",
+      "proposition_id": "K015",
+      "logical_relation": "ENTAILED_BY"
+    },
+    {
+      "variant_id": "V015b",
+      "proposition_id": "K015",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V015c",
+      "proposition_id": "K015",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V016a",
+      "proposition_id": "K016",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V016b",
+      "proposition_id": "K016",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V017a",
+      "proposition_id": "K017",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V017b",
+      "proposition_id": "K017",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V018a",
+      "proposition_id": "K018",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V018b",
+      "proposition_id": "K018",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V019a",
+      "proposition_id": "K019",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V019b",
+      "proposition_id": "K019",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V020a",
+      "proposition_id": "K020",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V020b",
+      "proposition_id": "K020",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V020c",
+      "proposition_id": "K020",
+      "logical_relation": "EQUAL"
+    }
+  ],
+  "pair_predictions": [
+    {
+      "pair_id": "P01",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE"
+    },
+    {
+      "pair_id": "P02",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "SAME"
+    },
+    {
+      "pair_id": "P03",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "SAME"
+    },
+    {
+      "pair_id": "P04",
+      "logical_relation": "ENTAILS",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "SAME"
+    },
+    {
+      "pair_id": "P05",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE"
+    },
+    {
+      "pair_id": "P06",
+      "logical_relation": "ENTAILED_BY",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMED_BY",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P07",
+      "logical_relation": "ENTAILED_BY",
+      "schema_relation": "SAME",
+      "context_relation": "SUBSUMED_BY",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P08",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SAME",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P09",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "RELATED",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P10",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P11",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "OVERLAPS",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P12",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P13",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "SUBSUMES",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P14",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "SAME",
+      "context_relation": "OVERLAPS",
+      "direction_relation": "N/A"
+    },
+    {
+      "pair_id": "P15",
+      "logical_relation": "UNRELATED",
+      "schema_relation": "DIFFERENT",
+      "context_relation": "OVERLAPS",
+      "direction_relation": "N/A"
+    }
+  ],
+  "hyperedge_predictions": [
+    {
+      "hyperedge_id": "H01",
+      "entailed": true
+    }
+  ]
+}

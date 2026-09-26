@@ -1,0 +1,30 @@
+{
+  "_comment": "Minimal example only; strict scoring requires predictions for every benchmark item.",
+  "variant_predictions": [
+    {
+      "variant_id": "V001a",
+      "proposition_id": "K001",
+      "logical_relation": "EQUAL"
+    },
+    {
+      "variant_id": "V009c",
+      "proposition_id": "K009",
+      "logical_relation": "ENTAILED_BY"
+    }
+  ],
+  "pair_predictions": [
+    {
+      "pair_id": "P01",
+      "logical_relation": "COMPATIBLE",
+      "schema_relation": "SAME",
+      "context_relation": "DISJOINT",
+      "direction_relation": "OPPOSITE"
+    }
+  ],
+  "hyperedge_predictions": [
+    {
+      "hyperedge_id": "H01",
+      "entailed": true
+    }
+  ]
+}
