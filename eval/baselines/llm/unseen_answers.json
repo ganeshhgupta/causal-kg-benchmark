@@ -1,0 +1,44 @@
+{
+  "answers": [
+    {
+      "claim_id": "P-ETIDRONATE-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "The only evidence cited is the two etidronate RCTs (ALS, stroke) pooled in the Iwamoto meta-analysis, both from the Sato group whose 33 RCTs Bolland et al. found statistically implausible; nothing in the sources reports an independent etidronate trial, and 'may be unreliable' is not evidence of no effect."
+    },
+    {
+      "claim_id": "P-ALENDRONATE-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "The RR 0.29 (0.10-0.80) rests on the two Sato alendronate trials (stroke, Parkinson's) in the retracted meta-analysis; once those are discarded no source reports alendronate hip-fracture data in this population, and Bolland only impugns the data's integrity rather than testing efficacy."
+    },
+    {
+      "claim_id": "P-RISEDRONATE-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "All three risedronate RCTs in the pooled analysis are Sato-group Japanese trials covered by Bolland's integrity review; removing them leaves no remaining evidence either way."
+    },
+    {
+      "claim_id": "P-BISPHOSPHONATE-CLASS-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "The class-level conclusion is just the pooled result of the seven Sato trials in the now-retracted Iwamoto meta-analysis; Bolland's finding of 'very large reductions in hip fracture incidence, regardless of intervention' undermines the data's credibility but does not itself demonstrate that oral bisphosphonates fail to prevent hip fracture."
+    },
+    {
+      "claim_id": "P-DEX-ENHANCES",
+      "status": "UNRESOLVED",
+      "reasoning": "This statement comes from Fujii's own 2002 review, retracted because the trials underlying its tables and sections 3 and 4.2 were themselves retracted; no non-Fujii PONV evidence appears anywhere in these four sources, so the claim loses its support without acquiring any counter-evidence."
+    },
+    {
+      "claim_id": "P-TRAD-ADJUNCT-SUPERIOR",
+      "status": "UNRESOLVED",
+      "reasoning": "Same provenance problem: the 5-HT3-plus-traditional-antiemetic comparisons are drawn from the Fujii trials the retraction notice names (references 25-29, 31, 32, 47, 48, 50-54), and nothing in the remaining sources speaks to the comparison."
+    },
+    {
+      "claim_id": "P-MULTI-RECEPTOR-PRINCIPLE",
+      "status": "UNRESOLVED",
+      "reasoning": "In the source this is stated only as a hypothesis ('There is a possibility that a combination... would be more effective'), and every trial Fujii offered in its support is retracted; a plausible mechanism with no surviving trial evidence is unresolved, not refuted."
+    },
+    {
+      "claim_id": "P-COMBO-NOT-MORE-TOXIC",
+      "status": "UNRESOLVED",
+      "reasoning": "The safety statement rests on the same Fujii dataset; the review's own warning about 'additive central nervous system toxicity' concerns combinations of two traditional antiemetics, not a 5-HT3 antagonist plus another agent, so it does not argue against this particular claim."
+    }
+  ]
+}

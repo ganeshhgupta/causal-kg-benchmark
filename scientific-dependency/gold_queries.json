@@ -57,9 +57,10 @@
           "justification": "A level-1 efficacy claim resting on the retracted trials named by the notice. Nothing independent bears on it, so UNRESOLVED rather than REFUTED."
         },
         "P-TRAD-ADJUNCT-SUPERIOR": {
-          "class": "LOST_SUPPORT",
-          "after": "UNRESOLVED",
-          "justification": "Same, and explicitly within the notice's named tables III and IV."
+          "class": "RESOLVED_INCONSISTENCY",
+          "after": "REFUTED",
+          "justification": "CORRECTED cycle 8, from UNRESOLVED. Carlisle's non-Fujii pool contains granisetron and ramosetron (5-HT3 antagonists) together with droperidol and metoclopramide, which the review itself classifies as traditional antiemetics (butyrophenones and benzamides). So 'There was no synergism between antiemetics in trials by other authors' is a pooled result from a different author group about EXACTLY this combination, which refutes rather than merely unsupports it. The previous label was inconsistent with this query's own P-MULTI-RECEPTOR-PRINCIPLE label, which cites the same Carlisle sentence as refuting: the general principle was marked REFUTED while the specific instance Carlisle actually tested was marked UNRESOLVED.",
+          "label_history": "Found by the evidence-matched LLM baseline (cycle 8), which marked this REFUTED while keeping P-DEX-ENHANCES UNRESOLVED on the grounds that dexamethasone never appears in Carlisle's pool. Verified: Carlisle mentions granisetron, ramosetron, droperidol and metoclopramide, and never dexamethasone. THIS CORRECTION MAKES THE K-IR REASONER LOSE. It is the third consecutive gold error the baseline has found, all of them in hand-built artefacts."
         },
         "P-MULTI-RECEPTOR-PRINCIPLE": {
           "class": "RESOLVED_INCONSISTENCY",
@@ -101,9 +102,10 @@
           "justification": "Same."
         },
         "P-BISPHOSPHONATE-CLASS-PREVENTS": {
-          "class": "RESOLVED_INCONSISTENCY",
-          "after": "REFUTED",
-          "justification": "The meta-analysis's own conclusion, depth 2 via a THREE-premise pooling derivation. Refuted rather than merely unsupported because Bolland's 'regardless of intervention' finding is direct independent evidence against a genuine drug-class effect of that magnitude in this population."
+          "class": "LOST_SUPPORT",
+          "after": "UNRESOLVED",
+          "justification": "CORRECTED cycle 8, from REFUTED. INTEGRITY EVIDENCE IS NOT COUNTER-EVIDENCE. A statistical integrity analysis showing a trial series is implausible is grounds for DISCARDING that series' support, not independent evidence that the claim is false. Using it as refutation double-counts the same fact: first to retract the evidence, then again as though the world had spoken. Contrast Carlisle 2012, which pooled OTHER AUTHORS' trials and found no synergism; that is genuine empirical evidence about the world and does refute. This is the schema's own stated rule ('retraction removes support, it does not manufacture refutation') applied consistently. Bolland does not pool non-Sato bisphosphonate trials in this population, so nothing here speaks to whether bisphosphonates prevent hip fracture in disabled patients; the meta-analysis's support simply collapses. The original REFUTED label was also internally inconsistent with this query's own three per-drug labels, which already said UNRESOLVED for exactly this reason.",
+          "label_history": "Found by the unseen-claim baseline (cycle 8), which answered UNRESOLVED and argued explicitly that counting an integrity finding as refutation would 'double-dip'. That argument was correct. Flipping this label RAISES the LLM's score and is not self-serving; it also happens to raise K-IR's, because K-IR was wrong here too."
         }
       },
       "notes": "The magnitude gap appears here INDEPENDENTLY of the PONV chain: Bolland's finding is about effect size ('greatly exceed'), which K-IR v0.3 cannot represent. Two unrelated domains hitting the same gap is evidence it is systemic rather than incidental.",

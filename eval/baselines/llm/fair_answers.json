@@ -1,0 +1,44 @@
+{
+  "answers": [
+    {
+      "claim_id": "P-ETIDRONATE-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "The only evidence is the two etidronate RCTs pooled by Iwamoto 2011, all Japanese trials from the group whose 33 RCTs Bolland 2016 found statistically implausible; discarding them leaves no non-Sato trial of etidronate in neurological disease, and an integrity analysis is grounds for discarding data, not evidence that etidronate fails."
+    },
+    {
+      "claim_id": "P-ALENDRONATE-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "Support rests entirely on the two alendronate RCTs (stroke, Parkinson's) inside the Iwamoto pooled analysis, which are Sato-group trials; no other author group in these sources tested alendronate for hip fracture in disabled neurological patients."
+    },
+    {
+      "claim_id": "P-RISEDRONATE-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "The RR 0.24 (0.10-0.58) comes from three risedronate RCTs that are part of the same Sato-group series questioned by Bolland 2016; once discarded, no independent trial in these sources bears on risedronate either way."
+    },
+    {
+      "claim_id": "P-BISPHOSPHONATE-CLASS-PREVENTS",
+      "status": "UNRESOLVED",
+      "reasoning": "All seven RCTs in the Iwamoto meta-analysis are Japanese trials from the discarded group, and Bolland 2016 only shows the outcomes were improbably uniform ('very large reductions in hip fracture incidence, regardless of intervention'), which impugns the data rather than demonstrating bisphosphonates do not work."
+    },
+    {
+      "claim_id": "P-DEX-ENHANCES",
+      "status": "UNRESOLVED",
+      "reasoning": "Carlisle 2012's non-Fujii pooled comparison covers granisetron, ramosetron, droperidol and metoclopramide but never dexamethasone, so after discarding Fujii's trials nothing in these sources tests whether dexamethasone adds to a 5-HT3 antagonist."
+    },
+    {
+      "claim_id": "P-TRAD-ADJUNCT-SUPERIOR",
+      "status": "REFUTED",
+      "reasoning": "Carlisle 2012 pooled trials by authors other than Fujii and reports 'There was no synergism between antiemetics in trials by other authors', with the apparent advantage of granisetron/droperidol/metoclopramide combinations appearing only in Fujii's own data."
+    },
+    {
+      "claim_id": "P-MULTI-RECEPTOR-PRINCIPLE",
+      "status": "REFUTED",
+      "reasoning": "Carlisle 2012 concludes that with Fujii's articles excluded 'there is no evidence of synergism between antiemetics and indeed, some evidence of antagonism between antiemetic agents', which is independent evidence against the multi-receptor combination principle rather than mere loss of support."
+    },
+    {
+      "claim_id": "P-COMBO-NOT-MORE-TOXIC",
+      "status": "UNRESOLVED",
+      "reasoning": "Carlisle 2012 analysed efficacy and rescue-antiemesis rates only, and no other source reports adverse-effect rates for 5-HT3 antagonist combinations, so the safety claim has neither support nor contradiction once Fujii's trials are removed."
+    }
+  ]
+}

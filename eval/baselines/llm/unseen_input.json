@@ -1,0 +1,46 @@
+{
+  "_comment": "UNSEEN-CLAIM baseline input. These claims come from two chains the previous baseline run never saw, and neither corpus carries a CONTAMINATION-MARKER, so a margin measured here is an independent comparison rather than a re-measurement on the claims that revealed a bug. Claim statements only: no gold labels, no K-IR, no evidence structure. claim_ids are kept solely to join answers back for scoring.",
+  "question": "For each claim, give its epistemic status AFTER discarding all trials by the named retracted author. SUPPORTED, REFUTED, or UNRESOLVED.",
+  "claims": [
+    {
+      "claim_id": "P-ETIDRONATE-PREVENTS",
+      "claim": "Etidronate reduces the risk of hip fracture in disabled patients with neurological disease.",
+      "retracted_author": "Sato"
+    },
+    {
+      "claim_id": "P-ALENDRONATE-PREVENTS",
+      "claim": "Alendronate reduces the risk of hip fracture in disabled patients with neurological disease.",
+      "retracted_author": "Sato"
+    },
+    {
+      "claim_id": "P-RISEDRONATE-PREVENTS",
+      "claim": "Risedronate reduces the risk of hip fracture in disabled patients with neurological disease.",
+      "retracted_author": "Sato"
+    },
+    {
+      "claim_id": "P-BISPHOSPHONATE-CLASS-PREVENTS",
+      "claim": "Oral bisphosphonate treatment prevents hip fracture in disabled Japanese patients with neurological diseases including ALS, stroke and Parkinson's disease.",
+      "retracted_author": "Sato"
+    },
+    {
+      "claim_id": "P-DEX-ENHANCES",
+      "claim": "The efficacy of a combination of a serotonin 5-HT3 receptor antagonist and dexamethasone is superior to that of 5-HT3 receptor antagonists alone for the prevention of PONV.",
+      "retracted_author": "Fujii"
+    },
+    {
+      "claim_id": "P-TRAD-ADJUNCT-SUPERIOR",
+      "claim": "The combination of a 5-HT3 receptor antagonist with a traditional antiemetic acting at a different emetogenic receptor is more effective in reducing the incidence of PONV than each antiemetic alone acting at one receptor site.",
+      "retracted_author": "Fujii"
+    },
+    {
+      "claim_id": "P-MULTI-RECEPTOR-PRINCIPLE",
+      "claim": "A combination of antiemetics with different sites of activity is more effective than one drug alone for prophylaxis against postoperative nausea and vomiting.",
+      "retracted_author": "Fujii"
+    },
+    {
+      "claim_id": "P-COMBO-NOT-MORE-TOXIC",
+      "claim": "The risk of undesirable adverse effects does not increase with the combination of a 5-HT3 receptor antagonist and another antiemetic.",
+      "retracted_author": "Fujii"
+    }
+  ]
+}

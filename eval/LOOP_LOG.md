@@ -651,3 +651,67 @@ requires claims neither system has seen.
 **What this cycle actually demonstrated.** The baseline was more useful as an
 error-finder than as a competitor: it located a wrong gold label and a wrong
 encoding, both in the hand-built artefacts, neither in the reasoner.
+
+---
+
+## Cycle 8 (2026-09-26): the independent margin, and it is NEGATIVE
+
+**Setup.** Eight claims across two chains in two domains (Sato/bisphosphonates,
+Fujii/combination-review), neither carrying a contamination marker, neither seen
+by the earlier baseline. `eval/baselines/unseen_eval.py` refuses to score any
+graph that does carry a marker.
+
+**The number moved four times. Every move is recorded because every move was a
+correction to my own artefacts, not to the systems.**
+
+| stage | margin | what was wrong |
+|---|---|---|
+| first unseen run | +25.0 | gold label the baseline correctly disputed |
+| corrected that label | +12.5 | K-IR won on evidence the baseline never received |
+| matched the evidence, re-ran | +12.5 | remaining win was a third bad gold label |
+| corrected that label | **-12.5** | current honest figure |
+
+**Final: LLM 8/8, K-IR 7/8, margin -12.5 points. The reasoner LOSES.**
+
+**Error 1: integrity evidence is not counter-evidence.** The baseline answered
+UNRESOLVED on the bisphosphonate class claim and argued that counting Bolland's
+integrity analysis as refutation would "double-dip": it is grounds for
+discarding the Sato series, not evidence that bisphosphonates fail. Correct, and
+it contradicted the schema's own rule that retraction removes support rather
+than manufacturing refutation. The corpus had a `stance: refutes` Evidence item
+that should never have existed. Note this correction RAISED the baseline's score.
+
+**Error 2: information asymmetry in my own experiment.** K-IR's one remaining
+win was on a claim where its graph encodes Carlisle's no-synergism finding,
+while Carlisle's abstract was not in the baseline's source file at all. A system
+with strictly more evidence beating one with less is a broken experiment. Fixed
+by adding Carlisle and re-running a fresh baseline.
+
+**Error 3: inconsistent generality.** With Carlisle in hand the baseline marked
+`P-TRAD-ADJUNCT-SUPERIOR` REFUTED while keeping `P-DEX-ENHANCES` UNRESOLVED,
+because Carlisle's pool contains droperidol and metoclopramide (which the review
+itself classifies as traditional antiemetics) but never dexamethasone. Verified
+directly against the text. My gold had marked the GENERAL principle REFUTED on
+that Carlisle sentence while marking the SPECIFIC instance Carlisle actually
+tested UNRESOLVED, which is incoherent. Correcting it is what produced the
+negative margin.
+
+**What this cycle actually establishes.** The headline claim is not merely
+unproven, it is currently false on the only independent measurement taken: an
+LLM with the same sources matched the gold perfectly and the reasoner did not.
+Three of the three disagreements across cycles 6 to 8 were resolved AGAINST the
+hand-built artefacts. The baseline has been a better label auditor than its
+author.
+
+**What it does not establish.** The reasoner's loss is a single claim on n=8,
+where each claim is 12.5 points. It is one missing Evidence edge in a
+hand-encoded graph, not a demonstrated reasoning failure: the fixpoint does what
+it should given its inputs. The honest reading is that the bottleneck is
+COMPILATION and CURATION, not inference, which is consistent with cycle 5, where
+the blind extraction beat the hand encoding on exactly this kind of edge.
+
+**Deliberately NOT done.** Adding the missing Carlisle edge to
+`P-TRAD-ADJUNCT-SUPERIOR` would take K-IR back to 8/8 and the margin to 0.0.
+That fix is baseline-prompted, so doing it and re-reporting would repeat the
+cycle-7 contamination. The edge is left missing and the loss stands until the
+margin can be measured on claims nobody has iterated on.

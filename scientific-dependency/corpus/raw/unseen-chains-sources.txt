@@ -1,0 +1,56 @@
+SOURCE DOCUMENTS (all abstracts retrieved verbatim from Europe PMC, tags stripped).
+Two independent retraction chains are represented here.
+
+=== PMID 21456887 | 2011 | doi:10.1185/03007995.2011.570747
+Iwamoto J, Takeda T, Matsumoto H.
+Efficacy of oral bisphosphonates for preventing hip fracture in disabled patients with neurological diseases: a meta-analysis of randomized controlled trials among the Japanese population.
+ObjectiveNeurological diseases such as amyotrophic lateral sclerosis (ALS), stroke, and Parkinson's disease cause disability and immobilization that increases the risk of hip fracture. The purpose of the present study was to clarify the efficacy of oral bisphosphonates for preventing hip fracture in disabled patients with such neurological diseases.MethodsA literature search (PubMed) was done from 1995 to the present for randomized controlled trials (RCTs), and a meta-analysis was conducted.ResultsSeven RCTs met the criteria, including two of etidronate (ALS and stroke), two of alendronate (stroke and Parkinson's disease), and three of risedronate (stroke and Parkinson's disease). All of the RCTs were performed on Japanese patients. According to the results of pooled data analysis, the relative risk (95% confidence interval) of hip fracture in patients receiving etidronate, alendronate, and risedronate treatment compared with placebo or active control treatment was 0.16 (0.03-0.87), 0.29 (0.10-0.80), and 0.24 (0.10-0.58), respectively, suggesting a reduction of risk by more than 70% with oral bisphosphonates. There was no statistical evidence of heterogeneity among RCTs, and publication bias was not identified by the funnel plot and Begg's rank correlation test. No severe adverse events due to oral bisphosphonate treatment were reported.LimitationIt remains uncertain whether the findings are relevant for Western patients with an increased risk of hip fracture due to neurological diseases.ConclusionA meta-analysis of RCTs suggested that oral bisphosphonate treatment prevents hip fracture in disabled Japanese patients with neurological diseases, including ALS, stroke, and Parkinson's disease. Oral bisphosphonate treatment was well tolerated by such patients.
+
+=== PMID 27920281 | 2016 | doi:10.1212/wnl.0000000000003387
+Bolland MJ, Avenell A, Gamble GD, Grey A.
+Systematic review and statistical analysis of the integrity of 33 randomized controlled trials.
+BackgroundStatistical techniques can investigate data integrity in randomized controlled trials (RCTs). We systematically reviewed and analyzed all human RCTs undertaken by a group of researchers, about which concerns have been raised.MethodsWe compared observed distributions of p values for between-groups differences in baseline variables, for standardized sample means for continuous baseline variables, and for differences in treatment group participant numbers with the expected distributions. We assessed productivity, recruitment rates, outcome data, textual consistency, and ethical oversight.ResultsThe researchers were remarkably productive, publishing 33 RCTs over 15 years involving large numbers of older patients with substantial comorbidity, recruited over very short periods. Treatment groups were improbably similar. The distribution of p values for differences in baseline characteristics differed markedly from the expected uniform distribution (p = 5.2 × 10-82). The distribution of standardized sample means for baseline continuous variables and the differences between participant numbers in randomized groups also differed markedly from the expected distributions (p = 4.3 × 10-4, p = 1.5 × 10-5, respectively). Outcomes were remarkably positive, with very low mortality and study withdrawals despite substantial comorbidity. There were very large reductions in hip fracture incidence, regardless of intervention (relative risk 0.22, 95% confidence interval 0.15-0.31, p ConclusionsA systematic approach using statistical techniques to assess randomization outcomes can evaluate data integrity, in this case suggesting these RCT results may be unreliable.
+
+=== PMID 29492850 | 2002 | doi:10.2165/00044011-200222090-00001
+Fujii Y.
+RETRACTED ARTICLE: Combination Antiemetic Regimens for Prevention of Postoperative Nausea and Vomiting : Focus on High-Risk Patients.
+None of the available antiemetics is entirely effective, perhaps because most of them act through the blockade of one receptor. There is a possibility that a combination of antiemetics with different sites of activity would be more effective than one drug alone for prophylaxis against postoperative nausea and vomiting (PONV).The clinical use of combined traditional antiemetics, including antihistamines (e.g. diphenhydramine), butyrophenones (e.g. droperidol) and benzamides (e.g. metoclopramide), for the prevention of PONV is limited because of the possibility of additive central nervous system toxicity, such as delayed emergence, drowsiness and extrapyramidal reactions. The efficacy of a combination of a serotonin 5-HT3 receptor antagonist (ondansetron, granisetron or tropisetron) and dexamethasone is superior to that of 5-HT3 receptor antagonists alone for the prevention of PONV, suggesting that dexamethasone enhances the antiemetic efficacy of 5-HT3 receptor antagonists. The combination of a 5-HT3 receptor antagonist with a traditional antiemetic (droperidol, metoclopramide or promethazine) acting at a different emetogenic receptor is more effective in reducing the incidence of PONV than each antiemetic alone acting at one receptor site. The risk of undesirable adverse effects does not increase with the combination of a 5-HT3 receptor antagonist and a traditional antiemetic at the doses commonly used for PONV, because of the absence of drug interactions. The combination of a 5-HT3 receptor antagonist (ondansetron) with other agents (propofol and CP-122721) reduces the incidence of PONV to a greater degree than monotherapy. However, no data are available for the combination of 5-HT3 receptor antagonists and small doses of propofol for the prevention of PONV.Further studies are needed to evaluate the efficacy and safety of combination antiemetic regimens for PONV. Knowledge regarding combinations of these antiemetic drugs may be necessary to completely prevent PONV.
+
+=== PMID 29705919 | 2018 | doi:10.1007/s40261-018-0634-4
+Fujii Y.
+Retraction Note to: Combination Antiemetic Regimens for Prevention of Postoperative Nausea and Vomiting : Focus on High-Risk Patients.
+The Editor-in-Chief has retracted the original article [1] because a number of studies [2-15] included in this review (cited as references 25-29, 31, 32, 47, 48, 50-54) have been retracted, specifically those included in table III, table IV, section 3 and section 4.2. This has rendered the content of the review scientifically unreliable.
+
+
+=== PMID 22734848 | 2012 | doi:10.1111/j.1365-2044.2012.07232.x
+ADDED cycle 8 to remove an information asymmetry: the K-IR graphs encode evidence
+sourced to this paper ('trials by authors other than Fujii, pooled by Carlisle 2012'),
+so a baseline denied it was being compared against a system with strictly more
+evidence. That is a flaw in the experiment, not a win for the system.
+
+The population sampling in randomised controlled trials by Fujii et al. have been
+shown to exhibit unusual distributions. This systematic review analysed the
+effectiveness of prophylactic antiemetics in trials by Fujii et al. compared with
+other authors. Granisetron was more effective in trials by Fujii et al., relative
+risk ratios (RRR (95% CI)): nausea 0.53 (0.42-0.67), p=0.00021; vomiting 0.60
+(0.50-0.73), p=0.00094. Ramosetron was also more effective in studies by Fujii et
+al.: vomiting 0.60 (0.39-0.91), p=0.02; nausea or vomiting 0.71 (0.56-0.91);
+p=0.006. In comparison with granisetron, droperidol was less effective in trials by
+Fujii et al. than others: nausea 2.41 (1.72-3.36), p=2.5x10(-7); vomiting 1.73
+(1.26-2.38), p=6.4x10(-4). Postoperative nausea and vomiting was less likely to
+trigger rescue antiemesis after granisetron and metoclopramide in studies by Fujii
+et al., 0.40 (0.27-0.60), p=9.7x10(-6). Triggered rates of rescue were not
+different in studies by others for droperidol, granisetron and metoclopramide, but
+were less common after granisetron than droperidol and metoclopramide in studies by
+Fujii et al., 0.50 (0.38-0.66), p=1.7x10(-6) and 0.47 (0.34-0.64), p=2.6x10(-6),
+respectively. There was no synergism between antiemetics in trials by other
+authors. In contrast, in studies by Fujii et al., postoperative nausea and vomiting
+was more likely if granisetron was administered alone: nausea 4.20 (1.94-9.08),
+p=2.6x10(-4); vomiting 4.50 (2.55-7.97), p=2.3x10(-7); nausea or vomiting 5.00
+(2.84-8.81), p=2.5x10(-8). Similarly, droperidol was less effective in studies by
+Fujii et al. if administered alone: vomiting 2.76 (1.25-6.11), p=0.01; nausea or
+vomiting 2.96 (1.46-6.00), p=2.7x10(-3). The conclusion is that if, as recommended,
+data with unusual distributions are removed from meta-analysis and articles by
+Fujii et al. excluded, then the antiemetic effects of granisetron and ramosetron
+are greatly reduced; further, there is no evidence of synergism between antiemetics
+and indeed, some evidence of antagonism between antiemetic agents.

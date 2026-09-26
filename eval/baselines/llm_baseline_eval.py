@@ -27,9 +27,15 @@ ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(ROOT / "reasoner"))
 from epistemic_query import Graph, author_groups  # noqa: E402
 
+import argparse
+
 GOLD = ROOT / "scientific-dependency" / "gold_queries.json"
-ANSWERS = ROOT / "eval" / "baselines" / "llm" / "baseline_answers.json"
-QUERY = "Q-FUJII-PONV"
+_AP = argparse.ArgumentParser()
+_AP.add_argument("--answers", default="eval/baselines/llm/baseline_answers.json")
+_AP.add_argument("--queries", nargs="*", default=["Q-FUJII-PONV"])
+_ARGS = _AP.parse_args()
+ANSWERS = ROOT / _ARGS.answers
+QUERY = _ARGS.queries[0]
 
 
 def metrics(name, pred: dict, expected: dict):
