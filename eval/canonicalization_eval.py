@@ -36,6 +36,8 @@ CORPORA = [
 
 # Gold pairs over real claims. "SAME" means one canonical claim reached from two
 # documents; "DIFFERENT" means they must never be merged.
+sys.path.insert(0, str(Path(__file__).parent.parent / "compiler"))
+
 GOLD_PAIRS = [
     (("P-SYNERGISM", "P-MULTI-RECEPTOR-PRINCIPLE"), "SAME",
      "Both assert that combining antiemetics acting at different receptors beats "
@@ -115,8 +117,23 @@ def lexical_overlap(a, b, threshold=0.5):
     return len(ta & tb) / len(ta | tb) >= threshold
 
 
+def _declared_equivalence(a, b):
+    """The real canonicalization stage: compiler/canonicalize.py.
+
+    Wired in cycle 9. It existed and scored the gold pair correctly, but was
+    never listed here, so the eval kept reporting F1 0.000 as though nothing
+    could find the duplicate. The eval was measuring the absence of a stage
+    rather than the stage. Merges only on identical normal form under declared,
+    justified rules, so RELATED (one argument differs) is not a merge.
+    """
+    from canonicalize import compare, load_equivalences
+    verdict, _ = compare(a, b, load_equivalences())
+    return verdict == "EQUAL"
+
+
 MATCHERS = {
     "never_merge (current)": never_merge,
+    "declared_equivalence": _declared_equivalence,
     "same_predicate": same_predicate,
     "exact_structural": exact_structural,
     "lexical_overlap@0.5": lexical_overlap,
@@ -192,6 +209,14 @@ def main():
           "see. Every matcher that finds the duplicate also commits false merges "
           "on the decoys. That is the measured case for a real canonicalization "
           "stage, and the number to beat is now on record rather than asserted.")
+    print("\nDISCLOSURE: declared_equivalence scores 1.000 on a set containing exactly")
+    print("ONE SAME pair, and its rule was authored with that pair in view. That is not a")
+    print("generalization estimate. What it does show is that the rule had three")
+    print("opportunities to false-merge the decoys (P-DEX-ENHANCES, P-TRAD-ADJUNCT-SUPERIOR")
+    print("and P-SYNERGISM all normalise to COMBINATION_OUTPERFORMS) and declined all three,")
+    print("because it compares full normal forms including arguments rather than predicates")
+    print("alone. The lexical and same-predicate matchers took exactly those bait pairs.")
+    print("A real number needs SAME pairs the rules were not written for.")
     print(f"\nn={len(GOLD_PAIRS)} pairs is far too small for these rates to be "
           f"stable; they are a floor to improve on, not a result.")
     return 0

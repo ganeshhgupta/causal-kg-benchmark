@@ -715,3 +715,45 @@ the blind extraction beat the hand encoding on exactly this kind of edge.
 That fix is baseline-prompted, so doing it and re-reporting would repeat the
 cycle-7 contamination. The edge is left missing and the loss stands until the
 margin can be measured on claims nobody has iterated on.
+
+---
+
+## Cycle 9 (2026-09-26): canonicalization was never being measured
+
+**The 0.000 was measuring the wrong thing.** Cross-vocabulary claim matching had
+been reported as F1 0.000 since cycle 5, described as "the measured case for a
+real canonicalization stage". But `compiler/canonicalize.py`, the declared-
+equivalence canonicalizer, already existed and already resolved the gold pair
+correctly. It was simply never listed in `eval/canonicalization_eval.py`'s
+matcher table, so the eval was measuring the ABSENCE of a stage rather than the
+stage itself, and reporting that absence as a capability gap.
+
+Wiring it in:
+
+```
+matcher                  TP FP FN  prec   rec    F1     false_merge  gate
+never_merge (current)    0  0  1   0.000  0.000  0.000  0.000        PASS
+declared_equivalence     1  0  0   1.000  1.000  1.000  0.000        PASS
+same_predicate           0  3  1   0.000  0.000  0.000  0.500        FAIL
+lexical_overlap@0.5      0  1  1   0.000  0.000  0.000  0.167        FAIL
+lexical_overlap@0.3      0  3  1   0.000  0.000  0.000  0.500        FAIL
+```
+
+**Why the 1.000 is not a result, stated in the tool's own output.** The gold set
+contains exactly one SAME pair and the equivalence rule was authored with that
+pair in view. What the number does show is discrimination rather than mere
+recall: P-SYNERGISM, P-DEX-ENHANCES, P-TRAD-ADJUNCT-SUPERIOR and
+P-MULTI-RECEPTOR-PRINCIPLE all normalise to the same canonical predicate
+`COMBINATION_OUTPERFORMS`, giving three chances to false-merge, and it declined
+all three because it compares full normal forms including arguments. The
+same-predicate and lexical matchers took exactly those bait pairs. A real number
+needs SAME pairs the rules were not written for.
+
+**Lesson worth keeping.** This is the second time a reported failure turned out
+to be in the measurement rather than the system: cycle 5 found the retraction
+selector bug in the scorer, and this cycle found an entire stage missing from
+the matcher table. Before trusting a bad number, check that the thing being
+scored is the thing that exists.
+
+**Unchanged.** The gating suite still FAILS on epistemic macro-F1 0.9238, and
+the independent margin is still -12.5. Neither is touched by this cycle.
