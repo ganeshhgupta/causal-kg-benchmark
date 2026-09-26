@@ -63,8 +63,8 @@
     },
     {
       "id": "K004c",
-      "statement": "MONOTONIC_POSITIVE(Temperature(Copper_instance), LinearExtent(Copper_instance))",
-      "nl_gloss": "Copper expands when heated.",
+      "statement": "forall x:Copper, MONOTONIC_POSITIVE(Temperature(x), LinearExtent(x))",
+      "nl_gloss": "Copper expands when heated (any solid copper object).",
       "concepts": ["C01", "C03", "C16"],
       "context": {
         "phase_state": "solid",
@@ -74,7 +74,7 @@
         "material_regime": "ordinary_positive_expansion",
         "temperature_domain": "below copper's melting point, no phase transition"
       },
-      "notes": "SPECIALIZATION of K004m (Copper subtype_of Metal; NIST measurements confirm a positive expansion coefficient for copper across a substantial temperature range). K004m ENTAILS K004c, not EQUAL. This is the canonical 'false merge' trap case: a naive embedding-similarity canonicalizer will likely mark K004m and K004c EQUAL because the sentences are near-identical in surface structure."
+      "notes": "FIXED in v0.2: v0.1 wrote this over an undeclared individual 'Copper_instance', which is ambiguous between 'one particular copper object' and the intended universal claim. Now explicitly universally quantified (forall x:Copper), matching the free-variable convention used by every other proposition in this set. SPECIALIZATION of K004m (Copper subtype_of Metal; NIST measurements confirm a positive expansion coefficient for copper across a substantial temperature range): K004m ENTAILS K004c, not EQUAL -- this is the canonical 'false merge' trap case, since a naive embedding-similarity canonicalizer will likely mark K004m and K004c EQUAL given their near-identical surface structure. K015/K016's 'Water_sample' has the same underlying schema-variable-vs-individual question but is left as-is for v0.2 (a fixed liquid sample of given mass is the natural unit there, and is less ambiguous in practice) -- worth revisiting in a later pass for full consistency."
     },
     {
       "id": "K005",
@@ -208,11 +208,11 @@
     },
     {
       "id": "K020",
-      "statement": "Volume(x) is CONSERVED under uniform_scaling(x) iff shape unchanged",
-      "nl_gloss": "Scaling an object uniformly changes its volume unless the shape is held exactly proportional in a way that keeps volume fixed (trivial/never in practice).",
+      "statement": "Volume(UniformScale(x, k)) = k^3 * Volume(x)",
+      "nl_gloss": "Scaling every linear dimension of a 3D object by a factor k multiplies its volume by k cubed.",
       "concepts": ["C04"],
-      "context": {},
-      "notes": "Deliberately awkward/edge-case proposition to stress-test the classifier on a near-vacuous statement; expect low agreement -- included for calibration, not as a load-bearing fact."
+      "context": {"spatial_dimension": 3, "k": "> 0"},
+      "notes": "REPLACED in v0.2: v0.1's K020 ('uniform scaling conserves volume iff shape unchanged') was physically/mathematically wrong -- uniform scaling by definition preserves shape while volume scales as k^3, so 'shape unchanged' can never imply 'volume unchanged' except at k=1. This version is a clean algebraic equation/NL/code canonicalization stress-test instead of a near-vacuous statement."
     }
   ]
 }

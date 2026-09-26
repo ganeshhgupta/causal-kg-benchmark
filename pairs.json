@@ -1,9 +1,9 @@
 {
-  "_comment": "Gold cross-proposition judgments. REVISED per review round 1: replaced the single flat six-way 'relation' label with three orthogonal axes (plus an optional direction_relation for MONOTONIC_* pairs), because the flat label was forcing logical relationship, structural similarity, and context relationship into one field and produced an inconsistent call on P01. Read 'a -> b' as the axes describing proposition a relative to proposition b.",
+  "_comment": "Gold cross-proposition judgments. v0.1 replaced the single flat six-way 'relation' label with three orthogonal axes (plus an optional direction_relation for MONOTONIC_* pairs), because the flat label was forcing logical relationship, structural similarity, and context relationship into one field and produced an inconsistent call on P01. v0.2 (round-2 review) tightened context_relation to a strict satisfiability rule (see below) and fixed 5 pairs (P09, P10, P12, P13, P14) that had conflated 'different topic' with 'incompatible context'. Read 'a -> b' as the axes describing proposition a relative to proposition b.",
   "axes": {
     "logical_relation": "EQUAL | ENTAILS | ENTAILED_BY | CONTRADICTS | COMPATIBLE | UNRELATED -- COMPATIBLE replaces v0's overloaded OVERLAPS: both can be true, non-entailing.",
     "schema_relation": "SAME | RELATED | DIFFERENT -- structural/predicate-shape similarity, independent of logical relation.",
-    "context_relation": "SAME | SUBSUMES | SUBSUMED_BY | OVERLAPS | DISJOINT -- how a's context/conditions relate to b's. 'a SUBSUMES b' means a's context is the broader one.",
+    "context_relation": "SAME | SUBSUMES | SUBSUMED_BY | OVERLAPS | DISJOINT -- computed purely from context-predicate satisfiability, never from topic/subject similarity. Determination rule (v0.2, fixed after round-2 review flagged 5 mislabeled pairs): SAME iff the predicate sets are equivalent; SUBSUMES/SUBSUMED_BY iff one side's predicates are a strict subset of the other's (an unrestricted context {} always SUBSUMES any non-empty context -- it holds trivially in every case the more specific one does); OVERLAPS iff both sides have non-empty, independent predicates that are jointly satisfiable and neither is a subset of the other; DISJOINT iff the two predicate sets are jointly UNsatisfiable (reserved for genuine mutual exclusion, e.g. disjoint temperature ranges in P05, or disjoint transport regimes established by an explicit disjointness fact in P01 -- not merely 'different topics').",
     "direction_relation": "SAME | OPPOSITE | N/A -- only meaningful when both propositions are MONOTONIC_POSITIVE/NEGATIVE over the same variable pair."
   },
   "pairs": [
@@ -84,55 +84,55 @@
       "a": "K010", "b": "K011",
       "logical_relation": "COMPATIBLE",
       "schema_relation": "RELATED",
-      "context_relation": "SAME",
+      "context_relation": "SUBSUMES",
       "direction_relation": "N/A",
-      "rationale": "Same hyperedge as P08 -- K010 alone is a necessary but not sufficient premise for K011."
+      "rationale": "Same hyperedge as P08 -- K010 alone is a necessary but not sufficient premise for K011. FIXED in v0.2: context_relation was wrongly SAME. K010 has no context restriction ({}) while K011 requires ohmic_conductor; an unrestricted context trivially subsumes any more specific one, so K010 SUBSUMES K011 here (unlike P08, where both K001 and K011 genuinely share the same ohmic_conductor restriction)."
     },
     {
       "id": "P10",
       "a": "K018", "b": "K002",
       "logical_relation": "UNRELATED",
       "schema_relation": "DIFFERENT",
-      "context_relation": "SAME",
+      "context_relation": "SUBSUMES",
       "direction_relation": "N/A",
-      "rationale": "K018 is an ontological class fact (Metal SUBTYPE_OF Conductor); K002 is a quantitative causal law about metals. context_relation is SAME (both scoped to Metal) but logical_relation is UNRELATED and schema_relation is DIFFERENT (ontological SUBTYPE_OF form vs causal MONOTONIC_POSITIVE form) -- tests that shared subject alone doesn't drive a merge."
+      "rationale": "K018 is an ontological class fact (Metal SUBTYPE_OF Conductor), with no context restriction; K002 is a quantitative causal law about metals restricted to the PTC regime. FIXED in v0.2: context_relation was wrongly SAME -- K018's unrestricted context trivially SUBSUMES K002's restricted one; they are not context-equivalent, they merely share the Metal concept. logical_relation is UNRELATED and schema_relation DIFFERENT (ontological SUBTYPE_OF form vs causal MONOTONIC_POSITIVE form) -- tests that shared subject alone doesn't drive a merge."
     },
     {
       "id": "P11",
       "a": "K006", "b": "K007",
       "logical_relation": "UNRELATED",
       "schema_relation": "DIFFERENT",
-      "context_relation": "DISJOINT",
+      "context_relation": "OVERLAPS",
       "direction_relation": "N/A",
-      "rationale": "Ideal gas law and Newton's second law share no concepts and no derivational relationship. Baseline negative control."
+      "rationale": "Ideal gas law and Newton's second law share no concepts and no derivational relationship -- logical_relation UNRELATED is correct. FIXED in v0.2: context_relation was wrongly DISJOINT. K006's ideal-gas context and K007's non-relativistic/constant-mass context are jointly satisfiable (an ideal gas parcel of fixed mass under everyday conditions satisfies both) and neither is a subset of the other, so this is OVERLAPS, not DISJOINT. DISJOINT is reserved for contexts that cannot co-occur at all (see P01, P05)."
     },
     {
       "id": "P12",
       "a": "K005", "b": "K007",
       "logical_relation": "UNRELATED",
       "schema_relation": "DIFFERENT",
-      "context_relation": "DISJOINT",
+      "context_relation": "SUBSUMES",
       "direction_relation": "N/A",
-      "rationale": "Density definition vs force law -- both simple algebraic identities, unrelated subjects. Negative control."
+      "rationale": "Density definition vs force law -- both simple algebraic identities, unrelated subjects; logical_relation UNRELATED is correct. FIXED in v0.2: context_relation was wrongly DISJOINT. K005 has no context restriction ({}), which trivially subsumes K007's restricted (non-relativistic, constant-mass) context -- they are compatible, not mutually exclusive."
     },
     {
       "id": "P13",
       "a": "K019", "b": "K002",
       "logical_relation": "COMPATIBLE",
       "schema_relation": "DIFFERENT",
-      "context_relation": "SAME",
+      "context_relation": "SUBSUMES",
       "direction_relation": "N/A",
       "supports_pair": "P01",
-      "rationale": "K019 (Metal/Semiconductor disjoint) is the background ontological fact that justifies resolving P01 as COMPATIBLE-with-DISJOINT-context rather than CONTRADICTS. Shares the Metal concept (context_relation SAME) but is a different kind of statement (schema_relation DIFFERENT: disjointness fact vs causal law) -- does not itself entail or get entailed by K002."
+      "rationale": "K019 (Metal/Semiconductor disjoint) is the background ontological fact that justifies resolving P01 as COMPATIBLE-with-DISJOINT-context rather than CONTRADICTS. K019 has no context restriction ({}), which trivially SUBSUMES K002's restricted (PTC-regime) context -- FIXED in v0.2, was wrongly SAME. K019 is a different kind of statement from K002 (schema_relation DIFFERENT: disjointness fact vs causal law) and does not itself entail or get entailed by K002."
     },
     {
       "id": "P14",
       "a": "K014", "b": "K004",
       "logical_relation": "UNRELATED",
       "schema_relation": "SAME",
-      "context_relation": "DISJOINT",
+      "context_relation": "OVERLAPS",
       "direction_relation": "N/A",
-      "rationale": "Both are MONOTONIC_* propositions (schema_relation SAME) but from completely different subject domains (astrophysics vs thermal expansion; context_relation DISJOINT). Tests that the classifier doesn't over-merge on shared predicate SHAPE alone -- SAME schema_relation must not by itself imply any logical relation."
+      "rationale": "Both are MONOTONIC_* propositions (schema_relation SAME) but from completely different subject domains (astrophysics vs thermal expansion). FIXED in v0.2: context_relation was wrongly DISJOINT -- a fixed-mass body (K014's condition) can simultaneously be an ordinary solid in the positive-expansion regime (K004's condition); the two contexts are compatible and independent, not mutually exclusive, so OVERLAPS is correct. Tests that the classifier doesn't over-merge on shared predicate SHAPE alone -- SAME schema_relation must not by itself imply any logical relation."
     },
     {
       "id": "P15",
